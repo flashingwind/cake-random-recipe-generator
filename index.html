@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ケーキランダムレシピジェネレーター</title>
+<style>
+  :root { --ink:#2b2320; --sub:#6b5d54; --line:#e3d9d2; --bg:#faf6f2; --card:#fff; --accent:#b4552d; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background:var(--bg); color:var(--ink); }
+  header { padding: 28px 20px 8px; max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 6px; }
+  header p { color: var(--sub); margin: 0; font-size: 14px; line-height: 1.7; }
+  main { max-width: 1080px; margin: 0 auto; padding: 16px 20px 48px; display: grid; gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .card h2 { font-size: 16px; margin: 0 0 12px; }
+  button { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 15px; cursor: pointer; }
+  button:hover { opacity: .88; }
+  .sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 22px; }
+  .slider-row { font-size: 13px; }
+  .slider-row label { display: flex; justify-content: space-between; color: var(--sub); margin-bottom: 2px; }
+  .slider-row label b { color: var(--ink); font-weight: 600; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button { background: #fff; color: var(--ink); border-radius: 0; padding: 7px 12px; font-size: 13px; }
+  .seg button.on { background: var(--accent); color: #fff; }
+  .seg-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-size: 13px; color: var(--sub); }
+  .verdict { font-size: 20px; font-weight: 700; }
+  .verdict.ok { color: #2e7d32; } .verdict.warn { color: #b8860b; } .verdict.bad { color: #b3261e; }
+  .rules { margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.9; }
+  .rules .mark { display: inline-block; width: 1.4em; text-align: center; }
+  table.recipe { border-collapse: collapse; font-size: 14px; }
+  table.recipe td { padding: 3px 18px 3px 0; }
+  ol.steps { font-size: 14px; line-height: 1.9; padding-left: 20px; margin: 8px 0 0; }
+  .plots { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .plot-box h3 { font-size: 14px; margin: 0 0 6px; text-align: center; }
+  canvas.plot { width: 100%; height: auto; display: block; background:#fff; border:1px solid var(--line); border-radius: 8px; }
+  .legend { font-size: 12px; color: var(--sub); display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .legend span::before { content: "■"; margin-right: 4px; }
+  .note { font-size: 12px; color: var(--sub); line-height: 1.7; }
+  #blendName { font-size: 18px; font-weight: 700; }
+</style>
+</head>
+<body>
+<header>
+  <h1>ケーキランダムレシピジェネレーター</h1>
+  <p>パウンド・スポンジ・シフォンなどのレシピは、パラメータ空間では連続しているのではないか、という仮説の実験道具。
+  既存のケーキ（アンカー）の間をランダムに補間して、名前のない中間域のケーキのレシピを生成します。
+  パラメータはすべて「小麦粉100gあたり」で表し、油脂は純脂肪のグラム数で数えます（バター換算はグラフの二重目盛りで読み替え）。</p>
+</header>
+<main>
+  <section class="card">
+    <h2>生成とパラメータ</h2>
+    <p><button id="btnRandom">🎲 ランダム生成</button></p>
+    <p id="blendName"></p>
+    <p class="note" id="blendDetail"></p>
+    <div class="sliders" id="sliders"></div>
+    <div class="seg-row">
+      <span>立て方：
+        <span class="seg" id="segMethod">
+          <button data-v="cream">クリーミング</button><button data-v="foam">共立て</button><button data-v="separate">別立て</button>
+        </span>
+      </span>
+      <span>油脂の種類：
+        <span class="seg" id="segFat">
+          <button data-v="butter">バター</button><button data-v="oil">油</button><button data-v="none">なし</button>
+        </span>
+      </span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>成立判定（目安）</h2>
+    <div class="verdict" id="verdict"></div>
+    <ul class="rules" id="rules"></ul>
+  </section>
+
+  <section class="card">
+    <h2>レシピ</h2>
+    <div id="recipeHead" class="note"></div>
+    <table class="recipe" id="recipeTable"></table>
+    <ol class="steps" id="steps"></ol>
+  </section>
+
+  <section class="card">
+    <h2>パラメータ空間</h2>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。領域の色は「脂肪×卵の2軸で一番近い既存ケーキ」。
+    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示します。</p>
+    <div class="plots">
+      <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
+      <div class="plot-box"><h3>共立て</h3><canvas class="plot" id="plot-foam" width="460" height="360"></canvas></div>
+      <div class="plot-box"><h3>別立て</h3><canvas class="plot" id="plot-separate" width="460" height="360"></canvas></div>
+    </div>
+    <div class="legend" id="legend"></div>
+  </section>
+</main>
+<script>
+// ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
+// fat は純脂肪g。バターは重量×0.83、油は重量そのまま。
+const ANCHORS = [
+  { id:'pound',   name:'パウンドケーキ', color:'#c96f2e', method:'cream',    sugar:100, egg:100, fat:83, fatType:'butter', liquid:0,  bp:1, temp:170, time:45 },
+  { id:'genoise', name:'ジェノワーズ',   color:'#4a7fb5', method:'foam',     sugar:95,  egg:190, fat:20, fatType:'butter', liquid:20, bp:0, temp:170, time:28 },
+  { id:'chiffon', name:'シフォンケーキ', color:'#5da24a', method:'separate', sugar:100, egg:300, fat:50, fatType:'oil',    liquid:65, bp:2, temp:170, time:35 },
+  { id:'castella',name:'カステラ',       color:'#8a5fb0', method:'foam',     sugar:140, egg:240, fat:0,  fatType:'none',   liquid:30, bp:0, temp:160, time:55 },
+  { id:'angel',   name:'エンゼルフード', color:'#c2a13d', method:'separate', sugar:135, egg:370, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
+];
+const METHOD_LABEL = { cream:'クリーミング', foam:'共立て', separate:'別立て' };
+const FAT_LABEL = { butter:'バター', oil:'油', none:'なし' };
+const PARAMS = [
+  { key:'sugar',  label:'砂糖',        min:0, max:200, step:1, unit:'g' },
+  { key:'egg',    label:'卵（全卵換算）', min:0, max:420, step:1, unit:'g' },
+  { key:'fat',    label:'油脂（純脂肪）', min:0, max:110, step:1, unit:'g' },
+  { key:'liquid', label:'水分（牛乳・水など）', min:0, max:100, step:1, unit:'g' },
+  { key:'bp',     label:'ベーキングパウダー', min:0, max:8, step:0.5, unit:'g' },
+];
+let state = { ...pickAnchor('pound'), method:'cream', fatType:'butter' };
+let blendInfo = 'パウンドケーキ（アンカーそのもの）';
+function pickAnchor(id){ const a = ANCHORS.find(x=>x.id===id); const o={}; for (const p of PARAMS) o[p.key]=a[p.key]; o.temp=a.temp; o.time=a.time; return o; }
+
+// ===== ランダム生成：アンカー2つを補間 =====
+function randomBlend(){
+  const a = ANCHORS[Math.floor(Math.random()*ANCHORS.length)];
+  let b = ANCHORS[Math.floor(Math.random()*ANCHORS.length)];
+  if (b.id === a.id) b = ANCHORS[(ANCHORS.indexOf(a)+1) % ANCHORS.length];
+  const t = 0.2 + Math.random()*0.6; // b の重み。端に寄せすぎない
+  const o = {};
+  for (const p of PARAMS) o[p.key] = +(a[p.key]*(1-t) + b[p.key]*t).toFixed(1);
+  o.temp = Math.round((a.temp*(1-t) + b.temp*t)/5)*5;
+  o.time = Math.round(a.time*(1-t) + b.time*t);
+  const dom = t < 0.5 ? a : b;
+  state = { ...o, method: dom.method, fatType: o.fat < 3 ? 'none' : dom.fatType };
+  const near = nearestAnchor(state);
+  blendInfo = `${a.name} × ${b.name}（${Math.round((1-t)*100)} : ${Math.round(t*100)}）`;
+  document.getElementById('blendDetail').textContent =
+    `一番近い既存ケーキは「${near.a.name}」（距離 ${near.d.toFixed(2)}）。立て方と油脂の種類は重みの大きい方のアンカーを引き継いでいます。`;
+  render();
+}
+
+// ===== 成立判定（ヒューリスティクス、理由つき） =====
+function judge(s){
+  const rules = [];
+  const add = (level, text) => rules.push({ level, text });
+  const totalWater = s.egg*0.75 + s.liquid + (s.fatType==='butter' ? s.fat*0.19 : 0);
+  if (s.bp === 0 && s.fat <= 5 && s.egg < 150 && s.method !== 'separate')
+    add('bad', '膨らみ不足：泡（卵）もベーキングパウダーも足りず、膨らまない可能性が高い');
+  else add('ok', '膨らみの供給は最低限ある');
+  if (s.fat >= 70 && s.bp === 0 && s.egg < 130 && s.method === 'foam')
+    add('warn', '共立てでこの脂肪量は泡が潰れやすい');
+  if (totalWater > 360) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);
+  else if (totalWater > 300) add('warn', `水分が多め（粉100あたり約${Math.round(totalWater)}g）：焼き縮みに注意`);
+  else add('ok', `水分バランスは範囲内（粉100あたり約${Math.round(totalWater)}g）`);
+  if (totalWater + s.fat*0.5 < 95) add('warn', '水分が少なく、パサつきやすい');
+  if (s.fatType !== 'none' && s.fat > s.egg*0.9 + 25)
+    add('warn', '卵に対して脂肪が多く、乳化が追いつかず分離しやすい');
+  else if (s.fatType !== 'none') add('ok', '乳化のバランスは範囲内');
+  if (s.sugar > 170) add('warn', '砂糖が多く、焦げやすくベタつきやすい');
+  if (s.sugar < 35 && s.method === 'separate') add('warn', '砂糖が少なく、メレンゲが安定しにくい');
+  if (s.egg > 390) add('warn', '卵が非常に多く、型離れと縮みに注意');
+  const worst = rules.some(r=>r.level==='bad') ? 'bad' : rules.some(r=>r.level==='warn') ? 'warn' : 'ok';
+  return { rules, worst };
+}
+
+// ===== 最寄りアンカー（全パラメータの正規化距離） =====
+function distFull(s, a){
+  const d = (x,y,m) => ((x-y)/m)**2;
+  return Math.sqrt(d(s.fat,a.fat,110) + d(s.egg,a.egg,420) + d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,90));
+}
+function nearestAnchor(s){ let best=null; for (const a of ANCHORS){ const dd = distFull(s,a); if (!best || dd<best.d) best={a, d:dd}; } return best; }
+
+// ===== UI構築 =====
+const slidersEl = document.getElementById('sliders');
+for (const p of PARAMS){
+  const row = document.createElement('div'); row.className = 'slider-row';
+  row.innerHTML = `<label>${p.label} <b id="val-${p.key}"></b></label>
+    <input type="range" id="sl-${p.key}" min="${p.min}" max="${p.max}" step="${p.step}">`;
+  slidersEl.appendChild(row);
+  row.querySelector('input').addEventListener('input', e => { state[p.key] = +e.target.value; blendInfo = '手動指定'; document.getElementById('blendDetail').textContent = `一番近い既存ケーキは「${nearestAnchor(state).a.name}」です。`; render(false); });
+}
+function segWire(id, key){
+  const el = document.getElementById(id);
+  el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { state[key] = b.dataset.v; render(false); }));
+}
+segWire('segMethod','method'); segWire('segFat','fatType');
+document.getElementById('btnRandom').addEventListener('click', randomBlend);
+document.getElementById('legend').innerHTML = ANCHORS.map(a=>`<span style="color:${a.color}">${a.name}</span>`).join('');
+
+// ===== レシピ生成 =====
+function recipeFor(s){
+  const flourByMethod = { cream:100, foam:60, separate:75 };
+  const moldByMethod = { cream:'パウンド型', foam:'15cm丸型', separate:'17cmシフォン型（または15cm丸型）' };
+  const flour = flourByMethod[s.method], k = flour/100;
+  const rows = [['小麦粉', flour]];
+  if (s.method==='foam' && nearestAnchor(s).a.id==='castella') rows[0] = ['小麦粉（カステラは強力粉）', flour];
+  rows.push(['砂糖', Math.round(s.sugar*k)]);
+  rows.push([`卵（約${(s.egg*k/50).toFixed(1)}個分）`, Math.round(s.egg*k)]);
+  if (s.fatType==='butter' && s.fat>0) rows.push(['バター', Math.round(s.fat/0.83*k)]);
+  if (s.fatType==='oil' && s.fat>0) rows.push(['油（太白ごま油など）', Math.round(s.fat*k)]);
+  if (s.liquid>0) rows.push(['牛乳・水など', Math.round(s.liquid*k)]);
+  if (s.bp>0) rows.push(['ベーキングパウダー', +(s.bp*k).toFixed(1)]);
+  const steps = [];
+  if (s.method==='cream'){
+    steps.push('バターを室温に戻し、砂糖と白っぽくふんわりするまで擦り混ぜる。');
+    steps.push('溶き卵を少しずつ加えて乳化させる（分離したら粉をひとつまみ入れる）。');
+    steps.push('粉類をふるい入れ、液体がある場合は粉と交互に加えて混ぜる。');
+  } else if (s.method==='foam'){
+    steps.push('全卵と砂糖を湯煎にかけながら、もったりと筋が残るまで泡立てる（共立て）。');
+    steps.push('粉類をふるい入れ、泡を潰さないようさっくり混ぜる。');
+    if (s.fatType==='butter') steps.push('溶かしバターを最後に回し入れて手早く混ぜる。');
+    if (s.fatType==='oil') steps.push('油を最後に加えて手早く混ぜる。');
+  } else {
+    steps.push('卵黄に砂糖の半量を加えて白っぽくなるまで混ぜ、油脂と液体を加える。');
+    steps.push('卵白に残りの砂糖を加えてメレンゲを立てる。');
+    steps.push('卵黄生地に粉類を入れ、メレンゲを3回に分けてさっくり合わせる。');
+  }
+  steps.push(`型に流し、${s.temp}℃で約${s.time}分焼く。竹串を刺して生地がつかなければ焼き上がり。`);
+  return { rows, steps, mold: moldByMethod[s.method] };
+}
+
+// ===== プロット =====
+const X_MAX = 110, Y_MAX = 420;
+function nearest2D(fat, egg){
+  let best=null, bd=1e9;
+  for (const a of ANCHORS){ const d = ((fat-a.fat)/X_MAX)**2 + ((egg-a.egg)/Y_MAX)**2; if (d<bd){ bd=d; best=a; } }
+  return best;
+}
+function drawPlot(canvas, method){
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const L=46, R=12, T=30, B=36, PW=W-L-R, PH=H-T-B;
+  const X = f => L + (f/X_MAX)*PW, Y = e => T + PH - (e/Y_MAX)*PH;
+  ctx.clearRect(0,0,W,H);
+  const cell = 10;
+  for (let px=L; px<L+PW; px+=cell) for (let py=T; py<T+PH; py+=cell){
+    const f = (px-L)/PW*X_MAX, e = (1-(py-T)/PH)*Y_MAX;
+    ctx.fillStyle = nearest2D(f,e).color + '2e';
+    ctx.fillRect(px, py, cell, cell);
+  }
+  ctx.strokeStyle = '#cbb'; ctx.strokeRect(L,T,PW,PH);
+  ctx.fillStyle = '#6b5d54'; ctx.font = '10px sans-serif'; ctx.textAlign='center';
+  for (let f=0; f<=100; f+=25){ ctx.fillText(f, X(f), H-22); ctx.fillText(Math.round(f/0.83), X(f), T-8); }
+  ctx.textAlign='right';
+  for (let e=0; e<=400; e+=100) ctx.fillText(e, L-5, Y(e)+3);
+  ctx.textAlign='center';
+  ctx.fillText('純脂肪 g（下）／バター換算 g（上）', L+PW/2, H-6);
+  ctx.save(); ctx.translate(11, T+PH/2); ctx.rotate(-Math.PI/2); ctx.fillText('卵 g', 0, 0); ctx.restore();
+  for (const a of ANCHORS){
+    ctx.beginPath(); ctx.arc(X(a.fat), Y(a.egg), 6, 0, Math.PI*2);
+    if (a.method===method){ ctx.fillStyle=a.color; ctx.fill(); ctx.strokeStyle='#fff'; ctx.stroke(); }
+    else { ctx.fillStyle='#fff'; ctx.fill(); ctx.strokeStyle=a.color; ctx.lineWidth=2; ctx.stroke(); ctx.lineWidth=1; }
+    ctx.fillStyle='#2b2320'; ctx.font='10px sans-serif'; ctx.textAlign='left';
+    ctx.fillText(a.name, X(a.fat)+9, Y(a.egg)+3);
+  }
+  if (state.method===method){
+    const x=X(state.fat), y=Y(state.egg);
+    ctx.fillStyle='#b3261e'; ctx.font='20px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('★', x, y+7);
+  }
+}
+
+// ===== 描画 =====
+function render(syncSliders = true){
+  document.getElementById('blendName').textContent = blendInfo;
+  for (const p of PARAMS){
+    if (syncSliders) document.getElementById('sl-'+p.key).value = state[p.key];
+    document.getElementById('val-'+p.key).textContent = `${state[p.key]} ${p.unit}`;
+  }
+  for (const [id, key] of [['segMethod','method'],['segFat','fatType']])
+    document.getElementById(id).querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v===state[key]));
+  const { rules, worst } = judge(state);
+  const v = document.getElementById('verdict');
+  v.textContent = worst==='ok' ? '成立しそう' : worst==='warn' ? '際どい（焼けるが癖が強い）' : '不成立の可能性が高い';
+  v.className = 'verdict ' + worst;
+  document.getElementById('rules').innerHTML = rules.map(r =>
+    `<li><span class="mark">${r.level==='ok'?'○':r.level==='warn'?'△':'×'}</span>${r.text}</li>`).join('');
+  const r = recipeFor(state);
+  document.getElementById('recipeHead').textContent = `${METHOD_LABEL[state.method]}／${r.mold} 1台分（小麦粉あたりの配合を換算）`;
+  document.getElementById('recipeTable').innerHTML = r.rows.map(([n,g])=>`<tr><td>${n}</td><td>${g} g</td></tr>`).join('');
+  document.getElementById('steps').innerHTML = r.steps.map(s=>`<li>${s}</li>`).join('');
+  for (const m of ['cream','foam','separate']) drawPlot(document.getElementById('plot-'+m), m);
+}
+render();
+</script>
+</body>
+</html>

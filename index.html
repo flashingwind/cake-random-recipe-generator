@@ -85,7 +85,7 @@
   <section class="card">
     <h2>パラメータ空間</h2>
     <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。領域の色は「脂肪×卵の2軸で一番近い既存ケーキ」。
-    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示します。</p>
+    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、そのアンカーが最も近い領域はグレーにします。</p>
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
       <div class="plot-box"><h3>共立て</h3><canvas class="plot" id="plot-foam" width="460" height="360"></canvas></div>
@@ -243,7 +243,8 @@ function drawPlot(canvas, method){
   const cell = 10;
   for (let px=L; px<L+PW; px+=cell) for (let py=T; py<T+PH; py+=cell){
     const f = (px-L)/PW*X_MAX, e = (1-(py-T)/PH)*Y_MAX;
-    ctx.fillStyle = nearest2D(f,e).color + '2e';
+    const nb = nearest2D(f,e);
+    ctx.fillStyle = (nb.method===method ? nb.color : '#8a8378') + '2e';
     ctx.fillRect(px, py, cell, cell);
   }
   ctx.strokeStyle = '#cbb'; ctx.strokeRect(L,T,PW,PH);

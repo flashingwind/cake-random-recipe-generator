@@ -94,13 +94,13 @@
     <div class="legend" id="legend"></div>
     <div class="note" style="margin-top:16px">
       <p style="margin:0 0 4px"><b>参考文献（アンカーの目安）</b></p>
-      <p style="margin:0">アンカー（基準レシピ）の数値は、下記のような定番レシピを小麦粉100gあたりに換算した概算です。レシピによって配合には幅があります。</p>
+      <p style="margin:0">アンカーは定番レシピを小麦粉100gあたりに換算した概算です。「家庭用」は下記のレシピの換算値、その他は定番レシピの範囲から置いた値です。</p>
       <ul style="margin:4px 0 0; padding-left:18px">
         <li>パウンドケーキ：<a href="https://www.morinagamilk.co.jp/recipe/detail/recipe.php?id=99151K" target="_blank" rel="noopener">森永乳業「基本のパウンドケーキ」</a></li>
-        <li>ジェノワーズ：<a href="https://www.cotta.jp/special/article/?p=65362" target="_blank" rel="noopener">cotta「基本のスポンジケーキのレシピ」</a></li>
-        <li>シフォンケーキ：<a href="https://www.rakuten.ne.jp/gold/tomizawa/recipe/9019.html" target="_blank" rel="noopener">富澤商店「基本のシフォンケーキ」</a></li>
-        <li>カステラ：<a href="https://www.nisshin-seifun-welna.com/index/recipe/detail/s-043.html" target="_blank" rel="noopener">日清製粉ウェルナ「カステラ」</a></li>
-        <li>エンゼルフードケーキ：<a href="https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609" target="_blank" rel="noopener">クラシル「エンゼルフードケーキ」</a></li>
+        <li>ジェノワーズ（家庭用）：<a href="https://www.cotta.jp/special/article/?p=65362" target="_blank" rel="noopener">cotta「基本のスポンジケーキのレシピ」</a></li>
+        <li>シフォンケーキ（家庭用）：<a href="https://www.rakuten.ne.jp/gold/tomizawa/recipe/9019.html" target="_blank" rel="noopener">富澤商店「基本のシフォンケーキ」</a></li>
+        <li>カステラ（家庭用）：<a href="https://www.nisshin-seifun-welna.com/index/recipe/detail/s-043.html" target="_blank" rel="noopener">日清製粉ウェルナ「カステラ」</a></li>
+        <li>エンゼルフードケーキ（家庭用）：<a href="https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609" target="_blank" rel="noopener">クラシル「エンゼルフードケーキ」</a></li>
       </ul>
     </div>
   </section>
@@ -114,6 +114,10 @@ const ANCHORS = [
   { id:'chiffon', name:'シフォンケーキ', color:'#5da24a', method:'separate', sugar:100, egg:300, fat:50, fatType:'oil',    liquid:65, bp:2, temp:170, time:35 },
   { id:'castella',name:'カステラ',       color:'#8a5fb0', method:'foam',     sugar:140, egg:240, fat:0,  fatType:'none',   liquid:30, bp:0, temp:160, time:55 },
   { id:'angel',   name:'エンゼルフード', color:'#c2a13d', method:'separate', sugar:135, egg:370, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
+  { id:'genoise-home',  name:'ジェノワーズ（家庭用）',   color:'#7fa8cc', method:'foam',     sugar:114, egg:143, fat:24, fatType:'butter', liquid:36, bp:0, temp:170, time:28 },
+  { id:'chiffon-home',  name:'シフォン（家庭用）',       color:'#8fbc7a', method:'separate', sugar:100, egg:271, fat:43, fatType:'oil',    liquid:57, bp:0, temp:170, time:35 },
+  { id:'castella-home', name:'カステラ（家庭用）',       color:'#a985cc', method:'foam',     sugar:157, egg:200, fat:0,  fatType:'none',   liquid:33, bp:0, temp:170, time:50 },
+  { id:'angel-home',    name:'エンゼルフード（家庭用）', color:'#d3ba6b', method:'separate', sugar:100, egg:210, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
 ];
 const METHOD_LABEL = { cream:'クリーミング', foam:'共立て', separate:'別立て' };
 const FAT_LABEL = { butter:'バター', oil:'油', none:'なし' };

@@ -1,0 +1,122 @@
+{
+ "description": "粉ゼロの端クラス。卵100gあたりの換算（粉100換算では表せないため）。fat/sugar/saltがnullの場合は原文で適量・少々など定量できなかったもの。プリンのカラメル用砂糖・型用バターは本体ではないため除外。",
+ "recipes": [
+  {
+   "id": "edge-01",
+   "category": "プリン",
+   "basis": "卵100gあたり",
+   "liquid": 200,
+   "sugar": 40,
+   "salt": null,
+   "fat": 0,
+   "source": {
+    "site": "オレンジページnet",
+    "url": "https://www.orangepage.net/food/series-food/golden-ratio-basic-sweet/269484"
+   }
+  },
+  {
+   "id": "edge-02",
+   "category": "プリン",
+   "basis": "卵100gあたり",
+   "liquid": 250,
+   "sugar": 60,
+   "salt": null,
+   "fat": 0,
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/20029_%E3%83%97%E3%83%AA%E3%83%B3.html"
+   }
+  },
+  {
+   "id": "edge-03",
+   "category": "プリン",
+   "basis": "卵100gあたり",
+   "liquid": 250,
+   "sugar": 60,
+   "salt": null,
+   "fat": 0,
+   "source": {
+    "site": "アサヒ軽金属工業",
+    "url": "https://www.asahikei.co.jp/recipe/html/recipe_731.html"
+   }
+  },
+  {
+   "id": "edge-04",
+   "category": "茶碗蒸し",
+   "basis": "卵100gあたり",
+   "liquid": 300,
+   "sugar": null,
+   "salt": 1.0,
+   "fat": 0,
+   "source": {
+    "site": "白ごはん.com",
+    "url": "https://www.sirogohan.com/recipe/chawanmusi/"
+   }
+  },
+  {
+   "id": "edge-05",
+   "category": "茶碗蒸し",
+   "basis": "卵100gあたり",
+   "liquid": 300,
+   "sugar": null,
+   "salt": 1.0,
+   "fat": 0,
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/30911"
+   }
+  },
+  {
+   "id": "edge-06",
+   "category": "茶碗蒸し",
+   "basis": "卵100gあたり",
+   "liquid": 341,
+   "sugar": null,
+   "salt": 1.7,
+   "fat": 0,
+   "source": {
+    "site": "味の素KK業務用",
+    "url": "https://foodservice.ajinomoto.co.jp/recipepro/recipe/25957/"
+   }
+  },
+  {
+   "id": "edge-07",
+   "category": "卵焼き",
+   "basis": "卵100gあたり",
+   "liquid": 0,
+   "sugar": 6.0,
+   "salt": 0.7,
+   "fat": null,
+   "source": {
+    "site": "白ごはん.com",
+    "url": "https://www.sirogohan.com/recipe/atuyaki/"
+   }
+  },
+  {
+   "id": "edge-08",
+   "category": "卵焼き",
+   "basis": "卵100gあたり",
+   "liquid": 15,
+   "sugar": 9.0,
+   "salt": 0.6,
+   "fat": null,
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/13294_%E5%8D%B5%E7%84%BC%E3%81%8D.html"
+   }
+  },
+  {
+   "id": "edge-09",
+   "category": "卵焼き",
+   "basis": "卵100gあたり",
+   "liquid": 0,
+   "sugar": 9.0,
+   "salt": 0,
+   "fat": 6.7,
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/21479_%E7%94%98%E3%81%84%E5%8D%B5%E7%84%BC%E3%81%8D.html"
+   }
+  }
+ ]
+}

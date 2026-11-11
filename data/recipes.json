@@ -1,0 +1,411 @@
+{
+ "description": "収集した実レシピ（粉100gあたり換算）。fatは純脂肪g。卵1個=50g、バターは×0.83で純脂肪換算。生地に入らない焼き油・トッピングは除外。",
+ "recipes": [
+  {
+   "id": "hotcake-01",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 18,
+   "egg": 50,
+   "fat": 0,
+   "liquid": 100,
+   "bp": 4,
+   "source": {
+    "site": "日清製粉ウェルナ",
+    "url": "https://www.nisshin-seifun-welna.com/index/recipe/detail/n-034.html"
+   }
+  },
+  {
+   "id": "hotcake-02",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 25,
+   "egg": 25,
+   "fat": 12,
+   "liquid": 75,
+   "bp": 4,
+   "source": {
+    "site": "長谷工ブランシエラクラブ",
+    "url": "https://www.haseko.co.jp/branchera/idea/recipe/recipe_0440.html"
+   }
+  },
+  {
+   "id": "hotcake-03",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 30,
+   "egg": 33.3,
+   "fat": 0,
+   "liquid": 60,
+   "bp": 4,
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1940026023/"
+   }
+  },
+  {
+   "id": "hotcake-04",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 20,
+   "egg": 50,
+   "fat": 0,
+   "liquid": 100,
+   "bp": 4,
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1540029284/"
+   }
+  },
+  {
+   "id": "hotcake-05",
+   "category": "ホットケーキ",
+   "flour": "米粉",
+   "sugar": 30,
+   "egg": 50,
+   "fat": 8.3,
+   "liquid": 50,
+   "bp": 5,
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00023381"
+   }
+  },
+  {
+   "id": "hotcake-06",
+   "category": "ホットケーキ",
+   "flour": "米粉",
+   "sugar": 37.5,
+   "egg": 62.5,
+   "fat": 20.8,
+   "liquid": 87.5,
+   "bp": 5,
+   "source": {
+    "site": "農林水産省・北陸農政局",
+    "url": "https://www.maff.go.jp/hokuriku/seisan/komeko/recipe151.html"
+   }
+  },
+  {
+   "id": "hotcake-07",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 23.1,
+   "egg": 0,
+   "fat": 3.8,
+   "liquid": 115.4,
+   "bp": 3.8,
+   "source": {
+    "site": "クックパッド",
+    "url": "https://cookpad.com/jp/recipes/18260213"
+   }
+  },
+  {
+   "id": "hotcake-08",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 20,
+   "egg": 0,
+   "fat": 0,
+   "liquid": 100,
+   "bp": 5,
+   "source": {
+    "site": "クックパッド",
+    "url": "https://cookpad.com/jp/recipes/19354539"
+   }
+  },
+  {
+   "id": "hotcake-09",
+   "category": "ホットケーキ",
+   "flour": "米粉",
+   "sugar": 24,
+   "egg": 50,
+   "fat": 4,
+   "liquid": 90,
+   "bp": 4,
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1460028340/"
+   }
+  },
+  {
+   "id": "hotcake-10",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 42.9,
+   "egg": 71.4,
+   "fat": 0,
+   "liquid": 71.4,
+   "bp": 5.7,
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1160057650/"
+   }
+  },
+  {
+   "id": "hotcake-11",
+   "category": "ホットケーキ",
+   "flour": "米粉",
+   "sugar": 0,
+   "egg": 0,
+   "fat": 0,
+   "liquid": 100,
+   "bp": 4,
+   "source": {
+    "site": "スイーツビレッジ",
+    "url": "https://shop.sweetsvillage.com/blogs/knowledge/rice-flour-pancakes-without-eggs"
+   }
+  },
+  {
+   "id": "hotcake-12",
+   "category": "ホットケーキ",
+   "flour": "小麦粉",
+   "sugar": 31.3,
+   "egg": 31.3,
+   "fat": 0,
+   "liquid": 75,
+   "bp": 3.1,
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1340031078/"
+   }
+  },
+  {
+   "id": "hotcake-13",
+   "category": "ホットケーキ",
+   "flour": "米粉",
+   "sugar": 24,
+   "egg": 33.3,
+   "fat": 8,
+   "liquid": 66.7,
+   "bp": 5.3,
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1570010907/"
+   }
+  },
+  {
+   "id": "hotcake-14",
+   "category": "ホットケーキ",
+   "flour": "米粉+小麦粉",
+   "sugar": 13.3,
+   "egg": 33.3,
+   "fat": 0,
+   "liquid": 100,
+   "bp": 3.3,
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1690010020/"
+   }
+  },
+  {
+   "id": "crepe-01",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 24,
+   "egg": 200,
+   "fat": 6.6,
+   "liquid": 400,
+   "bp": 0,
+   "source": {
+    "site": "キッコーマン",
+    "url": "https://www.kikkoman.co.jp/homecook/search/recipe/00002680/"
+   }
+  },
+  {
+   "id": "crepe-02",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 47.4,
+   "egg": 131.6,
+   "fat": 17.5,
+   "liquid": 329,
+   "bp": 0,
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00012580"
+   }
+  },
+  {
+   "id": "crepe-03",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 50,
+   "egg": 125,
+   "fat": 20.8,
+   "liquid": 250,
+   "bp": 0,
+   "source": {
+    "site": "オレンジページnet",
+    "url": "https://www.orangepage.net/food/series-food/golden-ratio-basic-sweet/158731"
+   }
+  },
+  {
+   "id": "crepe-04",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 40,
+   "egg": 100,
+   "fat": 16.6,
+   "liquid": 250,
+   "bp": 0,
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/601944_%E3%82%AF%E3%83%AC%E3%83%BC%E3%83%97.html"
+   }
+  },
+  {
+   "id": "crepe-05",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 23.1,
+   "egg": 76.9,
+   "fat": 16,
+   "liquid": 192.3,
+   "bp": 0,
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/22084/recipe/468023"
+   }
+  },
+  {
+   "id": "crepe-06",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 12,
+   "egg": 100,
+   "fat": 16.6,
+   "liquid": 300,
+   "bp": 0,
+   "source": {
+    "site": "セブンプレミアム公式",
+    "url": "https://7premium.jp/blog/detail?id=1125"
+   }
+  },
+  {
+   "id": "crepe-07",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 12,
+   "egg": 100,
+   "fat": 12.5,
+   "liquid": 270,
+   "bp": 0,
+   "source": {
+    "site": "macaroni",
+    "url": "https://macaro-ni.jp/9103"
+   }
+  },
+  {
+   "id": "crepe-08",
+   "category": "クレープ",
+   "flour": "米粉",
+   "sugar": 30,
+   "egg": 50,
+   "fat": 8.3,
+   "liquid": 100,
+   "bp": 0,
+   "source": {
+    "site": "木徳神糧",
+    "url": "https://www.kitoku-shinryo.co.jp/ja/study/recipe/070.html"
+   }
+  },
+  {
+   "id": "crepe-09",
+   "category": "クレープ",
+   "flour": "米粉",
+   "sugar": 20,
+   "egg": 100,
+   "fat": 24,
+   "liquid": 200,
+   "bp": 0,
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/2261/"
+   }
+  },
+  {
+   "id": "crepe-10",
+   "category": "クレープ",
+   "flour": "米粉",
+   "sugar": 25,
+   "egg": 125,
+   "fat": 0,
+   "liquid": 300,
+   "bp": 0,
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/599208/recipe/528397"
+   }
+  },
+  {
+   "id": "crepe-11",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 30,
+   "egg": 100,
+   "fat": 16.6,
+   "liquid": 300,
+   "bp": 0,
+   "source": {
+    "site": "デリッシュキッチン",
+    "url": "https://delishkitchen.tv/recipes/316785765960909102"
+   }
+  },
+  {
+   "id": "crepe-12",
+   "category": "クレープ",
+   "flour": "小麦粉",
+   "sugar": 46.7,
+   "egg": 133.3,
+   "fat": 16.6,
+   "liquid": 333.3,
+   "bp": 0,
+   "source": {
+    "site": "辻調理師専門学校",
+    "url": "https://www.tsuji.ac.jp/hp/kashimashi/crepe/recipe.html"
+   }
+  },
+  {
+   "id": "crepe-13",
+   "category": "クレープ",
+   "flour": "米粉",
+   "sugar": 12,
+   "egg": 50,
+   "fat": 0,
+   "liquid": 150,
+   "bp": 0,
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/1457740/recipe/534891"
+   }
+  },
+  {
+   "id": "crepe-14",
+   "category": "クレープ",
+   "flour": "米粉",
+   "sugar": 12,
+   "egg": 100,
+   "fat": 16.6,
+   "liquid": 350,
+   "bp": 0,
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/609/"
+   }
+  },
+  {
+   "id": "crepe-15",
+   "category": "クレープ",
+   "flour": "米粉",
+   "sugar": 14.1,
+   "egg": 58.8,
+   "fat": 0,
+   "liquid": 188.2,
+   "bp": 0,
+   "source": {
+    "site": "&KAGOME",
+    "url": "https://and.kagome.co.jp/recipe/recipe/1340/"
+   }
+  }
+ ]
+}

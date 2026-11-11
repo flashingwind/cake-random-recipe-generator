@@ -58,7 +58,7 @@
     <div class="seg-row">
       <span>立て方：
         <span class="seg" id="segMethod">
-          <button data-v="cream">クリーミング</button><button data-v="foam">共立て</button><button data-v="separate">別立て</button>
+          <button data-v="cream">クリーミング</button><button data-v="foam">共立て</button><button data-v="separate">別立て</button><button data-v="mix">混ぜるだけ</button>
         </span>
       </span>
       <span>油脂の種類：
@@ -85,11 +85,12 @@
   <section class="card">
     <h2>パラメータ空間</h2>
     <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。領域の色は「脂肪×卵の2軸で一番近い既存ケーキ」。
-    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、そのアンカーが最も近い領域はグレーにします。</p>
+    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、そのアンカーが最も近い領域はグレーにします。混ぜるだけのグラフには、収集した実レシピ29件（ホットケーキ14・クレープ15）を小さな点で重ねています。</p>
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
       <div class="plot-box"><h3>共立て</h3><canvas class="plot" id="plot-foam" width="460" height="360"></canvas></div>
       <div class="plot-box"><h3>別立て</h3><canvas class="plot" id="plot-separate" width="460" height="360"></canvas></div>
+      <div class="plot-box"><h3>混ぜるだけ</h3><canvas class="plot" id="plot-mix" width="460" height="360"></canvas></div>
     </div>
     <div class="legend" id="legend"></div>
     <div class="note" style="margin-top:16px">
@@ -102,6 +103,7 @@
         <li>カステラ（家庭用）：<a href="https://www.nisshin-seifun-welna.com/index/recipe/detail/s-043.html" target="_blank" rel="noopener">日清製粉ウェルナ「カステラ」</a></li>
         <li>エンゼルフードケーキ（家庭用）：<a href="https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609" target="_blank" rel="noopener">クラシル「エンゼルフードケーキ」</a></li>
       </ul>
+      <p style="margin:6px 0 0">収集した実レシピのデータと出典は <a href="data/recipes.json">data/recipes.json</a>（端クラスは <a href="data/edge_recipes.json">data/edge_recipes.json</a>）にあります。</p>
     </div>
   </section>
 </main>
@@ -118,14 +120,29 @@ const ANCHORS = [
   { id:'chiffon-home',  name:'シフォン（家庭用）',       color:'#8fbc7a', method:'separate', sugar:100, egg:271, fat:43, fatType:'oil',    liquid:57, bp:0, temp:170, time:35 },
   { id:'castella-home', name:'カステラ（家庭用）',       color:'#a985cc', method:'foam',     sugar:157, egg:200, fat:0,  fatType:'none',   liquid:33, bp:0, temp:170, time:50 },
   { id:'angel-home',    name:'エンゼルフード（家庭用）', color:'#d3ba6b', method:'separate', sugar:100, egg:210, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
+  { id:'hotcake', name:'ホットケーキ', color:'#e8912d', method:'mix', sugar:24, egg:33,  fat:0,  fatType:'none',   liquid:89,  bp:4, temp:170, time:5 },
+  { id:'crepe',   name:'クレープ',     color:'#6a9a7d', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
 ];
-const METHOD_LABEL = { cream:'クリーミング', foam:'共立て', separate:'別立て' };
+const METHOD_LABEL = { cream:'クリーミング', foam:'共立て', separate:'別立て', mix:'混ぜるだけ' };
+// ===== 収集した実レシピ（data/recipes.json と同じデータのうち脂肪×卵のみ）。混ぜるだけのグラフに点で重ねる =====
+const SAMPLE_COLORS = { hotcake:'#e8912d', crepe:'#6a9a7d' };
+const SAMPLES = [
+  { c:'hotcake', fat:0, egg:50 }, { c:'hotcake', fat:12, egg:25 }, { c:'hotcake', fat:0, egg:33.3 }, { c:'hotcake', fat:0, egg:50 },
+  { c:'hotcake', fat:8.3, egg:50 }, { c:'hotcake', fat:20.8, egg:62.5 }, { c:'hotcake', fat:3.8, egg:0 }, { c:'hotcake', fat:0, egg:0 },
+  { c:'hotcake', fat:4, egg:50 }, { c:'hotcake', fat:0, egg:71.4 }, { c:'hotcake', fat:0, egg:0 }, { c:'hotcake', fat:0, egg:31.3 },
+  { c:'hotcake', fat:8, egg:33.3 }, { c:'hotcake', fat:0, egg:33.3 },
+  { c:'crepe', fat:6.6, egg:200 }, { c:'crepe', fat:17.5, egg:131.6 }, { c:'crepe', fat:20.8, egg:125 }, { c:'crepe', fat:16.6, egg:100 },
+  { c:'crepe', fat:16, egg:76.9 }, { c:'crepe', fat:16.6, egg:100 }, { c:'crepe', fat:12.5, egg:100 }, { c:'crepe', fat:8.3, egg:50 },
+  { c:'crepe', fat:24, egg:100 }, { c:'crepe', fat:0, egg:125 }, { c:'crepe', fat:16.6, egg:100 }, { c:'crepe', fat:16.6, egg:133.3 },
+  { c:'crepe', fat:0, egg:50 }, { c:'crepe', fat:16.6, egg:100 }, { c:'crepe', fat:0, egg:58.8 },
+];
+
 const FAT_LABEL = { butter:'バター', oil:'油', none:'なし' };
 const PARAMS = [
   { key:'sugar',  label:'砂糖',        min:0, max:200, step:1, unit:'g' },
   { key:'egg',    label:'卵（全卵換算）', min:0, max:420, step:1, unit:'g' },
   { key:'fat',    label:'油脂（純脂肪）', min:0, max:110, step:1, unit:'g' },
-  { key:'liquid', label:'水分（牛乳・水など）', min:0, max:100, step:1, unit:'g' },
+  { key:'liquid', label:'水分（牛乳・水など）', min:0, max:400, step:1, unit:'g' },
   { key:'bp',     label:'ベーキングパウダー', min:0, max:8, step:0.5, unit:'g' },
 ];
 let state = { ...pickAnchor('pound'), method:'cream', fatType:'butter' };
@@ -156,13 +173,14 @@ function judge(s){
   const rules = [];
   const add = (level, text) => rules.push({ level, text });
   const totalWater = s.egg*0.75 + s.liquid + (s.fatType==='butter' ? s.fat*0.19 : 0);
-  if (s.bp === 0 && s.fat <= 5 && s.egg < 150 && s.method !== 'separate')
+  if (s.bp === 0 && s.fat <= 5 && s.egg < 150 && s.method !== 'separate' && s.method !== 'mix')
     add('bad', '膨らみ不足：泡（卵）もベーキングパウダーも足りず、膨らまない可能性が高い');
   else add('ok', '膨らみの供給は最低限ある');
   if (s.fat >= 70 && s.bp === 0 && s.egg < 130 && s.method === 'foam')
     add('warn', '共立てでこの脂肪量は泡が潰れやすい');
-  if (totalWater > 360) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);
-  else if (totalWater > 300) add('warn', `水分が多め（粉100あたり約${Math.round(totalWater)}g）：焼き縮みに注意`);
+  const wBad = s.method==='mix' ? 560 : 360, wWarn = s.method==='mix' ? 460 : 300;
+  if (totalWater > wBad) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);
+  else if (totalWater > wWarn) add('warn', `水分が多め（粉100あたり約${Math.round(totalWater)}g）：焼き縮みに注意`);
   else add('ok', `水分バランスは範囲内（粉100あたり約${Math.round(totalWater)}g）`);
   if (totalWater + s.fat*0.5 < 95) add('warn', '水分が少なく、パサつきやすい');
   if (s.fatType !== 'none' && s.fat > s.egg*0.9 + 25)
@@ -178,7 +196,7 @@ function judge(s){
 // ===== 最寄りアンカー（全パラメータの正規化距離） =====
 function distFull(s, a){
   const d = (x,y,m) => ((x-y)/m)**2;
-  return Math.sqrt(d(s.fat,a.fat,110) + d(s.egg,a.egg,420) + d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,90));
+  return Math.sqrt(d(s.fat,a.fat,110) + d(s.egg,a.egg,420) + d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,200));
 }
 function nearestAnchor(s){ let best=null; for (const a of ANCHORS){ const dd = distFull(s,a); if (!best || dd<best.d) best={a, d:dd}; } return best; }
 
@@ -201,8 +219,8 @@ document.getElementById('legend').innerHTML = ANCHORS.map(a=>`<span style="color
 
 // ===== レシピ生成 =====
 function recipeFor(s){
-  const flourByMethod = { cream:100, foam:60, separate:75 };
-  const moldByMethod = { cream:'パウンド型', foam:'15cm丸型', separate:'17cmシフォン型（または15cm丸型）' };
+  const flourByMethod = { cream:100, foam:60, separate:75, mix:100 };
+  const moldByMethod = { cream:'パウンド型', foam:'15cm丸型', separate:'17cmシフォン型（または15cm丸型）', mix:'フライパン' };
   const flour = flourByMethod[s.method], k = flour/100;
   const rows = [['小麦粉', flour]];
   if (s.method==='foam' && nearestAnchor(s).a.id==='castella') rows[0] = ['小麦粉（カステラは強力粉）', flour];
@@ -222,12 +240,19 @@ function recipeFor(s){
     steps.push('粉類をふるい入れ、泡を潰さないようさっくり混ぜる。');
     if (s.fatType==='butter') steps.push('溶かしバターを最後に回し入れて手早く混ぜる。');
     if (s.fatType==='oil') steps.push('油を最後に加えて手早く混ぜる。');
+  } else if (s.method==='mix'){
+    steps.push('粉類と砂糖を混ぜ、卵と液体を加えて混ぜる（混ぜすぎない）。');
+    steps.push('生地を30分ほど休ませるとなじむ。');
   } else {
     steps.push('卵黄に砂糖の半量を加えて白っぽくなるまで混ぜ、油脂と液体を加える。');
     steps.push('卵白に残りの砂糖を加えてメレンゲを立てる。');
     steps.push('卵黄生地に粉類を入れ、メレンゲを3回に分けてさっくり合わせる。');
   }
-  steps.push(`型に流し、${s.temp}℃で約${s.time}分焼く。竹串を刺して生地がつかなければ焼き上がり。`);
+  if (s.method==='mix'){
+    steps.push(s.liquid >= 150 ? 'フライパンに生地を薄く広げ、縁が乾いたら返してさっと焼く（クレープ）。' : '弱火のフライパンに厚めに流し、表面が乾いてきたら返して焼く（ホットケーキ）。');
+  } else {
+    steps.push(`型に流し、${s.temp}℃で約${s.time}分焼く。竹串を刺して生地がつかなければ焼き上がり。`);
+  }
   return { rows, steps, mold: moldByMethod[s.method] };
 }
 
@@ -266,6 +291,13 @@ function drawPlot(canvas, method){
     ctx.fillStyle='#2b2320'; ctx.font='10px sans-serif'; ctx.textAlign='left';
     ctx.fillText(a.name, X(a.fat)+9, Y(a.egg)+3);
   }
+  if (method==='mix'){
+    for (const sm of SAMPLES){
+      ctx.beginPath(); ctx.arc(X(sm.fat), Y(sm.egg), 2.5, 0, Math.PI*2);
+      ctx.globalAlpha = .8; ctx.fillStyle = SAMPLE_COLORS[sm.c]; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = .5; ctx.stroke(); ctx.lineWidth = 1;
+    }
+  }
   if (state.method===method){
     const x=X(state.fat), y=Y(state.egg);
     ctx.fillStyle='#b3261e'; ctx.font='20px sans-serif'; ctx.textAlign='center';
@@ -292,7 +324,7 @@ function render(syncSliders = true){
   document.getElementById('recipeHead').textContent = `${METHOD_LABEL[state.method]}／${r.mold} 1台分（小麦粉あたりの配合を換算）`;
   document.getElementById('recipeTable').innerHTML = r.rows.map(([n,g])=>`<tr><td>${n}</td><td>${g} g</td></tr>`).join('');
   document.getElementById('steps').innerHTML = r.steps.map(s=>`<li>${s}</li>`).join('');
-  for (const m of ['cream','foam','separate']) drawPlot(document.getElementById('plot-'+m), m);
+  for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
 render();
 </script>

@@ -1,6 +1,6 @@
 // Shared by the browser and the reproducible training/evaluation command.
 (function(root){
-  const FEATURES = ['fat', 'egg', 'sugar', 'liquid', 'bp'];
+  const FEATURES = ['fat', 'egg', 'liquid'];
   function fit(rows, k=5){
     if (!rows.length) throw new Error('Training data is empty');
     for (const row of rows) {

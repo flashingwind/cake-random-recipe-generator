@@ -85,9 +85,9 @@
 
   <section class="card">
     <h2>パラメータ空間</h2>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。砂糖・水分・BPは現在のスライダー値に固定した断面です。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
-    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝異なるカテゴリの実データが近接する領域。グレー＝データ不足。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
-    <p class="note">点は脂肪・卵の位置への投影なので、他の材料の違いによってグレーや別色の領域にも現れます。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分は現在のスライダー値に固定した断面です。分類は脂肪・卵・水分の3項目で行い、砂糖・BPはレシピと成立判定に使います。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
+    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方の異なるカテゴリの実データが近接する領域。グレー＝データ不足。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
+    <p class="note">点は脂肪・卵の位置への投影なので、水分の違いによってグレーや別色の領域にも現れます。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
     <p class="note" id="trainingSummary"></p>
     <p class="note"><a href="data/region-review.json">追加収集・原文確認の優先候補（JSON）</a></p>
 
@@ -412,7 +412,7 @@ function render(syncSliders = true){
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `実レシピ${REGION_MODEL.rows.length}件を使用。概算アンカーはデータの有無・食い違いの判定には含めません。近接判定は脂肪・卵・砂糖・水分・BPの5項目を標準化した距離による目安です。斜線は誤分類や焼き上がりの混合を断定するものではありません。`;
+document.getElementById('trainingSummary').textContent = `実レシピ${REGION_MODEL.rows.length}件を使用。概算アンカーはデータの有無・食い違いの判定には含めません。近接判定は脂肪・卵・水分の3項目を標準化した距離による目安です。斜線は誤分類や焼き上がりの混合を断定するものではありません。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();

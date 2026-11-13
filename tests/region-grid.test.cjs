@@ -17,7 +17,21 @@ test('same category support, other method, and distant unsupported points are di
  assert.equal(inspect(model,row('p','A',10),'cream').type,'other-method');
  assert.equal(inspect(model,row('p','A',1000),'foam').type,'insufficient');
 });
-test('projected overlap alone does not establish five-feature support',()=>{
+test('projected overlap alone does not establish three-feature support',()=>{
  const model=prepare([row('a','A',10),row('b','A',20)]);
  assert.equal(inspect(model,{...row('p','A',10),liquid:500},'foam').type,'insufficient');
+});
+
+test('overlap across methods never produces stripes',()=>{
+ const model=prepare([row('a','A',10,'foam'),row('b','B',10,'separate'),row('c','A',0,'foam'),row('d','B',20,'separate')]);
+ for(const method of ['foam','separate','mix']){
+   const result=inspect(model,row('p','A',10),method);
+   assert.notEqual(result.type,'conflict');
+   assert.equal(result.categories.length,1);
+ }
+});
+test('sugar and BP cannot move region boundaries',()=>{
+ const model=prepare([row('a','A',10),row('b','B',20)]);
+ const point=row('p','A',11);
+ assert.deepEqual(inspect(model,point,'foam'),inspect(model,{...point,sugar:200,bp:8},'foam'));
 });

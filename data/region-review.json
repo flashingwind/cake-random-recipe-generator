@@ -1,92 +1,11 @@
 {
   "observedRecipes": 76,
   "syntheticRecipesAdded": 0,
-  "method": "5 standardized features; exclude all records sharing the query source URL, refit support/scales; compare nearby observed labels",
+  "method": "3 standardized features (fat, egg, liquid); overlap only within the same method; exclude all records sharing the query source URL, refit support/scales; compare nearby observed labels",
   "caution": "Review candidates are not proven data errors. Check ingredient conversion, method, missing features and label conventions against sources. Not a comparison with the old fixed SVM slice.",
-  "suspectedIntrusions": 4,
+  "suspectedIntrusions": 10,
   "nearbyLabelConflicts": 11,
   "candidates": [
-    {
-      "recipe": {
-        "id": "angel-03",
-        "category": "エンゼルフード",
-        "method": "separate",
-        "source": {
-          "site": "cotta",
-          "url": "https://www.cotta.jp/special/article/?p=3008"
-        },
-        "features": {
-          "fat": 42.9,
-          "egg": 257.1,
-          "sugar": 85.7,
-          "liquid": 42.9,
-          "bp": 0
-        }
-      },
-      "classificationWithoutSameSource": "シフォンケーキ",
-      "suspectedIntrusion": true,
-      "nearbyLabelConflict": false,
-      "status": "supported",
-      "nearest": [
-        {
-          "recipe": {
-            "id": "chiffon-03",
-            "category": "シフォンケーキ",
-            "method": "separate",
-            "source": {
-              "site": "cotta",
-              "url": "https://www.cotta.jp/special/article/?p=587"
-            },
-            "features": {
-              "fat": 42.9,
-              "egg": 264.3,
-              "sugar": 100,
-              "liquid": 57.1,
-              "bp": 0
-            }
-          },
-          "distance": 0.32254975134948244
-        },
-        {
-          "recipe": {
-            "id": "chiffon-07",
-            "category": "シフォンケーキ",
-            "method": "separate",
-            "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/9019/"
-            },
-            "features": {
-              "fat": 42.9,
-              "egg": 271.4,
-              "sugar": 100,
-              "liquid": 57.1,
-              "bp": 0
-            }
-          },
-          "distance": 0.35605919552200666
-        },
-        {
-          "recipe": {
-            "id": "chiffon-10",
-            "category": "シフォンケーキ",
-            "method": "separate",
-            "source": {
-              "site": "東芝ライフスタイル",
-              "url": "https://www.toshiba-lifestyle.com/jp/microwaves/recipes/detail/1281/"
-            },
-            "features": {
-              "fat": 50,
-              "egg": 231.3,
-              "sugar": 100,
-              "liquid": 62.5,
-              "bp": 0
-            }
-          },
-          "distance": 0.5294064139130855
-        }
-      ]
-    },
     {
       "recipe": {
         "id": "castella-09",
@@ -126,45 +45,45 @@
               "bp": 0
             }
           },
-          "distance": 0.34332049560104205
+          "distance": 0.09990008772160439
         },
         {
           "recipe": {
-            "id": "genoise-01",
+            "id": "chiffon-02",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00010734"
+            },
+            "features": {
+              "fat": 29.4,
+              "egg": 176.5,
+              "sugar": 82.4,
+              "liquid": 47.1,
+              "bp": 3.5
+            }
+          },
+          "distance": 0.3166147848010106
+        },
+        {
+          "recipe": {
+            "id": "genoise-09",
             "category": "ジェノワーズ",
             "method": "foam",
             "source": {
-              "site": "cotta",
-              "url": "https://www.cotta.jp/special/article/?p=65362"
+              "site": "Nadia",
+              "url": "https://oceans-nadia.com/user/76127/recipe/212412"
             },
             "features": {
-              "fat": 23.7,
-              "egg": 142.9,
-              "sugar": 114.3,
-              "liquid": 35.7,
-              "bp": 0
-            }
-          },
-          "distance": 0.658429224748956
-        },
-        {
-          "recipe": {
-            "id": "castella-06",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/20201222011642"
-            },
-            "features": {
-              "fat": 16.7,
+              "fat": 13.8,
               "egg": 166.7,
-              "sugar": 111.1,
-              "liquid": 77.8,
+              "sugar": 100,
+              "liquid": 33.3,
               "bp": 0
             }
           },
-          "distance": 0.6590687681927484
+          "distance": 0.32567166919211626
         }
       ]
     },
@@ -207,150 +126,231 @@
               "bp": 0
             }
           },
-          "distance": 0.34509137336675927
+          "distance": 0.09992636600179926
         },
         {
           "recipe": {
-            "id": "castella-04",
-            "category": "カステラ",
-            "method": "foam",
+            "id": "chiffon-02",
+            "category": "シフォンケーキ",
+            "method": "separate",
             "source": {
-              "site": "日立の家電品",
-              "url": "https://kadenfan.hitachi.co.jp/range/recipe/mro-nbk5000/326.html"
+              "site": "cotta",
+              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00010734"
             },
             "features": {
-              "fat": 0,
-              "egg": 194.4,
-              "sugar": 143.9,
-              "liquid": 44.4,
-              "bp": 0
+              "fat": 29.4,
+              "egg": 176.5,
+              "sugar": 82.4,
+              "liquid": 47.1,
+              "bp": 3.5
             }
           },
-          "distance": 0.8563665700994004
+          "distance": 0.27563548793117826
         },
         {
           "recipe": {
-            "id": "castella-08",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/20250310171058"
-            },
-            "features": {
-              "fat": 0,
-              "egg": 180,
-              "sugar": 160,
-              "liquid": 64,
-              "bp": 0
-            }
-          },
-          "distance": 0.867779681906407
-        }
-      ]
-    },
-    {
-      "recipe": {
-        "id": "angel-02",
-        "category": "エンゼルフード",
-        "method": "separate",
-        "source": {
-          "site": "クラシル",
-          "url": "https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609"
-        },
-        "features": {
-          "fat": 0,
-          "egg": 210,
-          "sugar": 100,
-          "liquid": 0,
-          "bp": 0
-        }
-      },
-      "classificationWithoutSameSource": "ジェノワーズ",
-      "suspectedIntrusion": true,
-      "nearbyLabelConflict": true,
-      "status": "conflict",
-      "nearest": [
-        {
-          "recipe": {
-            "id": "genoise-06",
+            "id": "genoise-07",
             "category": "ジェノワーズ",
             "method": "foam",
             "source": {
               "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/20241107090158"
+              "url": "https://tomiz.com/recipe/pro/detail/20171102151533"
             },
             "features": {
-              "fat": 13.3,
-              "egg": 200,
-              "sugar": 100,
-              "liquid": 16.7,
-              "bp": 0
-            }
-          },
-          "distance": 0.5249247598492383
-        },
-        {
-          "recipe": {
-            "id": "castella-02",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "cotta",
-              "url": "https://www.cotta.jp/special/article/?p=58515"
-            },
-            "features": {
-              "fat": 0,
+              "fat": 27.7,
               "egg": 166.7,
-              "sugar": 113.3,
-              "liquid": 50,
+              "sugar": 108.3,
+              "liquid": 25,
               "bp": 0
             }
           },
-          "distance": 0.7775054434107014
-        },
-        {
-          "recipe": {
-            "id": "angel-04",
-            "category": "エンゼルフード",
-            "method": "separate",
-            "source": {
-              "site": "Nadia",
-              "url": "https://oceans-nadia.com/user/29/recipe/219571"
-            },
-            "features": {
-              "fat": 0,
-              "egg": 262.5,
-              "sugar": 125,
-              "liquid": 0,
-              "bp": 0
-            }
-          },
-          "distance": 0.7961689041253338
+          "distance": 0.28380223059402054
         }
       ]
     },
     {
       "recipe": {
-        "id": "genoise-01",
-        "category": "ジェノワーズ",
-        "method": "foam",
+        "id": "angel-03",
+        "category": "エンゼルフード",
+        "method": "separate",
         "source": {
           "site": "cotta",
-          "url": "https://www.cotta.jp/special/article/?p=65362"
+          "url": "https://www.cotta.jp/special/article/?p=3008"
         },
         "features": {
-          "fat": 23.7,
-          "egg": 142.9,
-          "sugar": 114.3,
-          "liquid": 35.7,
+          "fat": 42.9,
+          "egg": 257.1,
+          "sugar": 85.7,
+          "liquid": 42.9,
           "bp": 0
         }
       },
+      "classificationWithoutSameSource": "シフォンケーキ",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "supported",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "chiffon-03",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/special/article/?p=587"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 264.3,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.16998576376724617
+        },
+        {
+          "recipe": {
+            "id": "chiffon-09",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "クラシル",
+              "url": "https://www.kurashiru.com/recipes/1ddcd1be-7b98-4ec4-8834-6a1d4048baa9"
+            },
+            "features": {
+              "fat": 43.8,
+              "egg": 250,
+              "sugar": 100,
+              "liquid": 62.5,
+              "bp": 3.8
+            }
+          },
+          "distance": 0.22113748736336963
+        },
+        {
+          "recipe": {
+            "id": "chiffon-07",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/9019/"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 271.4,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.22723329092300634
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "crepe-08",
+        "category": "クレープ",
+        "method": "mix",
+        "source": {
+          "site": "木徳神糧",
+          "url": "https://www.kitoku-shinryo.co.jp/ja/study/recipe/070.html"
+        },
+        "features": {
+          "fat": 8.3,
+          "egg": 50,
+          "sugar": 30,
+          "liquid": 100,
+          "bp": 0
+        }
+      },
+      "classificationWithoutSameSource": "ホットケーキ",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "supported",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "hotcake-09",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1460028340/"
+            },
+            "features": {
+              "fat": 4,
+              "egg": 50,
+              "sugar": 24,
+              "liquid": 90,
+              "bp": 4
+            }
+          },
+          "distance": 0.18576909268349068
+        },
+        {
+          "recipe": {
+            "id": "hotcake-01",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "日清製粉ウェルナ",
+              "url": "https://www.nisshin-seifun-welna.com/index/recipe/detail/n-034.html"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 18,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.29928407453955613
+        },
+        {
+          "recipe": {
+            "id": "hotcake-04",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1540029284/"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 20,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.29928407453955613
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "chiffon-02",
+        "category": "シフォンケーキ",
+        "method": "separate",
+        "source": {
+          "site": "cotta",
+          "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00010734"
+        },
+        "features": {
+          "fat": 29.4,
+          "egg": 176.5,
+          "sugar": 82.4,
+          "liquid": 47.1,
+          "bp": 3.5
+        }
+      },
       "classificationWithoutSameSource": "ジェノワーズ",
-      "suspectedIntrusion": false,
-      "nearbyLabelConflict": true,
-      "status": "conflict",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "other-method",
       "nearest": [
         {
           "recipe": {
@@ -369,7 +369,88 @@
               "bp": 0
             }
           },
-          "distance": 0.35826591210309155
+          "distance": 0.26264332934536416
+        },
+        {
+          "recipe": {
+            "id": "genoise-03",
+            "category": "ジェノワーズ",
+            "method": "foam",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00020692"
+            },
+            "features": {
+              "fat": 22.6,
+              "egg": 181.8,
+              "sugar": 154.5,
+              "liquid": 36.4,
+              "bp": 0
+            }
+          },
+          "distance": 0.2756375542169657
+        },
+        {
+          "recipe": {
+            "id": "genoise-05",
+            "category": "ジェノワーズ",
+            "method": "foam",
+            "source": {
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/20211116142157"
+            },
+            "features": {
+              "fat": 32.3,
+              "egg": 188.9,
+              "sugar": 111.1,
+              "liquid": 26.7,
+              "bp": 0
+            }
+          },
+          "distance": 0.2773983835426298
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "angel-07",
+        "category": "エンゼルフード",
+        "method": "separate",
+        "source": {
+          "site": "アメブロ（型にはまったお菓子なお茶の時間）",
+          "url": "https://ameblo.jp/lovable-kitchen/entry-11534061662.html"
+        },
+        "features": {
+          "fat": 37.5,
+          "egg": 187.5,
+          "sugar": 125,
+          "liquid": 7.5,
+          "bp": 5
+        }
+      },
+      "classificationWithoutSameSource": "ジェノワーズ",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "other-method",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "genoise-05",
+            "category": "ジェノワーズ",
+            "method": "foam",
+            "source": {
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/20211116142157"
+            },
+            "features": {
+              "fat": 32.3,
+              "egg": 188.9,
+              "sugar": 111.1,
+              "liquid": 26.7,
+              "bp": 0
+            }
+          },
+          "distance": 0.27266525462254787
         },
         {
           "recipe": {
@@ -388,169 +469,7 @@
               "bp": 0
             }
           },
-          "distance": 0.5105407193230881
-        },
-        {
-          "recipe": {
-            "id": "genoise-08",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "生かし屋",
-              "url": "https://www.ikashiya.com/entry/genoise-sponge-cake"
-            },
-            "features": {
-              "fat": 30.8,
-              "egg": 153.8,
-              "sugar": 92.3,
-              "liquid": 27.7,
-              "bp": 0
-            }
-          },
-          "distance": 0.5177331747814425
-        }
-      ]
-    },
-    {
-      "recipe": {
-        "id": "castella-02",
-        "category": "カステラ",
-        "method": "foam",
-        "source": {
-          "site": "cotta",
-          "url": "https://www.cotta.jp/special/article/?p=58515"
-        },
-        "features": {
-          "fat": 0,
-          "egg": 166.7,
-          "sugar": 113.3,
-          "liquid": 50,
-          "bp": 0
-        }
-      },
-      "classificationWithoutSameSource": "カステラ",
-      "suspectedIntrusion": false,
-      "nearbyLabelConflict": true,
-      "status": "conflict",
-      "nearest": [
-        {
-          "recipe": {
-            "id": "castella-05",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "クラシル",
-              "url": "https://www.kurashiru.com/recipe_cards/45cedb64-fc96-4720-8dab-a785b0b813aa"
-            },
-            "features": {
-              "fat": 0,
-              "egg": 166.7,
-              "sugar": 100,
-              "liquid": 80,
-              "bp": 0
-            }
-          },
-          "distance": 0.39968768949683264
-        },
-        {
-          "recipe": {
-            "id": "castella-07",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "象印",
-              "url": "https://www.zojirushi.co.jp/recipe/list/3548.html"
-            },
-            "features": {
-              "fat": 0,
-              "egg": 166.7,
-              "sugar": 108.3,
-              "liquid": 95.8,
-              "bp": 0
-            }
-          },
-          "distance": 0.4788519908376045
-        },
-        {
-          "recipe": {
-            "id": "castella-01",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "日清製粉ウェルナ",
-              "url": "https://www.nisshin-seifun-welna.com/index/recipe/detail/s-043.html"
-            },
-            "features": {
-              "fat": 0,
-              "egg": 200,
-              "sugar": 125,
-              "liquid": 65,
-              "bp": 0
-            }
-          },
-          "distance": 0.4852247339837256
-        }
-      ]
-    },
-    {
-      "recipe": {
-        "id": "genoise-09",
-        "category": "ジェノワーズ",
-        "method": "foam",
-        "source": {
-          "site": "Nadia",
-          "url": "https://oceans-nadia.com/user/76127/recipe/212412"
-        },
-        "features": {
-          "fat": 13.8,
-          "egg": 166.7,
-          "sugar": 100,
-          "liquid": 33.3,
-          "bp": 0
-        }
-      },
-      "classificationWithoutSameSource": "ジェノワーズ",
-      "suspectedIntrusion": false,
-      "nearbyLabelConflict": true,
-      "status": "conflict",
-      "nearest": [
-        {
-          "recipe": {
-            "id": "genoise-06",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/20241107090158"
-            },
-            "features": {
-              "fat": 13.3,
-              "egg": 200,
-              "sugar": 100,
-              "liquid": 16.7,
-              "bp": 0
-            }
-          },
-          "distance": 0.43655506983098147
-        },
-        {
-          "recipe": {
-            "id": "castella-06",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/20201222011642"
-            },
-            "features": {
-              "fat": 16.7,
-              "egg": 166.7,
-              "sugar": 111.1,
-              "liquid": 77.8,
-              "bp": 0
-            }
-          },
-          "distance": 0.5142771397624196
+          "distance": 0.4165882957218951
         },
         {
           "recipe": {
@@ -569,7 +488,898 @@
               "bp": 0
             }
           },
-          "distance": 0.5321298639621601
+          "distance": 0.46917293289731654
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "hotcake-10",
+        "category": "ホットケーキ",
+        "method": "mix",
+        "source": {
+          "site": "楽天レシピ",
+          "url": "https://recipe.rakuten.co.jp/recipe/1160057650/"
+        },
+        "features": {
+          "fat": 0,
+          "egg": 71.4,
+          "sugar": 42.9,
+          "liquid": 71.4,
+          "bp": 5.7
+        }
+      },
+      "classificationWithoutSameSource": "クレープ",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "supported",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "hotcake-09",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1460028340/"
+            },
+            "features": {
+              "fat": 4,
+              "egg": 50,
+              "sugar": 24,
+              "liquid": 90,
+              "bp": 4
+            }
+          },
+          "distance": 0.3527440093321755
+        },
+        {
+          "recipe": {
+            "id": "hotcake-01",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "日清製粉ウェルナ",
+              "url": "https://www.nisshin-seifun-welna.com/index/recipe/detail/n-034.html"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 18,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.3910656169565594
+        },
+        {
+          "recipe": {
+            "id": "hotcake-04",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1540029284/"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 20,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.3910656169565594
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "hotcake-06",
+        "category": "ホットケーキ",
+        "method": "mix",
+        "source": {
+          "site": "農林水産省・北陸農政局",
+          "url": "https://www.maff.go.jp/hokuriku/seisan/komeko/recipe151.html"
+        },
+        "features": {
+          "fat": 20.8,
+          "egg": 62.5,
+          "sugar": 37.5,
+          "liquid": 87.5,
+          "bp": 5
+        }
+      },
+      "classificationWithoutSameSource": "クレープ",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "supported",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "crepe-08",
+            "category": "クレープ",
+            "method": "mix",
+            "source": {
+              "site": "木徳神糧",
+              "url": "https://www.kitoku-shinryo.co.jp/ja/study/recipe/070.html"
+            },
+            "features": {
+              "fat": 8.3,
+              "egg": 50,
+              "sugar": 30,
+              "liquid": 100,
+              "bp": 0
+            }
+          },
+          "distance": 0.49157395556783706
+        },
+        {
+          "recipe": {
+            "id": "hotcake-02",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "長谷工ブランシエラクラブ",
+              "url": "https://www.haseko.co.jp/branchera/idea/recipe/recipe_0440.html"
+            },
+            "features": {
+              "fat": 12,
+              "egg": 25,
+              "sugar": 25,
+              "liquid": 75,
+              "bp": 4
+            }
+          },
+          "distance": 0.5689840819634574
+        },
+        {
+          "recipe": {
+            "id": "hotcake-05",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00023381"
+            },
+            "features": {
+              "fat": 8.3,
+              "egg": 50,
+              "sugar": 30,
+              "liquid": 50,
+              "bp": 5
+            }
+          },
+          "distance": 0.6103224803604653
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "genoise-04",
+        "category": "ジェノワーズ",
+        "method": "foam",
+        "source": {
+          "site": "cotta",
+          "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00019485"
+        },
+        "features": {
+          "fat": 50,
+          "egg": 166.7,
+          "sugar": 94.4,
+          "liquid": 0,
+          "bp": 0
+        }
+      },
+      "classificationWithoutSameSource": "エンゼルフード",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "other-method",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "angel-07",
+            "category": "エンゼルフード",
+            "method": "separate",
+            "source": {
+              "site": "アメブロ（型にはまったお菓子なお茶の時間）",
+              "url": "https://ameblo.jp/lovable-kitchen/entry-11534061662.html"
+            },
+            "features": {
+              "fat": 37.5,
+              "egg": 187.5,
+              "sugar": 125,
+              "liquid": 7.5,
+              "bp": 5
+            }
+          },
+          "distance": 0.5229090922849202
+        },
+        {
+          "recipe": {
+            "id": "genoise-05",
+            "category": "ジェノワーズ",
+            "method": "foam",
+            "source": {
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/20211116142157"
+            },
+            "features": {
+              "fat": 32.3,
+              "egg": 188.9,
+              "sugar": 111.1,
+              "liquid": 26.7,
+              "bp": 0
+            }
+          },
+          "distance": 0.7465273831167929
+        },
+        {
+          "recipe": {
+            "id": "genoise-08",
+            "category": "ジェノワーズ",
+            "method": "foam",
+            "source": {
+              "site": "生かし屋",
+              "url": "https://www.ikashiya.com/entry/genoise-sponge-cake"
+            },
+            "features": {
+              "fat": 30.8,
+              "egg": 153.8,
+              "sugar": 92.3,
+              "liquid": 27.7,
+              "bp": 0
+            }
+          },
+          "distance": 0.7668421700816864
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "chiffon-05",
+        "category": "シフォンケーキ",
+        "method": "separate",
+        "source": {
+          "site": "cotta",
+          "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00021864"
+        },
+        "features": {
+          "fat": 30.8,
+          "egg": 307.7,
+          "sugar": 107.7,
+          "liquid": 92.3,
+          "bp": 1.5
+        }
+      },
+      "classificationWithoutSameSource": "エンゼルフード",
+      "suspectedIntrusion": true,
+      "nearbyLabelConflict": false,
+      "status": "supported",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "chiffon-07",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/9019/"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 271.4,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.7219792732782137
+        },
+        {
+          "recipe": {
+            "id": "chiffon-01",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/recipe/success/vol4.php"
+            },
+            "features": {
+              "fat": 50,
+              "egg": 300,
+              "sugar": 100,
+              "liquid": 66.7,
+              "bp": 0
+            }
+          },
+          "distance": 0.7450710687566929
+        },
+        {
+          "recipe": {
+            "id": "chiffon-03",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/special/article/?p=587"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 264.3,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.7797250203182539
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "chiffon-03",
+        "category": "シフォンケーキ",
+        "method": "separate",
+        "source": {
+          "site": "cotta",
+          "url": "https://www.cotta.jp/special/article/?p=587"
+        },
+        "features": {
+          "fat": 42.9,
+          "egg": 264.3,
+          "sugar": 100,
+          "liquid": 57.1,
+          "bp": 0
+        }
+      },
+      "classificationWithoutSameSource": "シフォンケーキ",
+      "suspectedIntrusion": false,
+      "nearbyLabelConflict": true,
+      "status": "conflict",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "chiffon-07",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/9019/"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 271.4,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.0868021856835859
+        },
+        {
+          "recipe": {
+            "id": "angel-03",
+            "category": "エンゼルフード",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/special/article/?p=3008"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 257.1,
+              "sugar": 85.7,
+              "liquid": 42.9,
+              "bp": 0
+            }
+          },
+          "distance": 0.1699626780124112
+        },
+        {
+          "recipe": {
+            "id": "chiffon-09",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "クラシル",
+              "url": "https://www.kurashiru.com/recipes/1ddcd1be-7b98-4ec4-8834-6a1d4048baa9"
+            },
+            "features": {
+              "fat": 43.8,
+              "egg": 250,
+              "sugar": 100,
+              "liquid": 62.5,
+              "bp": 3.8
+            }
+          },
+          "distance": 0.18621503200119402
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "chiffon-07",
+        "category": "シフォンケーキ",
+        "method": "separate",
+        "source": {
+          "site": "富澤商店",
+          "url": "https://tomiz.com/recipe/pro/detail/9019/"
+        },
+        "features": {
+          "fat": 42.9,
+          "egg": 271.4,
+          "sugar": 100,
+          "liquid": 57.1,
+          "bp": 0
+        }
+      },
+      "classificationWithoutSameSource": "シフォンケーキ",
+      "suspectedIntrusion": false,
+      "nearbyLabelConflict": true,
+      "status": "conflict",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "chiffon-03",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/special/article/?p=587"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 264.3,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.0869550765959554
+        },
+        {
+          "recipe": {
+            "id": "angel-03",
+            "category": "エンゼルフード",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/special/article/?p=3008"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 257.1,
+              "sugar": 85.7,
+              "liquid": 42.9,
+              "bp": 0
+            }
+          },
+          "distance": 0.22762069019049302
+        },
+        {
+          "recipe": {
+            "id": "chiffon-09",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "クラシル",
+              "url": "https://www.kurashiru.com/recipes/1ddcd1be-7b98-4ec4-8834-6a1d4048baa9"
+            },
+            "features": {
+              "fat": 43.8,
+              "egg": 250,
+              "sugar": 100,
+              "liquid": 62.5,
+              "bp": 3.8
+            }
+          },
+          "distance": 0.26981979463141925
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "hotcake-09",
+        "category": "ホットケーキ",
+        "method": "mix",
+        "source": {
+          "site": "楽天レシピ",
+          "url": "https://recipe.rakuten.co.jp/recipe/1460028340/"
+        },
+        "features": {
+          "fat": 4,
+          "egg": 50,
+          "sugar": 24,
+          "liquid": 90,
+          "bp": 4
+        }
+      },
+      "classificationWithoutSameSource": "ホットケーキ",
+      "suspectedIntrusion": false,
+      "nearbyLabelConflict": true,
+      "status": "conflict",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "hotcake-01",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "日清製粉ウェルナ",
+              "url": "https://www.nisshin-seifun-welna.com/index/recipe/detail/n-034.html"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 18,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.17699960929674993
+        },
+        {
+          "recipe": {
+            "id": "hotcake-04",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1540029284/"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 20,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.17699960929674993
+        },
+        {
+          "recipe": {
+            "id": "crepe-08",
+            "category": "クレープ",
+            "method": "mix",
+            "source": {
+              "site": "木徳神糧",
+              "url": "https://www.kitoku-shinryo.co.jp/ja/study/recipe/070.html"
+            },
+            "features": {
+              "fat": 8.3,
+              "egg": 50,
+              "sugar": 30,
+              "liquid": 100,
+              "bp": 0
+            }
+          },
+          "distance": 0.18594451108833232
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "chiffon-09",
+        "category": "シフォンケーキ",
+        "method": "separate",
+        "source": {
+          "site": "クラシル",
+          "url": "https://www.kurashiru.com/recipes/1ddcd1be-7b98-4ec4-8834-6a1d4048baa9"
+        },
+        "features": {
+          "fat": 43.8,
+          "egg": 250,
+          "sugar": 100,
+          "liquid": 62.5,
+          "bp": 3.8
+        }
+      },
+      "classificationWithoutSameSource": "シフォンケーキ",
+      "suspectedIntrusion": false,
+      "nearbyLabelConflict": true,
+      "status": "conflict",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "chiffon-03",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/special/article/?p=587"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 264.3,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.1856856020324542
+        },
+        {
+          "recipe": {
+            "id": "angel-03",
+            "category": "エンゼルフード",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/special/article/?p=3008"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 257.1,
+              "sugar": 85.7,
+              "liquid": 42.9,
+              "bp": 0
+            }
+          },
+          "distance": 0.22089947582557554
+        },
+        {
+          "recipe": {
+            "id": "chiffon-07",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/9019/"
+            },
+            "features": {
+              "fat": 42.9,
+              "egg": 271.4,
+              "sugar": 100,
+              "liquid": 57.1,
+              "bp": 0
+            }
+          },
+          "distance": 0.26855422918496374
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "hotcake-02",
+        "category": "ホットケーキ",
+        "method": "mix",
+        "source": {
+          "site": "長谷工ブランシエラクラブ",
+          "url": "https://www.haseko.co.jp/branchera/idea/recipe/recipe_0440.html"
+        },
+        "features": {
+          "fat": 12,
+          "egg": 25,
+          "sugar": 25,
+          "liquid": 75,
+          "bp": 4
+        }
+      },
+      "classificationWithoutSameSource": "ホットケーキ",
+      "suspectedIntrusion": false,
+      "nearbyLabelConflict": true,
+      "status": "conflict",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "hotcake-13",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1570010907/"
+            },
+            "features": {
+              "fat": 8,
+              "egg": 33.3,
+              "sugar": 24,
+              "liquid": 66.7,
+              "bp": 5.3
+            }
+          },
+          "distance": 0.1956566541760559
+        },
+        {
+          "recipe": {
+            "id": "crepe-08",
+            "category": "クレープ",
+            "method": "mix",
+            "source": {
+              "site": "木徳神糧",
+              "url": "https://www.kitoku-shinryo.co.jp/ja/study/recipe/070.html"
+            },
+            "features": {
+              "fat": 8.3,
+              "egg": 50,
+              "sugar": 30,
+              "liquid": 100,
+              "bp": 0
+            }
+          },
+          "distance": 0.4203432064680458
+        },
+        {
+          "recipe": {
+            "id": "hotcake-05",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00023381"
+            },
+            "features": {
+              "fat": 8.3,
+              "egg": 50,
+              "sugar": 30,
+              "liquid": 50,
+              "bp": 5
+            }
+          },
+          "distance": 0.4203432064680458
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "hotcake-14",
+        "category": "ホットケーキ",
+        "method": "mix",
+        "source": {
+          "site": "楽天レシピ",
+          "url": "https://recipe.rakuten.co.jp/recipe/1690010020/"
+        },
+        "features": {
+          "fat": 0,
+          "egg": 33.3,
+          "sugar": 13.3,
+          "liquid": 100,
+          "bp": 3.3
+        }
+      },
+      "classificationWithoutSameSource": "ホットケーキ",
+      "suspectedIntrusion": false,
+      "nearbyLabelConflict": true,
+      "status": "conflict",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "hotcake-01",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "日清製粉ウェルナ",
+              "url": "https://www.nisshin-seifun-welna.com/index/recipe/detail/n-034.html"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 18,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.2038387260184006
+        },
+        {
+          "recipe": {
+            "id": "hotcake-04",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1540029284/"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 50,
+              "sugar": 20,
+              "liquid": 100,
+              "bp": 4
+            }
+          },
+          "distance": 0.2038387260184006
+        },
+        {
+          "recipe": {
+            "id": "hotcake-12",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1340031078/"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 31.3,
+              "sugar": 31.3,
+              "liquid": 75,
+              "bp": 3.1
+            }
+          },
+          "distance": 0.25696254128562007
+        }
+      ]
+    },
+    {
+      "recipe": {
+        "id": "hotcake-05",
+        "category": "ホットケーキ",
+        "method": "mix",
+        "source": {
+          "site": "cotta",
+          "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00023381"
+        },
+        "features": {
+          "fat": 8.3,
+          "egg": 50,
+          "sugar": 30,
+          "liquid": 50,
+          "bp": 5
+        }
+      },
+      "classificationWithoutSameSource": "ホットケーキ",
+      "suspectedIntrusion": false,
+      "nearbyLabelConflict": true,
+      "status": "conflict",
+      "nearest": [
+        {
+          "recipe": {
+            "id": "hotcake-13",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1570010907/"
+            },
+            "features": {
+              "fat": 8,
+              "egg": 33.3,
+              "sugar": 24,
+              "liquid": 66.7,
+              "bp": 5.3
+            }
+          },
+          "distance": 0.2657787130302317
+        },
+        {
+          "recipe": {
+            "id": "hotcake-03",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "楽天レシピ",
+              "url": "https://recipe.rakuten.co.jp/recipe/1940026023/"
+            },
+            "features": {
+              "fat": 0,
+              "egg": 33.3,
+              "sugar": 30,
+              "liquid": 60,
+              "bp": 4
+            }
+          },
+          "distance": 0.37593175761812214
+        },
+        {
+          "recipe": {
+            "id": "hotcake-02",
+            "category": "ホットケーキ",
+            "method": "mix",
+            "source": {
+              "site": "長谷工ブランシエラクラブ",
+              "url": "https://www.haseko.co.jp/branchera/idea/recipe/recipe_0440.html"
+            },
+            "features": {
+              "fat": 12,
+              "egg": 25,
+              "sugar": 25,
+              "liquid": 75,
+              "bp": 4
+            }
+          },
+          "distance": 0.4193327074405766
         }
       ]
     },
@@ -597,6 +1407,44 @@
       "nearest": [
         {
           "recipe": {
+            "id": "chiffon-09",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "クラシル",
+              "url": "https://www.kurashiru.com/recipes/1ddcd1be-7b98-4ec4-8834-6a1d4048baa9"
+            },
+            "features": {
+              "fat": 43.8,
+              "egg": 250,
+              "sugar": 100,
+              "liquid": 62.5,
+              "bp": 3.8
+            }
+          },
+          "distance": 0.31919617966246666
+        },
+        {
+          "recipe": {
+            "id": "chiffon-06",
+            "category": "シフォンケーキ",
+            "method": "separate",
+            "source": {
+              "site": "cotta",
+              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00021939"
+            },
+            "features": {
+              "fat": 58.3,
+              "egg": 250,
+              "sugar": 100,
+              "liquid": 58.3,
+              "bp": 6.7
+            }
+          },
+          "distance": 0.37894328260617155
+        },
+        {
+          "recipe": {
             "id": "chiffon-04",
             "category": "シフォンケーキ",
             "method": "separate",
@@ -612,144 +1460,25 @@
               "bp": 0
             }
           },
-          "distance": 0.4371622219335747
-        },
-        {
-          "recipe": {
-            "id": "chiffon-03",
-            "category": "シフォンケーキ",
-            "method": "separate",
-            "source": {
-              "site": "cotta",
-              "url": "https://www.cotta.jp/special/article/?p=587"
-            },
-            "features": {
-              "fat": 42.9,
-              "egg": 264.3,
-              "sugar": 100,
-              "liquid": 57.1,
-              "bp": 0
-            }
-          },
-          "distance": 0.47919266696545276
-        },
-        {
-          "recipe": {
-            "id": "angel-03",
-            "category": "エンゼルフード",
-            "method": "separate",
-            "source": {
-              "site": "cotta",
-              "url": "https://www.cotta.jp/special/article/?p=3008"
-            },
-            "features": {
-              "fat": 42.9,
-              "egg": 257.1,
-              "sugar": 85.7,
-              "liquid": 42.9,
-              "bp": 0
-            }
-          },
-          "distance": 0.5288364116891393
+          "distance": 0.41144549827286747
         }
       ]
     },
     {
       "recipe": {
-        "id": "genoise-06",
-        "category": "ジェノワーズ",
-        "method": "foam",
-        "source": {
-          "site": "富澤商店",
-          "url": "https://tomiz.com/recipe/pro/detail/20241107090158"
-        },
-        "features": {
-          "fat": 13.3,
-          "egg": 200,
-          "sugar": 100,
-          "liquid": 16.7,
-          "bp": 0
-        }
-      },
-      "classificationWithoutSameSource": "ジェノワーズ",
-      "suspectedIntrusion": false,
-      "nearbyLabelConflict": true,
-      "status": "conflict",
-      "nearest": [
-        {
-          "recipe": {
-            "id": "genoise-09",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "Nadia",
-              "url": "https://oceans-nadia.com/user/76127/recipe/212412"
-            },
-            "features": {
-              "fat": 13.8,
-              "egg": 166.7,
-              "sugar": 100,
-              "liquid": 33.3,
-              "bp": 0
-            }
-          },
-          "distance": 0.43757919213339336
-        },
-        {
-          "recipe": {
-            "id": "angel-02",
-            "category": "エンゼルフード",
-            "method": "separate",
-            "source": {
-              "site": "クラシル",
-              "url": "https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609"
-            },
-            "features": {
-              "fat": 0,
-              "egg": 210,
-              "sugar": 100,
-              "liquid": 0,
-              "bp": 0
-            }
-          },
-          "distance": 0.5229466116511302
-        },
-        {
-          "recipe": {
-            "id": "genoise-07",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/20171102151533"
-            },
-            "features": {
-              "fat": 27.7,
-              "egg": 166.7,
-              "sugar": 108.3,
-              "liquid": 25,
-              "bp": 0
-            }
-          },
-          "distance": 0.6809358335467021
-        }
-      ]
-    },
-    {
-      "recipe": {
-        "id": "chiffon-04",
+        "id": "chiffon-06",
         "category": "シフォンケーキ",
         "method": "separate",
         "source": {
           "site": "cotta",
-          "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00020730"
+          "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00021939"
         },
         "features": {
-          "fat": 51.1,
-          "egg": 253.8,
-          "sugar": 92.3,
-          "liquid": 92.3,
-          "bp": 0
+          "fat": 58.3,
+          "egg": 250,
+          "sugar": 100,
+          "liquid": 58.3,
+          "bp": 6.7
         }
       },
       "classificationWithoutSameSource": "シフォンケーキ",
@@ -774,45 +1503,45 @@
               "bp": 0
             }
           },
-          "distance": 0.43777587875398394
+          "distance": 0.38047315743711596
         },
         {
           "recipe": {
-            "id": "chiffon-03",
+            "id": "chiffon-04",
             "category": "シフォンケーキ",
             "method": "separate",
             "source": {
               "site": "cotta",
-              "url": "https://www.cotta.jp/special/article/?p=587"
+              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00020730"
             },
             "features": {
-              "fat": 42.9,
-              "egg": 264.3,
-              "sugar": 100,
-              "liquid": 57.1,
+              "fat": 51.1,
+              "egg": 253.8,
+              "sugar": 92.3,
+              "liquid": 92.3,
               "bp": 0
             }
           },
-          "distance": 0.5059799907689784
+          "distance": 0.4379301720441298
         },
         {
           "recipe": {
-            "id": "chiffon-07",
+            "id": "chiffon-09",
             "category": "シフォンケーキ",
             "method": "separate",
             "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/9019/"
+              "site": "クラシル",
+              "url": "https://www.kurashiru.com/recipes/1ddcd1be-7b98-4ec4-8834-6a1d4048baa9"
             },
             "features": {
-              "fat": 42.9,
-              "egg": 271.4,
+              "fat": 43.8,
+              "egg": 250,
               "sugar": 100,
-              "liquid": 57.1,
-              "bp": 0
+              "liquid": 62.5,
+              "bp": 3.8
             }
           },
-          "distance": 0.5345023288574189
+          "distance": 0.5286911026994054
         }
       ]
     },
@@ -893,186 +1622,24 @@
               "bp": 0
             }
           },
-          "distance": 0.6461491882960925
+          "distance": 0.6290352639548973
         }
       ]
     },
     {
       "recipe": {
-        "id": "castella-06",
-        "category": "カステラ",
-        "method": "foam",
-        "source": {
-          "site": "富澤商店",
-          "url": "https://tomiz.com/recipe/pro/detail/20201222011642"
-        },
-        "features": {
-          "fat": 16.7,
-          "egg": 166.7,
-          "sugar": 111.1,
-          "liquid": 77.8,
-          "bp": 0
-        }
-      },
-      "classificationWithoutSameSource": "カステラ",
-      "suspectedIntrusion": false,
-      "nearbyLabelConflict": true,
-      "status": "conflict",
-      "nearest": [
-        {
-          "recipe": {
-            "id": "genoise-09",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "Nadia",
-              "url": "https://oceans-nadia.com/user/76127/recipe/212412"
-            },
-            "features": {
-              "fat": 13.8,
-              "egg": 166.7,
-              "sugar": 100,
-              "liquid": 33.3,
-              "bp": 0
-            }
-          },
-          "distance": 0.5135171332122436
-        },
-        {
-          "recipe": {
-            "id": "genoise-01",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "cotta",
-              "url": "https://www.cotta.jp/special/article/?p=65362"
-            },
-            "features": {
-              "fat": 23.7,
-              "egg": 142.9,
-              "sugar": 114.3,
-              "liquid": 35.7,
-              "bp": 0
-            }
-          },
-          "distance": 0.5789810884670485
-        },
-        {
-          "recipe": {
-            "id": "castella-07",
-            "category": "カステラ",
-            "method": "foam",
-            "source": {
-              "site": "象印",
-              "url": "https://www.zojirushi.co.jp/recipe/list/3548.html"
-            },
-            "features": {
-              "fat": 0,
-              "egg": 166.7,
-              "sugar": 108.3,
-              "liquid": 95.8,
-              "bp": 0
-            }
-          },
-          "distance": 0.630992026358882
-        }
-      ]
-    },
-    {
-      "recipe": {
-        "id": "genoise-04",
-        "category": "ジェノワーズ",
-        "method": "foam",
-        "source": {
-          "site": "cotta",
-          "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00019485"
-        },
-        "features": {
-          "fat": 50,
-          "egg": 166.7,
-          "sugar": 94.4,
-          "liquid": 0,
-          "bp": 0
-        }
-      },
-      "classificationWithoutSameSource": "ジェノワーズ",
-      "suspectedIntrusion": false,
-      "nearbyLabelConflict": true,
-      "status": "conflict",
-      "nearest": [
-        {
-          "recipe": {
-            "id": "genoise-08",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "生かし屋",
-              "url": "https://www.ikashiya.com/entry/genoise-sponge-cake"
-            },
-            "features": {
-              "fat": 30.8,
-              "egg": 153.8,
-              "sugar": 92.3,
-              "liquid": 27.7,
-              "bp": 0
-            }
-          },
-          "distance": 0.767898880446033
-        },
-        {
-          "recipe": {
-            "id": "genoise-05",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "富澤商店",
-              "url": "https://tomiz.com/recipe/pro/detail/20211116142157"
-            },
-            "features": {
-              "fat": 32.3,
-              "egg": 188.9,
-              "sugar": 111.1,
-              "liquid": 26.7,
-              "bp": 0
-            }
-          },
-          "distance": 0.812320678903204
-        },
-        {
-          "recipe": {
-            "id": "genoise-02",
-            "category": "ジェノワーズ",
-            "method": "foam",
-            "source": {
-              "site": "cotta",
-              "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00006348"
-            },
-            "features": {
-              "fat": 28,
-              "egg": 168.9,
-              "sugar": 110.8,
-              "liquid": 0,
-              "bp": 0
-            }
-          },
-          "distance": 0.8562934580424464
-        }
-      ]
-    },
-    {
-      "recipe": {
-        "id": "chiffon-09",
+        "id": "chiffon-08",
         "category": "シフォンケーキ",
         "method": "separate",
         "source": {
           "site": "クラシル",
-          "url": "https://www.kurashiru.com/recipes/1ddcd1be-7b98-4ec4-8834-6a1d4048baa9"
+          "url": "https://www.kurashiru.com/recipes/03a2622e-e260-4956-9067-c75b1e024616"
         },
         "features": {
           "fat": 43.8,
-          "egg": 250,
-          "sugar": 100,
-          "liquid": 62.5,
+          "egg": 187.5,
+          "sugar": 87.5,
+          "liquid": 87.5,
           "bp": 3.8
         }
       },
@@ -1083,22 +1650,22 @@
       "nearest": [
         {
           "recipe": {
-            "id": "chiffon-08",
+            "id": "chiffon-10",
             "category": "シフォンケーキ",
             "method": "separate",
             "source": {
-              "site": "クラシル",
-              "url": "https://www.kurashiru.com/recipes/03a2622e-e260-4956-9067-c75b1e024616"
+              "site": "東芝ライフスタイル",
+              "url": "https://www.toshiba-lifestyle.com/jp/microwaves/recipes/detail/1281/"
             },
             "features": {
-              "fat": 43.8,
-              "egg": 187.5,
-              "sugar": 87.5,
-              "liquid": 87.5,
-              "bp": 3.8
+              "fat": 50,
+              "egg": 231.3,
+              "sugar": 100,
+              "liquid": 62.5,
+              "bp": 0
             }
           },
-          "distance": 0.8385179717820905
+          "distance": 0.6286914457677131
         },
         {
           "recipe": {
@@ -1117,26 +1684,26 @@
               "bp": 3.5
             }
           },
-          "distance": 1.1112277684525782
+          "distance": 0.6772244493208437
         },
         {
           "recipe": {
-            "id": "angel-07",
-            "category": "エンゼルフード",
-            "method": "separate",
+            "id": "genoise-05",
+            "category": "ジェノワーズ",
+            "method": "foam",
             "source": {
-              "site": "アメブロ（型にはまったお菓子なお茶の時間）",
-              "url": "https://ameblo.jp/lovable-kitchen/entry-11534061662.html"
+              "site": "富澤商店",
+              "url": "https://tomiz.com/recipe/pro/detail/20211116142157"
             },
             "features": {
-              "fat": 37.5,
-              "egg": 187.5,
-              "sugar": 125,
-              "liquid": 7.5,
-              "bp": 5
+              "fat": 32.3,
+              "egg": 188.9,
+              "sugar": 111.1,
+              "liquid": 26.7,
+              "bp": 0
             }
           },
-          "distance": 1.2472447062860876
+          "distance": 0.7480193913710385
         }
       ]
     }

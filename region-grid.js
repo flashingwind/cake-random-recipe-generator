@@ -1,6 +1,6 @@
 // Data support and label overlap are computed from observed recipes, never anchors.
 (function(root){
-  const features=['fat','egg','sugar','liquid','bp'];
+  const features=['fat','egg','liquid'];
   const distance=(a,b,scales)=>Math.sqrt(features.reduce((sum,key,i)=>sum+((a[key]-b[key])/scales[i])**2,0));
   function prepare(rows){
     const observed=rows.filter(r=>r.kind==='public-recipe');
@@ -30,9 +30,9 @@
     }
     const ranked=[...groups.values()].sort((a,b)=>b.weight-a.weight || a.category.localeCompare(b.category));
     const first=ranked[0];
-    const other=ranked.find(g=>g.category!==first.category && g.distance<=first.distance*1.5+.15);
+    const other=ranked.find(g=>g.category!==first.category && g.method===first.method && g.distance<=first.distance*1.5+.15);
     const categories=other?[first,other]:[first];
-    const relevant=categories.some(g=>g.method===method);
+    const relevant=first.method===method;
     return {type:!relevant?'other-method':other?'conflict':'supported',categories,neighbors:neighbors.slice(0,5)};
   }
   const api={prepare,inspect,distance};

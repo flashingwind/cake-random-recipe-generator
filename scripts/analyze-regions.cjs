@@ -18,7 +18,7 @@ const candidates=rows.map(row=>{
 }).filter(r=>r.suspectedIntrusion||r.nearbyLabelConflict)
 .sort((a,b)=>Number(b.suspectedIntrusion)-Number(a.suspectedIntrusion)||a.nearest[0].distance-b.nearest[0].distance);
 const report={observedRecipes:rows.length,syntheticRecipesAdded:0,
-  method:'5 standardized features; exclude all records sharing the query source URL, refit support/scales; compare nearby observed labels',
+  method:'3 standardized features (fat, egg, liquid); overlap only within the same method; exclude all records sharing the query source URL, refit support/scales; compare nearby observed labels',
   caution:'Review candidates are not proven data errors. Check ingredient conversion, method, missing features and label conventions against sources. Not a comparison with the old fixed SVM slice.',
   suspectedIntrusions:candidates.filter(r=>r.suspectedIntrusion).length,
   nearbyLabelConflicts:candidates.filter(r=>r.nearbyLabelConflict).length,candidates};

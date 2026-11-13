@@ -3,9 +3,7 @@
   "features": [
     "fat",
     "egg",
-    "sugar",
-    "liquid",
-    "bp"
+    "liquid"
   ],
   "k": 5,
   "publicRecipes": 76,
@@ -20,8 +18,8 @@
     "クレープ": 15
   },
   "evaluated": 76,
-  "correct": 71,
-  "accuracy": 0.9342105263157895,
+  "correct": 67,
+  "accuracy": 0.881578947368421,
   "limitations": [
     "Only categories with public recipes are evaluated.",
     "Source URLs and ingredient conversions are inherited data, not reverified by training.",
@@ -164,7 +162,7 @@
     {
       "id": "genoise-04",
       "expected": "ジェノワーズ",
-      "predicted": "ジェノワーズ",
+      "predicted": "エンゼルフード",
       "heldOutHost": "www.cotta.jp"
     },
     {
@@ -176,7 +174,7 @@
     {
       "id": "chiffon-02",
       "expected": "シフォンケーキ",
-      "predicted": "シフォンケーキ",
+      "predicted": "ジェノワーズ",
       "heldOutHost": "www.cotta.jp"
     },
     {
@@ -290,7 +288,7 @@
     {
       "id": "crepe-13",
       "expected": "クレープ",
-      "predicted": "クレープ",
+      "predicted": "ホットケーキ",
       "heldOutHost": "oceans-nadia.com"
     },
     {
@@ -320,7 +318,7 @@
     {
       "id": "crepe-08",
       "expected": "クレープ",
-      "predicted": "クレープ",
+      "predicted": "ホットケーキ",
       "heldOutHost": "www.kitoku-shinryo.co.jp"
     },
     {
@@ -398,7 +396,7 @@
     {
       "id": "angel-02",
       "expected": "エンゼルフード",
-      "predicted": "ジェノワーズ",
+      "predicted": "エンゼルフード",
       "heldOutHost": "www.kurashiru.com"
     },
     {
@@ -428,7 +426,7 @@
     {
       "id": "castella-06",
       "expected": "カステラ",
-      "predicted": "カステラ",
+      "predicted": "ジェノワーズ",
       "heldOutHost": "tomiz.com"
     },
     {
@@ -452,7 +450,7 @@
     {
       "id": "castella-03",
       "expected": "カステラ",
-      "predicted": "カステラ",
+      "predicted": "エンゼルフード",
       "heldOutHost": "kadenfan.hitachi.co.jp"
     },
     {
@@ -476,13 +474,13 @@
     {
       "id": "angel-07",
       "expected": "エンゼルフード",
-      "predicted": "シフォンケーキ",
+      "predicted": "ジェノワーズ",
       "heldOutHost": "ameblo.jp"
     },
     {
       "id": "angel-08",
       "expected": "エンゼルフード",
-      "predicted": "カステラ",
+      "predicted": "エンゼルフード",
       "heldOutHost": "www.bakedbyanintrovert.com"
     }
   ]

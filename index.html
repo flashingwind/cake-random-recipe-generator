@@ -176,7 +176,7 @@ function randomBlend(){
 function riseModel(s){
   const COEF = { separate:1.0, foam:0.55, cream:0.25, mix:0.10 };
   if (s.method === 'mix' && s.liquid >= 150)
-    return [{ level:'ok', text:'膨らみ：薄い生地なので、膨らみ自体がほぼ不要（仕組みモデル）' }];
+    return [{ level:'ok', text:'膨らまない（薄い生地なので、膨らませない）' }];
   let foam = s.egg * COEF[s.method];
   let retention = 1;
   if (s.method === 'foam' || s.method === 'separate'){

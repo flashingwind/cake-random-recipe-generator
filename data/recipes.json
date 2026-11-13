@@ -1386,6 +1386,618 @@
     ],
     "source_html_sha256": "eb2cbc4d929ea2c1c43803bcdbcea4fe5a23ddbf1c642c1a34e66ea8e0ee6242"
    }
+  },
+  {
+   "id": "chiffon-11",
+   "category": "シフォンケーキ",
+   "name": "シフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 85.7143,
+   "egg": 285.7143,
+   "fat": 42.8571,
+   "liquid": 85.7143,
+   "bp": 0.7143,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/602185_%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+   }
+  },
+  {
+   "id": "chiffon-12",
+   "category": "シフォンケーキ",
+   "name": "メープルシロップのシフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 72.7273,
+   "egg": 168.1818,
+   "fat": 45.4545,
+   "liquid": 65.9091,
+   "bp": 6.6667,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/859_%E3%83%A1%E3%83%BC%E3%83%97%E3%83%AB%E3%82%B7%E3%83%AD%E3%83%83%E3%83%97%E3%81%AE%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+   }
+  },
+  {
+   "id": "chiffon-13",
+   "category": "シフォンケーキ",
+   "name": "シフォンケーキ（プレーン）",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 235,
+   "fat": 60,
+   "liquid": 85,
+   "bp": 2,
+   "method": "separate",
+   "profile": "standard",
+   "source": {
+    "site": "日立の家電品",
+    "url": "https://kadenfan.hitachi.co.jp/range/recipe/mro-s8z/s/A090.html?id=_01"
+   }
+  },
+  {
+   "id": "chiffon-14",
+   "category": "シフォンケーキ",
+   "name": "黒ごまのシフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 125,
+   "egg": 256.9444,
+   "fat": 83.3333,
+   "liquid": 83.3333,
+   "bp": 3.7037,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/20260928162919"
+   }
+  },
+  {
+   "id": "chiffon-15",
+   "category": "シフォンケーキ",
+   "name": "基本のシフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 264.2857,
+   "fat": 42.8571,
+   "liquid": 64.2857,
+   "bp": 0,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/29/recipe/209231"
+   }
+  },
+  {
+   "id": "chiffon-16",
+   "category": "シフォンケーキ",
+   "name": "ふわふわ♡基本のシフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 107.1429,
+   "egg": 285.7143,
+   "fat": 57.1429,
+   "liquid": 77.1429,
+   "bp": 0,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/364420/recipe/481529"
+   }
+  },
+  {
+   "id": "chiffon-17",
+   "category": "シフォンケーキ",
+   "name": "しっとりふんわりシフォンケーキ（17センチ型）",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 284.6154,
+   "fat": 46.1538,
+   "liquid": 46.1538,
+   "bp": 3.0769,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/14187/recipe/379562"
+   }
+  },
+  {
+   "id": "chiffon-18",
+   "category": "シフォンケーキ",
+   "name": "簡単で失敗知らずのシフォンケーキ（ベーキングパウダー不使用）",
+   "flour": "小麦粉",
+   "sugar": 92.3077,
+   "egg": 207.6923,
+   "fat": 46.1538,
+   "liquid": 76.9231,
+   "bp": 0,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/76127/recipe/508178"
+   }
+  },
+  {
+   "id": "chiffon-19",
+   "category": "シフォンケーキ",
+   "name": "ふわふわ幸せ♡基本のシフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 285.7143,
+   "fat": 42.8571,
+   "liquid": 71.4286,
+   "bp": 0,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "デリッシュキッチン",
+    "url": "https://delishkitchen.tv/recipes/155559262184014316"
+   }
+  },
+  {
+   "id": "chiffon-20",
+   "category": "シフォンケーキ",
+   "name": "コーヒーシフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 87.5,
+   "egg": 250,
+   "fat": 37.5,
+   "liquid": 50,
+   "bp": 0,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "デリッシュキッチン",
+    "url": "https://delishkitchen.tv/recipes/162984412919628268"
+   }
+  },
+  {
+   "id": "chiffon-21",
+   "category": "シフォンケーキ",
+   "name": "りんごシフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 82.3529,
+   "egg": 176.4706,
+   "fat": 52.9412,
+   "liquid": 52.9412,
+   "bp": 4.7059,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "デリッシュキッチン",
+    "url": "https://delishkitchen.tv/recipes/231509867544707369"
+   }
+  },
+  {
+   "id": "chiffon-22",
+   "category": "シフォンケーキ",
+   "name": "シフォンケーキ",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 272.7273,
+   "fat": 40.9091,
+   "liquid": 90.9091,
+   "bp": 0,
+   "method": "separate",
+   "profile": "standard",
+   "source": {
+    "site": "象印",
+    "url": "https://www.zojirushi.co.jp/recipe/list/1838.html"
+   }
+  },
+  {
+   "id": "genoise-11",
+   "category": "ジェノワーズ",
+   "name": "全行程写真付き！しっとりふわふわスポンジケーキ",
+   "flour": "小麦粉",
+   "sugar": 122.2222,
+   "egg": 166.6667,
+   "fat": 27.6667,
+   "liquid": 16.6667,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1520001595/"
+   }
+  },
+  {
+   "id": "genoise-12",
+   "category": "ジェノワーズ",
+   "name": "いちごのデコレーションケーキ～基本の共立て(ジェノワーズ生地)～",
+   "flour": "薄力粉・コーンスターチ",
+   "sugar": 100.0,
+   "egg": 166.6667,
+   "fat": 27.6667,
+   "liquid": 33.3333,
+   "bp": 0,
+   "method": "foam",
+   "profile": "standard",
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/19763/"
+   }
+  },
+  {
+   "id": "genoise-13",
+   "category": "ジェノワーズ",
+   "name": "しっとりきめ細やか♪ 基本のスポンジケーキ",
+   "flour": "小麦粉",
+   "sugar": 100.0,
+   "egg": 166.6667,
+   "fat": 27.6667,
+   "liquid": 0,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "デリッシュキッチン",
+    "url": "https://delishkitchen.tv/recipes/151643019198595546"
+   }
+  },
+  {
+   "id": "genoise-14",
+   "category": "ジェノワーズ",
+   "name": "基本のスポンジケーキ",
+   "flour": "小麦粉",
+   "sugar": 100.0,
+   "egg": 166.6667,
+   "fat": 13.8333,
+   "liquid": 0,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "note（樋口直哉）",
+    "url": "https://note.com/travelingfoodlab/n/nca8cee985587"
+   }
+  },
+  {
+   "id": "genoise-15",
+   "category": "ジェノワーズ",
+   "name": "基本のスポンジケーキ18cm",
+   "flour": "小麦粉",
+   "sugar": 95.4545,
+   "egg": 150.0,
+   "fat": 24.9545,
+   "liquid": 13.6364,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "クラシル",
+    "url": "https://www.kurashiru.com/recipe_cards/65689f5d-b3a8-45d3-b805-975b4362c4ba"
+   }
+  },
+  {
+   "id": "genoise-16",
+   "category": "ジェノワーズ",
+   "name": "基本のおいしいスポンジケーキ",
+   "flour": "小麦粉",
+   "sugar": 100.0,
+   "egg": 166.6667,
+   "fat": 13.8333,
+   "liquid": 22.2222,
+   "bp": 0,
+   "method": "foam",
+   "profile": "standard",
+   "source": {
+    "site": "アラジン公式レシピサイト",
+    "url": "https://aladdin-recipe.com/recipe/sponge-cake/"
+   }
+  },
+  {
+   "id": "genoise-17",
+   "category": "ジェノワーズ",
+   "name": "スポンジケーキ",
+   "flour": "小麦粉",
+   "sugar": 111.1111,
+   "egg": 166.6667,
+   "fat": 27.6667,
+   "liquid": 22.2222,
+   "bp": 0,
+   "method": "foam",
+   "profile": "standard",
+   "source": {
+    "site": "アラジン公式レシピサイト",
+    "url": "https://aladdin-recipe.com/recipe/sponge-cake-2/"
+   }
+  },
+  {
+   "id": "genoise-18",
+   "category": "ジェノワーズ",
+   "name": "スポンジケーキ",
+   "flour": "天ぷら粉",
+   "sugar": 100.0,
+   "egg": 150.0,
+   "fat": 12.45,
+   "liquid": 10.0,
+   "bp": 0,
+   "method": "foam",
+   "profile": "standard",
+   "source": {
+    "site": "昭和産業",
+    "url": "https://www.showa-sangyo.co.jp/recipe/list/article.html?pdid2=186"
+   }
+  },
+  {
+   "id": "genoise-19",
+   "category": "ジェノワーズ",
+   "name": "米粉のジェノワーズ (スポンジケーキ)",
+   "flour": "米粉",
+   "sugar": 66.6667,
+   "egg": 166.6667,
+   "fat": 16.6667,
+   "liquid": 16.6667,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/107837/recipe/349741"
+   }
+  },
+  {
+   "id": "genoise-20",
+   "category": "ジェノワーズ",
+   "name": "卵1個でしっとり米粉のジェノワーズ",
+   "flour": "米粉",
+   "sugar": 100.0,
+   "egg": 125.0,
+   "fat": 20.75,
+   "liquid": 25.0,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/397068/recipe/409704"
+   }
+  },
+  {
+   "id": "genoise-21",
+   "category": "ジェノワーズ",
+   "name": "ふわふわ♪しっとり♪きめ細やか♪",
+   "flour": "米粉",
+   "sugar": 100.0,
+   "egg": 187.5,
+   "fat": 25.0,
+   "liquid": 18.75,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/558110/recipe/428295"
+   }
+  },
+  {
+   "id": "genoise-22",
+   "category": "ジェノワーズ",
+   "name": "基本のジェノワーズ(共立てスポンジ)",
+   "flour": "小麦粉",
+   "sugar": 111.1111,
+   "egg": 166.6667,
+   "fat": 18.4444,
+   "liquid": 33.3333,
+   "bp": 0,
+   "method": "foam",
+   "profile": "home",
+   "source": {
+    "site": "Amebaブログ（しゃなママ）",
+    "url": "https://ameblo.jp/natumomo1205/entry-12713887970.html"
+   }
+  },
+  {
+   "id": "pound-11",
+   "category": "パウンドケーキ",
+   "name": "基本のパウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 80,
+   "egg": 100,
+   "fat": 80,
+   "liquid": 0,
+   "bp": 4,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/31868/recipe/137533"
+   }
+  },
+  {
+   "id": "pound-12",
+   "category": "パウンドケーキ",
+   "name": "基本のパウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 83.3333,
+   "fat": 99.6,
+   "liquid": 0,
+   "bp": 0,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/364420/recipe/402791"
+   }
+  },
+  {
+   "id": "pound-13",
+   "category": "パウンドケーキ",
+   "name": "私史上最高のレシピ♡基本のパウンドケーキ♡",
+   "flour": "小麦粉",
+   "sugar": 120,
+   "egg": 100,
+   "fat": 99.6,
+   "liquid": 0,
+   "bp": 4,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/100063/recipe/394819"
+   }
+  },
+  {
+   "id": "pound-14",
+   "category": "パウンドケーキ",
+   "name": "プレーンパウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 30,
+   "egg": 50,
+   "fat": 30,
+   "liquid": 50,
+   "bp": 4,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/348628/recipe/428309"
+   }
+  },
+  {
+   "id": "pound-15",
+   "category": "パウンドケーキ",
+   "name": "100回焼いた黄金比☆",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 83.3333,
+   "fat": 83,
+   "liquid": 0,
+   "bp": 2.2222,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/76127/recipe/180393"
+   }
+  },
+  {
+   "id": "pound-16",
+   "category": "パウンドケーキ",
+   "name": "さくらんぼのパウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 60,
+   "egg": 100,
+   "fat": 83,
+   "liquid": 0,
+   "bp": 2,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "デリッシュキッチン",
+    "url": "https://delishkitchen.tv/recipes/149188020757594611"
+   }
+  },
+  {
+   "id": "pound-17",
+   "category": "パウンドケーキ",
+   "name": "マーガリンで作るパウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 83.3333,
+   "egg": 83.3333,
+   "fat": 69.1667,
+   "liquid": 0,
+   "bp": 1.6667,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "デリッシュキッチン",
+    "url": "https://delishkitchen.tv/recipes/356495863570236653"
+   }
+  },
+  {
+   "id": "pound-18",
+   "category": "パウンドケーキ",
+   "name": "パウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 70,
+   "egg": 100,
+   "fat": 74.7,
+   "liquid": 0,
+   "bp": 2,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/409/"
+   }
+  },
+  {
+   "id": "pound-19",
+   "category": "パウンドケーキ",
+   "name": "基本の米粉パウンドケーキ",
+   "flour": "米粉",
+   "sugar": 90,
+   "egg": 100,
+   "fat": 74.7,
+   "liquid": 0,
+   "bp": 0,
+   "method": "cream",
+   "profile": "standard",
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/25709/"
+   }
+  },
+  {
+   "id": "pound-20",
+   "category": "パウンドケーキ",
+   "name": "ココアのパウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 83.3333,
+   "egg": 83.3333,
+   "fat": 69.1667,
+   "liquid": 0,
+   "bp": 1.1111,
+   "method": "cream",
+   "profile": "standard",
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/410/"
+   }
+  },
+  {
+   "id": "pound-21",
+   "category": "パウンドケーキ",
+   "name": "紅茶のパウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 100,
+   "egg": 83.3333,
+   "fat": 83,
+   "liquid": 12.5,
+   "bp": 1.6667,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/12894/"
+   }
+  },
+  {
+   "id": "pound-22",
+   "category": "パウンドケーキ",
+   "name": "お手軽バターミルク パウンドケーキ",
+   "flour": "小麦粉",
+   "sugar": 83.3333,
+   "egg": 83.3333,
+   "fat": 69.1667,
+   "liquid": 79.1667,
+   "bp": 1.6667,
+   "method": "cream",
+   "profile": "home",
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/429/"
+   }
   }
  ]
 }

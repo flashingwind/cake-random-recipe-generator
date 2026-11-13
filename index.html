@@ -170,6 +170,10 @@ const ANCHORS = [
   { id:'waffle',    name:'ワッフル',       color:'#e76f51', shape:'frame',    method:'mix', sugar:28, egg:50,  fat:21, fatType:'butter', liquid:135, bp:4,   temp:180, time:5 },
   { id:'focaccia',  name:'フォカッチャ',   color:'#606c38', shape:'rect',     method:'mix', sugar:4,  egg:0,   fat:8,  fatType:'oil',    liquid:74,  bp:0,   temp:220, time:25 },
 ];
+
+// 境界カテゴリ（ソーダブレッド等）は領域を締める杭として学習にだけ使う。表示と生成は従来の7カテゴリ。
+const DISPLAY_CATEGORIES = ['パウンドケーキ','ジェノワーズ','シフォンケーキ','カステラ','エンゼルフード','ホットケーキ','クレープ'];
+const DISPLAY_ANCHORS = ANCHORS.filter(a=>DISPLAY_CATEGORIES.includes(ANCHORS.find(b=>b.id===a.id.replace(/-home$/,'')).name));
 function isStandardRecipe(recipe){
   return !/[（(]家庭用[）)]/.test(recipe.name);
 }
@@ -195,9 +199,9 @@ function pickAnchor(id){ const a = ANCHORS.find(x=>x.id===id); const o={}; for (
 
 // ===== ランダム生成：アンカー2つを補間 =====
 function randomBlend(){
-  const a = ANCHORS[Math.floor(Math.random()*ANCHORS.length)];
-  let b = ANCHORS[Math.floor(Math.random()*ANCHORS.length)];
-  if (b.id === a.id) b = ANCHORS[(ANCHORS.indexOf(a)+1) % ANCHORS.length];
+  const a = DISPLAY_ANCHORS[Math.floor(Math.random()*DISPLAY_ANCHORS.length)];
+  let b = DISPLAY_ANCHORS[Math.floor(Math.random()*DISPLAY_ANCHORS.length)];
+  if (b.id === a.id) b = DISPLAY_ANCHORS[(DISPLAY_ANCHORS.indexOf(a)+1) % DISPLAY_ANCHORS.length];
   const t = 0.2 + Math.random()*0.6; // b の重み。端に寄せすぎない
   const o = {};
   for (const p of PARAMS) o[p.key] = +(a[p.key]*(1-t) + b[p.key]*t).toFixed(1);
@@ -263,7 +267,7 @@ function distFull(s, a){
   const d = (x,y,m) => ((x-y)/m)**2;
   return Math.sqrt(d(s.fat,a.fat,110) + d(s.egg,a.egg,420) + d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,200));
 }
-function nearestAnchor(s){ let best=null; for (const a of ANCHORS){ const dd = distFull(s,a); if (!best || dd<best.d) best={a, d:dd}; } return best; }
+function nearestAnchor(s){ let best=null; for (const a of DISPLAY_ANCHORS){ const dd = distFull(s,a); if (!best || dd<best.d) best={a, d:dd}; } return best; }
 
 // ===== UI構築 =====
 const slidersEl = document.getElementById('sliders');
@@ -281,8 +285,8 @@ function segWire(id, key){
 segWire('segMethod','method'); segWire('segFat','fatType');
 document.getElementById('btnRandom').addEventListener('click', randomBlend);
 const legendEl = document.getElementById('legend');
-legendEl.innerHTML = ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}［${profileLabel(a)}］</span>`).join('');
-legendEl.querySelectorAll('canvas').forEach((cv, i)=>{ const a = ANCHORS[i]; drawMarker(cv.getContext('2d'), a.shape, 7.5, 7.5, 6, a.color, null); });
+legendEl.innerHTML = DISPLAY_ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}［${profileLabel(a)}］</span>`).join('');
+legendEl.querySelectorAll('canvas').forEach((cv, i)=>{ const a = DISPLAY_ANCHORS[i]; drawMarker(cv.getContext('2d'), a.shape, 7.5, 7.5, 6, a.color, null); });
 
 // ===== レシピ生成 =====
 function recipeFor(s){
@@ -347,13 +351,14 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
 
 const X_MAX = 110, Y_MAX = 420;
 const ROWS = SVM_FIELD.rows;
+const DISPLAY_ROWS = ROWS.filter(r=>DISPLAY_CATEGORIES.includes(r.category));
 const rowScales = ['fat','egg'].map(key=>{ const mean=ROWS.reduce((s,r)=>s+r[key],0)/ROWS.length; return Math.sqrt(ROWS.reduce((s,r)=>s+(r[key]-mean)**2,0)/ROWS.length)||1; });
 function rowDistance(a,b){ return Math.sqrt(((a.fat-b.fat)/rowScales[0])**2+((a.egg-b.egg)/rowScales[1])**2); }
 const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
 let regionTiles = [];
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
-  rows:ROWS,anchors:ANCHORS,drawMarker,getState:()=>state,
-  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:SVM_FIELD.classes,[18,24,24],document.getElementById('showExtrapolation').checked),
+  rows:DISPLAY_ROWS,anchors:DISPLAY_ANCHORS,drawMarker,getState:()=>state,
+  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:DISPLAY_CATEGORIES,[18,24,24],document.getElementById('showExtrapolation').checked),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
     detail.append(`${row.category}［${row.id}］ 脂肪 ${row.fat}g・卵 ${row.egg}g・水分 ${row.liquid}g／粉100g：`);
@@ -389,7 +394,7 @@ function nearest2D(fat, egg, category){
 function regionAt(x,y,method){
   const point={fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX};
   const result=PROJECTION.inspect(point,method);
-  const neighbors=ROWS.map(row=>({row,distance:rowDistance(point,row)}))
+  const neighbors=DISPLAY_ROWS.map(row=>({row,distance:rowDistance(point,row)}))
     .sort((a,b)=>a.distance-b.distance||a.row.id.localeCompare(b.row.id)).slice(0,5);
   return {...result,neighbors};
 }
@@ -432,13 +437,13 @@ function drawPlot(canvas, method){
   ctx.textAlign='center';
   ctx.fillText('純脂肪 g（下）／バター換算 g（上）', L+PW/2, H-6);
   ctx.save(); ctx.translate(11, T+PH/2); ctx.rotate(-Math.PI/2); ctx.fillText('卵 g', 0, 0); ctx.restore();
-  for (const row of ROWS.filter(r=>r.method===method)){
+  for (const row of DISPLAY_ROWS.filter(r=>r.method===method)){
     if(row.fat>X_MAX || row.egg>Y_MAX)continue;
     const base=baseAnchors.find(a=>a.name===row.category);
     drawMarker(ctx,base.shape,X(row.fat),Y(row.egg),2.7,row.color,'#fff',.5);
   }
 
-  for (const a of ANCHORS){
+  for (const a of DISPLAY_ANCHORS){
     if (a.method===method) drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, a.color, '#fff', 1);
     else drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, '#fff', a.color, 2);
     ctx.fillStyle='#2b2320'; ctx.font='10px sans-serif'; ctx.textAlign='left';
@@ -475,7 +480,7 @@ function render(syncSliders = true){
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `使用モデル：校正付きRBF SVM（元のモデル方式）。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。分類はすべてこのSVMで行い、近傍投票は使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。`;
+document.getElementById('trainingSummary').textContent = `使用モデル：校正付きRBF SVM（元のモデル方式）。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。分類はすべてこのSVMで行い、近傍投票は使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。境界用の6カテゴリは学習のみに使い、表示と生成は7カテゴリです。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();

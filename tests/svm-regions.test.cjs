@@ -53,3 +53,13 @@ test('2D projection is the union of actual 3D voxels along water, not a new 2D c
  assert.equal(projection.inspect({fat:75,egg:150},'foam').type,'insufficient');
  assert.deepEqual(projection.inspect({...point,liquid:0},'foam'),projection.inspect({...point,liquid:300},'foam'));
 });
+
+test('boundary categories are training-only; display and generation use the original seven',()=>{
+ const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+ const literal=html.match(/const DISPLAY_CATEGORIES = \[([^\]]*)\]/)[1];
+ for(const name of ['パウンドケーキ','ジェノワーズ','シフォンケーキ','カステラ','エンゼルフード','ホットケーキ','クレープ'])assert.ok(literal.includes(name),name);
+ for(const name of ['ソーダブレッド','スコーン','マフィン','ポップオーバー','ワッフル','フォカッチャ'])assert.ok(!literal.includes(name),name);
+ assert.equal(field.classes.length,13);
+ assert.ok(html.includes(':DISPLAY_CATEGORIES,'));
+ assert.ok(html.includes('rows:DISPLAY_ROWS'));
+});

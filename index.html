@@ -36,7 +36,8 @@
   .plot-box h3 { font-size: 14px; margin: 0 0 6px; text-align: center; }
   canvas.plot { width: 100%; height: auto; display: block; background:#fff; border:1px solid var(--line); border-radius: 8px; }
   .legend { font-size: 12px; color: var(--sub); display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-  .legend span::before { content: "■"; margin-right: 4px; }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .legend canvas { flex: none; }
   .note { font-size: 12px; color: var(--sub); line-height: 1.7; }
   #blendName { font-size: 18px; font-weight: 700; }
 </style>
@@ -111,21 +112,22 @@
 // ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
 // fat は純脂肪g。バターは重量×0.83、油は重量そのまま。
 const ANCHORS = [
-  { id:'pound',   name:'パウンドケーキ', color:'#c96f2e', method:'cream',    sugar:100, egg:100, fat:83, fatType:'butter', liquid:0,  bp:1, temp:170, time:45 },
-  { id:'genoise', name:'ジェノワーズ',   color:'#4a7fb5', method:'foam',     sugar:95,  egg:190, fat:20, fatType:'butter', liquid:20, bp:0, temp:170, time:28 },
-  { id:'chiffon', name:'シフォンケーキ', color:'#5da24a', method:'separate', sugar:100, egg:300, fat:50, fatType:'oil',    liquid:65, bp:2, temp:170, time:35 },
-  { id:'castella',name:'カステラ',       color:'#8a5fb0', method:'foam',     sugar:140, egg:240, fat:0,  fatType:'none',   liquid:30, bp:0, temp:160, time:55 },
-  { id:'angel',   name:'エンゼルフード', color:'#c2a13d', method:'separate', sugar:135, egg:370, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
-  { id:'genoise-home',  name:'ジェノワーズ（家庭用）',   color:'#7fa8cc', method:'foam',     sugar:114, egg:143, fat:24, fatType:'butter', liquid:36, bp:0, temp:170, time:28 },
-  { id:'chiffon-home',  name:'シフォン（家庭用）',       color:'#8fbc7a', method:'separate', sugar:100, egg:271, fat:43, fatType:'oil',    liquid:57, bp:0, temp:170, time:35 },
-  { id:'castella-home', name:'カステラ（家庭用）',       color:'#a985cc', method:'foam',     sugar:157, egg:200, fat:0,  fatType:'none',   liquid:33, bp:0, temp:170, time:50 },
-  { id:'angel-home',    name:'エンゼルフード（家庭用）', color:'#d3ba6b', method:'separate', sugar:100, egg:210, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
-  { id:'hotcake', name:'ホットケーキ', color:'#e8912d', method:'mix', sugar:24, egg:33,  fat:0,  fatType:'none',   liquid:89,  bp:4, temp:170, time:5 },
-  { id:'crepe',   name:'クレープ',     color:'#6a9a7d', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
+  { id:'pound',   name:'パウンドケーキ', color:'#c96f2e', shape:'circle', method:'cream',    sugar:100, egg:100, fat:83, fatType:'butter', liquid:0,  bp:1, temp:170, time:45 },
+  { id:'genoise', name:'ジェノワーズ',   color:'#4a7fb5', shape:'triangle', method:'foam',     sugar:95,  egg:190, fat:20, fatType:'butter', liquid:20, bp:0, temp:170, time:28 },
+  { id:'chiffon', name:'シフォンケーキ', color:'#5da24a', shape:'square', method:'separate', sugar:100, egg:300, fat:50, fatType:'oil',    liquid:65, bp:2, temp:170, time:35 },
+  { id:'castella',name:'カステラ',       color:'#8a5fb0', shape:'diamond', method:'foam',     sugar:140, egg:240, fat:0,  fatType:'none',   liquid:30, bp:0, temp:160, time:55 },
+  { id:'angel',   name:'エンゼルフード', color:'#c2a13d', shape:'star', method:'separate', sugar:135, egg:370, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
+  { id:'genoise-home',  name:'ジェノワーズ（家庭用）',   color:'#7fa8cc', shape:'triangle', method:'foam',     sugar:114, egg:143, fat:24, fatType:'butter', liquid:36, bp:0, temp:170, time:28 },
+  { id:'chiffon-home',  name:'シフォン（家庭用）',       color:'#8fbc7a', shape:'square', method:'separate', sugar:100, egg:271, fat:43, fatType:'oil',    liquid:57, bp:0, temp:170, time:35 },
+  { id:'castella-home', name:'カステラ（家庭用）',       color:'#a985cc', shape:'diamond', method:'foam',     sugar:157, egg:200, fat:0,  fatType:'none',   liquid:33, bp:0, temp:170, time:50 },
+  { id:'angel-home',    name:'エンゼルフード（家庭用）', color:'#d3ba6b', shape:'star', method:'separate', sugar:100, egg:210, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
+  { id:'hotcake', name:'ホットケーキ', color:'#e8912d', shape:'down', method:'mix', sugar:24, egg:33,  fat:0,  fatType:'none',   liquid:89,  bp:4, temp:170, time:5 },
+  { id:'crepe',   name:'クレープ',     color:'#6a9a7d', shape:'cross', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
 ];
 const METHOD_LABEL = { cream:'クリーミング', foam:'共立て', separate:'別立て', mix:'混ぜるだけ' };
 // ===== 収集した実レシピ（data/recipes.json と同じデータのうち脂肪×卵のみ）。混ぜるだけのグラフに点で重ねる =====
 const SAMPLE_COLORS = { hotcake:'#e8912d', crepe:'#6a9a7d' };
+const SAMPLE_SHAPES = { hotcake:'down', crepe:'cross' };
 const SAMPLES = [
   { c:'hotcake', fat:0, egg:50 }, { c:'hotcake', fat:12, egg:25 }, { c:'hotcake', fat:0, egg:33.3 }, { c:'hotcake', fat:0, egg:50 },
   { c:'hotcake', fat:8.3, egg:50 }, { c:'hotcake', fat:20.8, egg:62.5 }, { c:'hotcake', fat:3.8, egg:0 }, { c:'hotcake', fat:0, egg:0 },
@@ -215,7 +217,9 @@ function segWire(id, key){
 }
 segWire('segMethod','method'); segWire('segFat','fatType');
 document.getElementById('btnRandom').addEventListener('click', randomBlend);
-document.getElementById('legend').innerHTML = ANCHORS.map(a=>`<span style="color:${a.color}">${a.name}</span>`).join('');
+const legendEl = document.getElementById('legend');
+legendEl.innerHTML = ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}</span>`).join('');
+legendEl.querySelectorAll('canvas').forEach((cv, i)=>{ const a = ANCHORS[i]; drawMarker(cv.getContext('2d'), a.shape, 7.5, 7.5, 6, a.color, null); });
 
 // ===== レシピ生成 =====
 function recipeFor(s){
@@ -256,6 +260,20 @@ function recipeFor(s){
   return { rows, steps, mold: moldByMethod[s.method] };
 }
 
+// ===== マーカー（形でケーキの種類を区別。定番と家庭用は同じ形で色違い） =====
+function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
+  ctx.beginPath();
+  if (shape==='circle'){ ctx.arc(x, y, r, 0, Math.PI*2); }
+  else if (shape==='triangle'){ ctx.moveTo(x, y-r); ctx.lineTo(x+r*0.9, y+r*0.75); ctx.lineTo(x-r*0.9, y+r*0.75); ctx.closePath(); }
+  else if (shape==='down'){ ctx.moveTo(x, y+r); ctx.lineTo(x+r*0.9, y-r*0.75); ctx.lineTo(x-r*0.9, y-r*0.75); ctx.closePath(); }
+  else if (shape==='square'){ ctx.rect(x-r*0.85, y-r*0.85, r*1.7, r*1.7); }
+  else if (shape==='diamond'){ ctx.moveTo(x, y-r); ctx.lineTo(x+r*0.85, y); ctx.lineTo(x, y+r); ctx.lineTo(x-r*0.85, y); ctx.closePath(); }
+  else if (shape==='star'){ for (let i=0;i<10;i++){ const rr = i%2 ? r*0.45 : r; const a = -Math.PI/2 + i*Math.PI/5; const px = x+rr*Math.cos(a), py = y+rr*Math.sin(a); if (i) ctx.lineTo(px,py); else ctx.moveTo(px,py); } ctx.closePath(); }
+  else if (shape==='cross'){ const w=r*0.38; ctx.moveTo(x-w,y-r); ctx.lineTo(x+w,y-r); ctx.lineTo(x+w,y-w); ctx.lineTo(x+r,y-w); ctx.lineTo(x+r,y+w); ctx.lineTo(x+w,y+w); ctx.lineTo(x+w,y+r); ctx.lineTo(x-w,y+r); ctx.lineTo(x-w,y+w); ctx.lineTo(x-r,y+w); ctx.lineTo(x-r,y-w); ctx.lineTo(x-w,y-w); ctx.closePath(); }
+  if (fill){ ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); ctx.lineWidth = 1; }
+}
+
 // ===== プロット =====
 const X_MAX = 110, Y_MAX = 420;
 function nearest2D(fat, egg){
@@ -285,17 +303,16 @@ function drawPlot(canvas, method){
   ctx.fillText('純脂肪 g（下）／バター換算 g（上）', L+PW/2, H-6);
   ctx.save(); ctx.translate(11, T+PH/2); ctx.rotate(-Math.PI/2); ctx.fillText('卵 g', 0, 0); ctx.restore();
   for (const a of ANCHORS){
-    ctx.beginPath(); ctx.arc(X(a.fat), Y(a.egg), 6, 0, Math.PI*2);
-    if (a.method===method){ ctx.fillStyle=a.color; ctx.fill(); ctx.strokeStyle='#fff'; ctx.stroke(); }
-    else { ctx.fillStyle='#fff'; ctx.fill(); ctx.strokeStyle=a.color; ctx.lineWidth=2; ctx.stroke(); ctx.lineWidth=1; }
+    if (a.method===method) drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, a.color, '#fff', 1);
+    else drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, '#fff', a.color, 2);
     ctx.fillStyle='#2b2320'; ctx.font='10px sans-serif'; ctx.textAlign='left';
     ctx.fillText(a.name, X(a.fat)+9, Y(a.egg)+3);
   }
   if (method==='mix'){
     for (const sm of SAMPLES){
-      ctx.beginPath(); ctx.arc(X(sm.fat), Y(sm.egg), 2.5, 0, Math.PI*2);
-      ctx.globalAlpha = .8; ctx.fillStyle = SAMPLE_COLORS[sm.c]; ctx.fill(); ctx.globalAlpha = 1;
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = .5; ctx.stroke(); ctx.lineWidth = 1;
+      ctx.globalAlpha = .85;
+      drawMarker(ctx, SAMPLE_SHAPES[sm.c], X(sm.fat), Y(sm.egg), 3.2, SAMPLE_COLORS[sm.c], '#fff', .5);
+      ctx.globalAlpha = 1;
     }
   }
   if (state.method===method){

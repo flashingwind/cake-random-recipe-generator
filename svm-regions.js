@@ -30,12 +30,15 @@
     const v=field.features.map((key,i)=>point[key]/field.domain.scale[i]);
     return field.domain.equations.every(eq=>eq.slice(0,3).reduce((sum,n,i)=>sum+n*v[i],eq[3])<=1e-9);
   }
-  function buildVolume(field,anchors,limits,selected=field.classes,resolution=[18,24,24],extrapolate=false){
+  function buildVolume(field,anchors,limits,selected=field.classes,resolution=[18,24,24],extrapolate=false,carve=null){
     const voxels=[];let contact=null;
     for(let x=0;x<resolution[0];x++)for(let y=0;y<resolution[1];y++)for(let z=0;z<resolution[2];z++){
       const indices=[x,y,z],point=Object.fromEntries(field.features.map((f,i)=>[f,(indices[i]+.5)/resolution[i]*limits[f]]));
       if(!extrapolate && !insideDomain(field,point))continue;
       const scores=predict(field,point,selected),first=scores[0];
+      // Optional carve: drop voxels the caller's mechanism model rejects
+      // (e.g. cannot rise). Carved voxels leave the volume entirely, no grey.
+      if(carve&&carve(first.category,point))continue;
       const other=scores.find(g=>g.category!==first.category&&g.method===first.method&&g.score>=first.score*.75);
       const categories=other?[first,other]:[first];
       const profiles=categories.map(g=>{

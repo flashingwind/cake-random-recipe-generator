@@ -115,7 +115,7 @@
     <canvas id="overview3d" width="960" height="540" tabindex="0" role="img"></canvas>
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
     <p class="note" id="volumeStatus" aria-live="polite"></p>
-    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。個別の距離閾値では切り落とさず、データ全体の範囲外は通常表示しません。</p>
+    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。個別の距離閾値では切り落とさず、データ全体の範囲外は通常表示しません。膨らみ指数で供給不足になる領域は、色を塗らず体積から除きます（クレープは膨らませない設計のため除きません）。</p>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
     <p class="note" id="trainingSummary"></p>
     <details id="sliceView">
@@ -148,7 +148,7 @@
   </section>
 </main>
 <script src="data/svm-field.js?v=8302e099cb1a"></script>
-<script src="svm-regions.js?v=68ff8fd768fc"></script>
+<script src="svm-regions.js?v=4b939831b6c4"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
 // ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
@@ -361,13 +361,22 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
 const X_MAX = 110, Y_MAX = 420;
 const ROWS = SVM_FIELD.rows;
 const DISPLAY_ROWS = ROWS.filter(r=>DISPLAY_CATEGORIES.includes(r.category));
+// 膨らまない領域はグレーにせず、体積から削る。その場所の第1位カテゴリの流儀
+// （アンカーの砂糖・BP・立て方・油脂種別）で膨らみ指数を計算し、供給不足なら除く。
+// クレープは膨らませない設計なので対象にしない。
+function carveNoRise(category, point){
+  if (category === 'クレープ') return false;
+  const a = ANCHORS.find(x=>x.name===category);
+  if (!a) return false;
+  return riseModel({...a, fat:point.fat, egg:point.egg, liquid:point.liquid})[0].level === 'bad';
+}
 const rowScales = ['fat','egg'].map(key=>{ const mean=ROWS.reduce((s,r)=>s+r[key],0)/ROWS.length; return Math.sqrt(ROWS.reduce((s,r)=>s+(r[key]-mean)**2,0)/ROWS.length)||1; });
 function rowDistance(a,b){ return Math.sqrt(((a.fat-b.fat)/rowScales[0])**2+((a.egg-b.egg)/rowScales[1])**2); }
 const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
 let regionTiles = [];
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
   rows:DISPLAY_ROWS,anchors:DISPLAY_ANCHORS,drawMarker,getState:()=>state,
-  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:DISPLAY_CATEGORIES,[18,24,24],document.getElementById('showExtrapolation').checked),
+  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:DISPLAY_CATEGORIES,[18,24,24],document.getElementById('showExtrapolation').checked,carveNoRise),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
     detail.append(`${row.category}［${row.id}］ 脂肪 ${row.fat}g・卵 ${row.egg}g・水分 ${row.liquid}g／粉100g：`);

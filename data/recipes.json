@@ -1998,6 +1998,516 @@
     "site": "共立食品",
     "url": "https://www.kyoritsu-foods.co.jp/recipe/429/"
    }
+  },
+  {
+   "id": "sodabread-01",
+   "category": "ソーダブレッド",
+   "name": "ソーダブレッド",
+   "flour": "全粒粉・薄力粉",
+   "sugar": 0,
+   "egg": 0,
+   "fat": 0,
+   "liquid": 79.4118,
+   "bp": 1.7647,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/20191026172520"
+   }
+  },
+  {
+   "id": "sodabread-02",
+   "category": "ソーダブレッド",
+   "name": "Irish soda Bread",
+   "flour": "薄力粉",
+   "sugar": 0,
+   "egg": 0,
+   "fat": 4.6111,
+   "liquid": 83.3333,
+   "bp": 0.8889,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "中沢乳業",
+    "url": "https://nakazawa-eshop.com/recipe/1509"
+   }
+  },
+  {
+   "id": "sodabread-03",
+   "category": "ソーダブレッド",
+   "name": "ソーダブレッド",
+   "flour": "薄力粉",
+   "sugar": 0,
+   "egg": 33.3333,
+   "fat": 13.8333,
+   "liquid": 20.0,
+   "bp": 4.0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/5548_%E3%82%BD%E3%83%BC%E3%83%80%E3%83%96%E3%83%AC%E3%83%83%E3%83%89.html"
+   }
+  },
+  {
+   "id": "sodabread-04",
+   "category": "ソーダブレッド",
+   "name": "お手軽 ソーダブレッド",
+   "flour": "薄力粉",
+   "sugar": 3.6,
+   "egg": 0,
+   "fat": 0,
+   "liquid": 80.0,
+   "bp": 3.2,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "クラシル",
+    "url": "https://www.kurashiru.com/recipes/1a51019d-38e1-4b2c-a765-db33c9557a69"
+   }
+  },
+  {
+   "id": "sodabread-05",
+   "category": "ソーダブレッド",
+   "name": "全粒粉と黒糖のソーダブレッド",
+   "flour": "全粒粉・薄力粉",
+   "sugar": 7.5,
+   "egg": 16.6667,
+   "fat": 0,
+   "liquid": 60.0,
+   "bp": 2.0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/27305/recipe/198642"
+   }
+  },
+  {
+   "id": "sodabread-06",
+   "category": "ソーダブレッド",
+   "name": "チョコチップソーダブレッド",
+   "flour": "薄力粉",
+   "sugar": 8.3333,
+   "egg": 0,
+   "fat": 0,
+   "liquid": 100.0,
+   "bp": 2.2222,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/20190131094802"
+   }
+  },
+  {
+   "id": "sodabread-07",
+   "category": "ソーダブレッド",
+   "name": "基本のソーダブレッド",
+   "flour": "薄力粉",
+   "sugar": 4.5,
+   "egg": 0,
+   "fat": 7.5,
+   "liquid": 75.0,
+   "bp": 2.0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/special/article/?p=32645"
+   }
+  },
+  {
+   "id": "sodabread-08",
+   "category": "ソーダブレッド",
+   "name": "アイリッシュソーダブレッド（レーズン入り）",
+   "flour": "中力粉",
+   "sugar": 7.5,
+   "egg": 20.8333,
+   "fat": 14.525,
+   "liquid": 75.0,
+   "bp": 3.3333,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "チャリム",
+    "url": "https://charim.soundedfun.dev/ja/recipe/irish-soda-bread"
+   }
+  },
+  {
+   "id": "sodabread-09",
+   "category": "ソーダブレッド",
+   "name": "ブラウンソーダブレッド（全粒粉とバターミルク）",
+   "flour": "小麦粉・全粒粉",
+   "sugar": 0,
+   "egg": 0,
+   "fat": 0,
+   "liquid": 80.0,
+   "bp": 0.8,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "世界ごはん紀行",
+    "url": "https://sekaigohan.com/recipes/europe/ireland/irish-soda-bread"
+   }
+  },
+  {
+   "id": "sodabread-10",
+   "category": "ソーダブレッド",
+   "name": "アイリッシュソーダブレッド（伝統の白パン）",
+   "flour": "小麦粉",
+   "sugar": 0,
+   "egg": 0,
+   "fat": 0,
+   "liquid": 86.1111,
+   "bp": 0.8889,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Irish Around the World",
+    "url": "https://irisharoundtheworld.com/irish-soda-bread-recipe/"
+   }
+  },
+  {
+   "id": "scone-01",
+   "category": "スコーン",
+   "name": "基本のスコーン",
+   "flour": "小麦粉",
+   "sugar": 15,
+   "egg": 0,
+   "fat": 20.75,
+   "liquid": 50,
+   "bp": 4,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/special/article/?p=54489"
+   }
+  },
+  {
+   "id": "scone-02",
+   "category": "スコーン",
+   "name": "基本のサクサクスコーン",
+   "flour": "小麦粉",
+   "sugar": 21,
+   "egg": 0,
+   "fat": 20.75,
+   "liquid": 50,
+   "bp": 3,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00016967"
+   }
+  },
+  {
+   "id": "scone-03",
+   "category": "スコーン",
+   "name": "アメリカンスコーン",
+   "flour": "小麦粉",
+   "sugar": 15,
+   "egg": 0,
+   "fat": 20.75,
+   "liquid": 50,
+   "bp": 5,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/success/vol5.php"
+   }
+  },
+  {
+   "id": "scone-04",
+   "category": "スコーン",
+   "name": "フライパンで焼くスコーン",
+   "flour": "小麦粉",
+   "sugar": 10,
+   "egg": 25,
+   "fat": 24.9,
+   "liquid": 25,
+   "bp": 3.5,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/special/article/?p=49861"
+   }
+  },
+  {
+   "id": "scone-05",
+   "category": "スコーン",
+   "name": "イングリッシュスコーン",
+   "flour": "小麦粉",
+   "sugar": 10,
+   "egg": 0,
+   "fat": 19.3667,
+   "liquid": 60,
+   "bp": 4,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/success/vol24.php"
+   }
+  },
+  {
+   "id": "scone-06",
+   "category": "スコーン",
+   "name": "基本のスコーン。",
+   "flour": "小麦粉",
+   "sugar": 15,
+   "egg": 25,
+   "fat": 29.05,
+   "liquid": 25,
+   "bp": 4,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/11285/recipe/388231"
+   }
+  },
+  {
+   "id": "scone-07",
+   "category": "スコーン",
+   "name": "ざっくり系スコーン",
+   "flour": "小麦粉",
+   "sugar": 10,
+   "egg": 15,
+   "fat": 20.75,
+   "liquid": 25,
+   "bp": 2.5,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/199129/recipe/409320"
+   }
+  },
+  {
+   "id": "scone-08",
+   "category": "スコーン",
+   "name": "雑さが命☆基本の本格スコーン！",
+   "flour": "小麦粉",
+   "sugar": 5.3846,
+   "egg": 23.0769,
+   "fat": 19.1538,
+   "liquid": 46.1538,
+   "bp": 7.6923,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/84356/recipe/210320"
+   }
+  },
+  {
+   "id": "scone-09",
+   "category": "スコーン",
+   "name": "基本のスコーン",
+   "flour": "小麦粉",
+   "sugar": 9.6,
+   "egg": 0,
+   "fat": 26.56,
+   "liquid": 36,
+   "bp": 4.8,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "オレンジページ",
+    "url": "https://www.orangepage.net/food/basic-sweets/33433"
+   }
+  },
+  {
+   "id": "scone-10",
+   "category": "スコーン",
+   "name": "プロが教える!基本のスコーン",
+   "flour": "小麦粉",
+   "sugar": 29.5455,
+   "egg": 9.0909,
+   "fat": 24.5227,
+   "liquid": 45.4545,
+   "bp": 4.5455,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/20230516170917"
+   }
+  },
+  {
+   "id": "muffin-01",
+   "category": "マフィン",
+   "name": "バターのプレーンマフィン",
+   "flour": "小麦粉",
+   "sugar": 45.4545,
+   "egg": 45.4545,
+   "fat": 37.7273,
+   "liquid": 50.0,
+   "bp": 1.3636,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00027611"
+   }
+  },
+  {
+   "id": "muffin-02",
+   "category": "マフィン",
+   "name": "基本のプレーンマフィン",
+   "flour": "小麦粉",
+   "sugar": 68.75,
+   "egg": 62.5,
+   "fat": 41.5,
+   "liquid": 62.5,
+   "bp": 2.5,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/success/vol23.php"
+   }
+  },
+  {
+   "id": "muffin-03",
+   "category": "マフィン",
+   "name": "マフィン",
+   "flour": "小麦粉",
+   "sugar": 44.4444,
+   "egg": 55.5556,
+   "fat": 46.1111,
+   "liquid": 27.7778,
+   "bp": 2.2222,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "東芝ライフスタイル",
+    "url": "https://www.toshiba-lifestyle.com/jp/microwaves/recipes/detail/er_td7000/766/"
+   }
+  },
+  {
+   "id": "muffin-04",
+   "category": "マフィン",
+   "name": "マフィン",
+   "flour": "小麦粉",
+   "sugar": 40.0,
+   "egg": 40.0,
+   "fat": 49.8,
+   "liquid": 40.0,
+   "bp": 4.8,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "日立の家電品",
+    "url": "https://kadenfan.hitachi.co.jp/sp/range/recipe/mro-ts8/h030.html"
+   }
+  },
+  {
+   "id": "muffin-05",
+   "category": "マフィン",
+   "name": "プレーンマフィン☆カップケーキ",
+   "flour": "小麦粉",
+   "sugar": 62.5,
+   "egg": 62.5,
+   "fat": 51.875,
+   "liquid": 37.5,
+   "bp": 3.75,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00012969"
+   }
+  },
+  {
+   "id": "muffin-06",
+   "category": "マフィン",
+   "name": "米粉のプレーンマフィン",
+   "flour": "米粉",
+   "sugar": 58.3333,
+   "egg": 100.0,
+   "fat": 74.8333,
+   "liquid": 16.6667,
+   "bp": 3.3333,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00022635"
+   }
+  },
+  {
+   "id": "muffin-07",
+   "category": "マフィン",
+   "name": "基本のプレーンマフィン",
+   "flour": "小麦粉",
+   "sugar": 46.6667,
+   "egg": 40.0,
+   "fat": 33.2,
+   "liquid": 53.3333,
+   "bp": 3.3333,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/9009"
+   }
+  },
+  {
+   "id": "muffin-08",
+   "category": "マフィン",
+   "name": "基本のマフィン（クランブル）",
+   "flour": "小麦粉",
+   "sugar": 66.6667,
+   "egg": 45.8333,
+   "fat": 34.5833,
+   "liquid": 45.8333,
+   "bp": 4.1667,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/20171005111845"
+   }
+  },
+  {
+   "id": "muffin-09",
+   "category": "マフィン",
+   "name": "ココナッツマフィン",
+   "flour": "小麦粉",
+   "sugar": 100.0,
+   "egg": 100.0,
+   "fat": 83.3333,
+   "liquid": 100.0,
+   "bp": 5.0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/4228"
+   }
+  },
+  {
+   "id": "muffin-10",
+   "category": "マフィン",
+   "name": "ごまのマフィン2種（基本生地）",
+   "flour": "小麦粉",
+   "sugar": 50.0,
+   "egg": 33.3333,
+   "fat": 27.6667,
+   "liquid": 40.0,
+   "bp": 4.0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "富澤商店",
+    "url": "https://tomiz.com/recipe/pro/detail/o-se-201303a-01"
+   }
   }
  ]
 }

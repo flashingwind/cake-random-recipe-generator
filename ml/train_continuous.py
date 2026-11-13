@@ -4,6 +4,7 @@ Exports every class probability on a 3D lattice, not just the winning class.
 import json
 from pathlib import Path
 import numpy as np
+from scipy.spatial import ConvexHull
 from sklearn.svm import SVC
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -31,11 +32,14 @@ def main():
     # Preserve the original final-training choice: public recipes plus 11 anchors.
     source=(ROOT/'data/classifier-model.js').read_text(); anchor_data=json.loads(source.split('=',1)[1].rstrip(';\n '))
     anchors=[r for r in anchor_data['rows'] if r['kind']=='anchor-estimate']
-    final=estimator().fit(np.vstack([X,[[r[k] for k in FEATURES] for r in anchors]]),np.concatenate([y,[r['category'] for r in anchors]]))
+    Xall=np.vstack([X,[[r[k] for k in FEATURES] for r in anchors]])
+    final=estimator().fit(Xall,np.concatenate([y,[r['category'] for r in anchors]]))
+    domain_scale=np.array([110.,420.,400.])
+    domain={'kind':'global-convex-hull','scale':domain_scale.tolist(),'equations':np.round(ConvexHull(Xall/domain_scale).equations,12).tolist(),'points':len(Xall)}
     axes=[list(range(0,111,5)),list(range(0,421,15)),list(range(0,401,20))]
     points=np.array([[f,e,w] for f in axes[0] for e in axes[1] for w in axes[2]])
     probs=final.predict_proba(points)
-    out={'model':report['model'],'features':FEATURES,'classes':final.classes_.tolist(),'axes':axes,
+    out={'domain':domain,'model':report['model'],'features':FEATURES,'classes':final.classes_.tolist(),'axes':axes,
       'order':'fat-major, egg, liquid, class','probabilities':np.round(probs,5).tolist(),
       'summary':{'publicRecipes':len(rows),'anchorEstimates':len(anchors),'trainingTotal':len(rows)+len(anchors),'anchorIds':[a['id'] for a in anchors],'evaluation':report},
       'limits_note':'Continuous interpolated SVM scores describe category similarity, not measured baking outcomes or ingredient blend fractions.'}

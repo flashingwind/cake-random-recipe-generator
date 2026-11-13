@@ -1,5 +1,5 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const {predict,buildVolume}=require('../svm-regions.js');
+const {predict,buildVolume,insideDomain}=require('../svm-regions.js');
 const context={};vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../data/svm-field.js'),'utf8'),context);
 const field=context.SVM_FIELD;
 const anchors=vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').match(/const ANCHORS = (\[[\s\S]*?\n\]);/)[0]+'; ANCHORS');
@@ -17,8 +17,17 @@ test('scores are continuous and sum to one; a focused view preserves the same un
 });
 test('three-way SVM volume has no distance-cutoff holes and no cross-method stripes',()=>{
  const volume=buildVolume(field,anchors,{fat:110,egg:420,liquid:400},focus,[8,10,10]);
- assert.equal(volume.cells,volume.totalCells);assert.equal(volume.cells,800);
+ assert.ok(volume.cells>0&&volume.cells<volume.totalCells);
+ assert.ok(volume.voxels.every(v=>insideDomain(field,{fat:(v.indices[0]+.5)/8*110,egg:(v.indices[1]+.5)/10*420,liquid:(v.indices[2]+.5)/10*400})));
  assert.deepEqual(new Set(volume.voxels.flatMap(c=>c.categories.map(g=>g.category))),new Set(focus));
  assert.ok(volume.faces.every(f=>f.categories.length===1));if(volume.contact){assert.ok(volume.contact.mass>=.6);assert.ok(volume.contact.scores.every(g=>g.absolute>0));}
  assert.ok(volume.faces.every(f=>/^#[0-9a-f]{6}$/.test(f.color)));
+});
+
+test('outside-data extrapolation is an explicit view option; training points and the three-way contact remain inside',()=>{
+ for(const a of anchors)assert.ok(insideDomain(field,a),a.id);
+ assert.ok(insideDomain(field,{fat:64.1666666667,egg:166.25,liquid:41.6666666667}));
+ assert.equal(insideDomain(field,{fat:110,egg:420,liquid:400}),false);
+ const extrapolated=buildVolume(field,anchors,{fat:110,egg:420,liquid:400},focus,[8,10,10],true);
+ assert.equal(extrapolated.cells,800);assert.equal(extrapolated.extrapolate,true);
 });

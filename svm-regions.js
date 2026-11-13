@@ -23,10 +23,16 @@
     const rgb=[0,0,0];for(const g of scores){const n=parseInt(g.color.slice(1),16);[n>>16&255,n>>8&255,n&255].forEach((v,i)=>rgb[i]+=v*g.score);}
     return '#'+rgb.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
   }
-  function buildVolume(field,anchors,limits,selected=field.classes,resolution=[18,24,24]){
+  function insideDomain(field,point){
+    if(!field.domain)return true;
+    const v=field.features.map((key,i)=>point[key]/field.domain.scale[i]);
+    return field.domain.equations.every(eq=>eq.slice(0,3).reduce((sum,n,i)=>sum+n*v[i],eq[3])<=1e-9);
+  }
+  function buildVolume(field,anchors,limits,selected=field.classes,resolution=[18,24,24],extrapolate=false){
     const voxels=[];let contact=null;
     for(let x=0;x<resolution[0];x++)for(let y=0;y<resolution[1];y++)for(let z=0;z<resolution[2];z++){
       const indices=[x,y,z],point=Object.fromEntries(field.features.map((f,i)=>[f,(indices[i]+.5)/resolution[i]*limits[f]]));
+      if(!extrapolate && !insideDomain(field,point))continue;
       const scores=predict(field,point,selected),first=scores[0];
       const other=scores.find(g=>g.category!==first.category&&g.method===first.method&&g.score>=first.score*.75);
       const categories=other?[first,other]:[first];
@@ -45,9 +51,9 @@
       }
     }
     const mesh=typeof module!=='undefined'&&module.exports?require('./region-grid.js').meshVolume:root.RecipeRegions.meshVolume;
-    return {...mesh(voxels,resolution),contact,selected,model:'SVM'};
+    return {...mesh(voxels,resolution),contact,selected,model:'SVM',extrapolate};
   }
-  const api={predict,blend,buildVolume};
+  const api={predict,blend,buildVolume,insideDomain};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   else root.SVMRegions=api;
 })(globalThis);

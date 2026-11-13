@@ -108,16 +108,17 @@
     <p class="note">脂肪・卵・水分の3軸で、各ケーキの領域を色付きの立体と名前で表示します。ドラッグまたは矢印キーで回転できます。小さい点は学習データの確認用、白抜きはアンカー、★が生成中の配合です。</p>
     <p class="note">上部の水分スライダーは生成レシピの調整用です。3D・2Dの全体図のデータは絞り込みません。</p>
     <p class="note"><label><input id="focusThree" type="checkbox"> パウンド・シフォン・ジェノワーズの関係に絞って表示</label>（学習モデルは全7カテゴリ共通。オンにすると、他のケーキに近い場所もこの3種内での相対比較になります。）</p>
+    <p class="note"><label><input id="showExtrapolation" type="checkbox"> データ範囲外への推定も表示</label>（通常は実レシピとアンカー全体が囲む範囲内を表示）</p>
     <canvas id="overview3d" width="960" height="540" tabindex="0" role="img"></canvas>
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
     <p class="note" id="volumeStatus" aria-live="polite"></p>
-    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。距離による領域の切り落としは行いません。</p>
+    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。個別の距離閾値では切り落とさず、データ全体の範囲外は通常表示しません。</p>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
     <p class="note" id="trainingSummary"></p>
     <details id="sliceView">
       <summary>2D投影図を開く（3D領域を水分方向に重ねる）</summary>
     <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定せず、3Dで塗った領域を水分方向に重ねた投影図です。2Dだけで分類し直すことはしません。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
-    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方のカテゴリ領域が投影で重なる場所。空白でつながりを切らず、SVMの推定領域を投影します。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
+    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方のカテゴリ領域が投影で重なる場所。データ全体の範囲外はグレーです。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
     <p class="note">水分が異なるレシピも同じ平面に重なるため、2Dの斜線は投影上の重なりであり、3Dの同じ位置でデータが食い違うとは限りません。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
 
     <div class="plots">
@@ -144,8 +145,8 @@
   </section>
 </main>
 <script src="data/classifier-model.js?v=607c4290b09f"></script>
-<script src="data/svm-field.js?v=089a64bf29fe"></script>
-<script src="svm-regions.js?v=dc9359edb6e7"></script>
+<script src="data/svm-field.js?v=4a7d18d301be"></script>
+<script src="svm-regions.js?v=94901c8508aa"></script>
 <script src="region-grid.js?v=b2b22be54374"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
@@ -341,7 +342,7 @@ const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
 let regionTiles = [];
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
   rows:REGION_MODEL.rows,anchors:ANCHORS,drawMarker,getState:()=>state,
-  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:SVM_FIELD.classes),
+  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:SVM_FIELD.classes,[18,24,24],document.getElementById('showExtrapolation').checked),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
     detail.append(`${row.category}［${row.id}］ 脂肪 ${row.fat}g・卵 ${row.egg}g・水分 ${row.liquid}g／粉100g：`);
@@ -352,7 +353,7 @@ let VOLUME = overview.getVolume();
 let PROJECTION = RecipeRegions.projectVolume(VOLUME,VOLUME.limits);
 function updateVolumeStatus(){
   let text=document.getElementById('showRegions').checked
-    ? `SVMの3D領域を表示中（脂肪・卵・水分の3項目）。データから遠い場所もモデルの推定としてつなげて表示します。`
+    ? `SVMの3D領域を表示中（脂肪・卵・水分の3項目）。${VOLUME.extrapolate?'データ範囲外への推定も表示しています。':'実レシピとアンカー全体が囲む範囲内を表示しています。'}`
     : '3D領域は非表示です。「領域の塗り分けを表示」をオンにすると表示します。';
   if(VOLUME.selected.length===3 && !VOLUME.contact){text+=' 他カテゴリの優勢な場所を除くと、3種のスコアが拮抗する候補は見つかりません。';}
   if(VOLUME.contact){
@@ -364,7 +365,9 @@ function updateVolumeStatus(){
 }
 updateVolumeStatus();
 document.getElementById('showRegions').addEventListener('change',event=>{overview.setRegions(event.target.checked);updateVolumeStatus();});
-document.getElementById('focusThree').addEventListener('change',()=>{overview.rebuildRegions();VOLUME=overview.getVolume();PROJECTION=RecipeRegions.projectVolume(VOLUME,VOLUME.limits);updateVolumeStatus();render(false);});
+function rebuildSVMView(){overview.rebuildRegions();VOLUME=overview.getVolume();PROJECTION=RecipeRegions.projectVolume(VOLUME,VOLUME.limits);updateVolumeStatus();render(false);}
+document.getElementById('focusThree').addEventListener('change',rebuildSVMView);
+document.getElementById('showExtrapolation').addEventListener('change',rebuildSVMView);
 document.getElementById('resetOverview').addEventListener('click',overview.reset);
 document.getElementById('zoomOverviewIn').addEventListener('click',()=>overview.changeZoom(1.1));
 document.getElementById('zoomOverviewOut').addEventListener('click',()=>overview.changeZoom(1/1.1));

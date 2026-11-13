@@ -516,13 +516,17 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const y=(event.clientY-rect.top)*canvas.height/rect.height-30;
     if(x<0||x>402||y<0||y>294)return;
     const method=canvas.id.slice(5);
-    const result=regionAt(x,y,method);
-    clickMark={method, fat:x/402*X_MAX, egg:(1-y/294)*Y_MAX};
+    // 色はタイル中心で判定しているので、クリックもタイル単位にそろえる。
+    // ずらさないと、境界付近で印と色と報告が食い違って見える。
+    const tw=402/VOLUME.resolution[0], th=294/VOLUME.resolution[1];
+    const cx=(Math.floor(x/tw)+0.5)*tw, cy=(Math.floor(y/th)+0.5)*th;
+    const result=regionAt(cx,cy,method);
+    clickMark={method, fat:cx/402*X_MAX, egg:(1-cy/294)*Y_MAX};
     drawPlot(canvas, method);
     const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'モデル領域内'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
-    heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
+    heading.textContent=`${names[result.type]}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
     detail.append(heading);
     for(const {row,distance} of result.neighbors.slice(0,3)){
       const p=document.createElement('p');

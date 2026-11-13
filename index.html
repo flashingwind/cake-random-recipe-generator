@@ -117,7 +117,7 @@
     <p class="note" id="trainingSummary"></p>
     <details id="sliceView">
       <summary>2D投影図を開く（3D領域を水分方向に重ねる）</summary>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定せず、3Dで塗った領域を水分方向に重ねた投影図です。2Dだけで分類し直すことはしません。SVMの領域で分類し、境界付近のグリッドを細かく表示します。</p>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定せず、3Dで塗った領域を水分方向に重ねた投影図です。2Dだけで分類し直すことはしません。学習モデルの領域で分類し、境界付近のグリッドを細かく表示します。</p>
     <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方のカテゴリ領域が投影で重なる場所。データ全体の範囲外はグレーです。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
     <p class="note">水分が異なるレシピも同じ平面に重なるため、2Dの斜線は投影上の重なりであり、3Dの同じ位置でデータが食い違うとは限りません。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
 
@@ -144,8 +144,8 @@
     </div>
   </section>
 </main>
-<script src="data/svm-field.js?v=345e372194cf"></script>
-<script src="svm-regions.js?v=48d3d1a8f7f4"></script>
+<script src="data/svm-field.js?v=8302e099cb1a"></script>
+<script src="svm-regions.js?v=68ff8fd768fc"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
 // ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
@@ -347,7 +347,7 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
   if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); ctx.lineWidth = 1; }
 }
 
-// ===== SVMの3D領域と、その2D投影 =====
+// ===== 学習モデルの3D領域と、その2D投影 =====
 
 const X_MAX = 110, Y_MAX = 420;
 const ROWS = SVM_FIELD.rows;
@@ -369,7 +369,7 @@ let VOLUME = overview.getVolume();
 let PROJECTION = SVMRegions.projectVolume(VOLUME,VOLUME.limits);
 function updateVolumeStatus(){
   let text=document.getElementById('showRegions').checked
-    ? `SVMの3D領域を表示中（脂肪・卵・水分の3項目）。${VOLUME.extrapolate?'データ範囲外への推定も表示しています。':'実レシピとアンカー全体が囲む範囲内を表示しています。'}`
+    ? `${SVM_FIELD.estimator.toUpperCase()}の3D領域を表示中（脂肪・卵・水分の3項目）。${VOLUME.extrapolate?'データ範囲外への推定も表示しています。':'実レシピとアンカー全体が囲む範囲内を表示しています。'}`
     : '3D領域は非表示です。「領域の塗り分けを表示」をオンにすると表示します。';
   if(VOLUME.selected.length===3 && !VOLUME.contact){text+=' 他カテゴリの優勢な場所を除くと、3種のスコアが拮抗する候補は見つかりません。';}
   if(VOLUME.contact){
@@ -480,7 +480,7 @@ function render(syncSliders = true){
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `使用モデル：校正付きRBF SVM（元のモデル方式）。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。分類はすべてこのSVMで行い、近傍投票は使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。境界用の6カテゴリは学習のみに使い、表示と生成は7カテゴリです。`;
+document.getElementById('trainingSummary').textContent = `使用モデル：${SVM_FIELD.model}。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。分類はすべてこのSVMで行い、近傍投票は使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。境界用の6カテゴリは学習のみに使い、表示と生成は7カテゴリです。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();
@@ -488,7 +488,7 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const y=(event.clientY-rect.top)*canvas.height/rect.height-30;
     if(x<0||x>402||y<0||y>294)return;
     const result=regionAt(x,y,canvas.id.slice(5));
-    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'SVMの領域内'};
+    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'モデル領域内'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
     heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;

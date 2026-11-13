@@ -1,5 +1,6 @@
 {
-  "model": "RBF SVM C=2 gamma=scale + sigmoid calibration cv=3 (original estimator family)",
+  "model": "Class-conditional Gaussian KDE (Scott bandwidth) + Bayes; experimental",
+  "estimator": "kde",
   "features": [
     "fat",
     "egg",
@@ -7,24 +8,24 @@
   ],
   "evaluation": "leave-one-source-host-out; public recipes only",
   "observed_recipes": 179,
-  "correct": 108,
-  "accuracy": 0.6033519553072626,
+  "correct": 118,
+  "accuracy": 0.659217877094972,
   "per_category": {
     "エンゼルフード": {
       "count": 8,
-      "correct": 1
+      "correct": 4
     },
     "カステラ": {
       "count": 10,
-      "correct": 3
+      "correct": 8
     },
     "クレープ": {
       "count": 15,
-      "correct": 13
+      "correct": 10
     },
     "シフォンケーキ": {
       "count": 25,
-      "correct": 24
+      "correct": 23
     },
     "ジェノワーズ": {
       "count": 24,
@@ -32,15 +33,15 @@
     },
     "スコーン": {
       "count": 10,
-      "correct": 10
+      "correct": 9
     },
     "ソーダブレッド": {
       "count": 10,
-      "correct": 0
+      "correct": 1
     },
     "パウンドケーキ": {
       "count": 23,
-      "correct": 22
+      "correct": 21
     },
     "フォカッチャ": {
       "count": 10,
@@ -52,11 +53,11 @@
     },
     "ポップオーバー": {
       "count": 10,
-      "correct": 1
+      "correct": 4
     },
     "マフィン": {
       "count": 10,
-      "correct": 1
+      "correct": 5
     },
     "ワッフル": {
       "count": 10,

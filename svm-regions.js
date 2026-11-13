@@ -1,4 +1,4 @@
-// Interpolate the calibrated SVM's full probability field. No nearest-neighbor
+// Interpolate the trained classifier's full probability field. No nearest-neighbor
 // voting or distance cutoff participates in region classification.
 (function(root){
   const palette={'パウンドケーキ':'#c96f2e','ジェノワーズ':'#4a7fb5','シフォンケーキ':'#5da24a','カステラ':'#8a5fb0','エンゼルフード':'#c2a13d','ホットケーキ':'#e8912d','クレープ':'#6a9a7d','ソーダブレッド':'#9c6644','スコーン':'#e07a5f','マフィン':'#bc4749','ポップオーバー':'#2a9d8f','ワッフル':'#e76f51','フォカッチャ':'#606c38'};
@@ -16,7 +16,9 @@
       values.forEach((p,i)=>probabilities[i]+=p*weight);
     }
     const total=field.classes.reduce((sum,name,i)=>sum+(selected.includes(name)?probabilities[i]:0),0);
-    return field.classes.map((category,i)=>({category,color:palette[category],method:methods[category],score:probabilities[i]/total,absolute:probabilities[i]}))
+    // A selected subset can carry zero rounded mass at a point (e.g. KDE tails);
+    // fall back to a uniform split rather than dividing by zero.
+    return field.classes.map((category,i)=>({category,color:palette[category],method:methods[category],score:total>0?probabilities[i]/total:(selected.includes(category)?1/selected.length:0),absolute:probabilities[i]}))
       .filter(g=>selected.includes(g.category)).sort((a,b)=>b.score-a.score||a.category.localeCompare(b.category));
   }
   function blend(scores){
@@ -50,7 +52,7 @@
         if(mass>=.6 && scores[2].absolute>=otherMax && (!contact||gap<contact.gap))contact={point,scores,gap,mass};
       }
     }
-    return {...meshVolume(voxels,resolution),contact,selected,model:'SVM',extrapolate};
+    return {...meshVolume(voxels,resolution),contact,selected,model:field.estimator,extrapolate};
   }
   function meshVolume(voxels,resolution){
     const key=(x,y,z)=>`${x},${y},${z}`;
@@ -69,7 +71,7 @@
     }
     return {faces,voxels:[...cells.values()],cells:cells.size,totalCells:resolution.reduce((a,b)=>a*b,1),resolution};
   }
-  // The 2D view is a projection of the 3D SVM voxels along the water axis, never a second classifier.
+  // The 2D view is a projection of the 3D model voxels along the water axis, never a second classifier.
   function projectVolume(volume,limits){
     const columns=new Map();
     for(const voxel of volume.voxels){

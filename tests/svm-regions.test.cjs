@@ -4,10 +4,10 @@ const context={};vm.runInNewContext(fs.readFileSync(require('node:path').join(__
 const field=context.SVM_FIELD;
 const anchors=vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').match(/const ANCHORS = (\[[\s\S]*?\n\]);/)[0]+'; ANCHORS');
 const focus=['パウンドケーキ','シフォンケーキ','ジェノワーズ'];
-test('SVM final training includes all observed recipes and all 17 anchors; evaluation excludes anchors',()=>{
+test('final training includes all observed recipes and all 17 anchors; evaluation excludes anchors',()=>{
  assert.equal(field.summary.publicRecipes,179);assert.equal(field.summary.anchorEstimates,17);assert.equal(field.summary.trainingTotal,196);
  assert.equal(field.summary.anchorIds.length,17);assert.equal(field.summary.evaluation.observed_recipes,179);
- assert.match(field.model,/SVM/);assert.deepEqual(Array.from(field.features),['fat','egg','liquid']);
+ assert.match(field.model,field.estimator==='kde'?/KDE/:/SVM/);assert.deepEqual(Array.from(field.features),['fat','egg','liquid']);
 });
 test('scores are continuous and sum to one; a focused view preserves the same underlying SVM scores',()=>{
  const point={fat:50,egg:200,liquid:70};const all=predict(field,point),focused=predict(field,point,focus),near=predict(field,{...point,liquid:70.0001});
@@ -62,4 +62,11 @@ test('boundary categories are training-only; display and generation use the orig
  assert.equal(field.classes.length,13);
  assert.ok(html.includes(':DISPLAY_CATEGORIES,'));
  assert.ok(html.includes('rows:DISPLAY_ROWS'));
+});
+
+test('a focused view with zero rounded mass at a point still returns finite scores',()=>{
+ const point={fat:110,egg:420,liquid:0};
+ const focused=predict(field,point,focus);
+ assert.ok(focused.every(g=>Number.isFinite(g.score)));
+ assert.ok(Math.abs(focused.reduce((s,g)=>s+g.score,0)-1)<1e-9);
 });

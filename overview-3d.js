@@ -3,29 +3,40 @@
   function create(canvas,{rows,anchors,drawMarker,getState,onSelect}){
     const ctx=canvas.getContext('2d');
     const limits={fat:Math.max(110,...rows.map(r=>r.fat)),egg:Math.max(420,...rows.map(r=>r.egg)),liquid:Math.max(400,...rows.map(r=>r.liquid))};
+    let width=960,height=540;
     let yaw=-.65,pitch=.3,zoom=1,drag=null,points=[];
     function project(v){
       const [x,y,z]=v;
       const rx=x*Math.cos(yaw)+z*Math.sin(yaw),rz=-x*Math.sin(yaw)+z*Math.cos(yaw);
       const ry=y*Math.cos(pitch)-rz*Math.sin(pitch),depth=y*Math.sin(pitch)+rz*Math.cos(pitch);
-      const scale=130*zoom*5/(5+depth);
-      return {x:canvas.width/2+rx*scale,y:canvas.height/2-ry*scale,depth};
+      const scale=Math.min(width*.25,height*.27)*zoom*5/(5+depth);
+      return {x:width/2+rx*scale,y:height/2-ry*scale,depth};
     }
     function coordinates(row){return [row.fat/limits.fat*2-1,row.egg/limits.egg*2-1,row.liquid/limits.liquid*2-1];}
     function line(a,b,color){const p=project(a),q=project(b);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=color;ctx.stroke();}
+    function labelText(text,x,y){
+      const half=ctx.measureText(String(text)).width/2;
+      ctx.fillText(text,Math.max(half+5,Math.min(width-half-5,x)),Math.max(18,Math.min(height-8,y)));
+    }
     function render(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+      width=canvas.clientWidth || 960;height=canvas.clientHeight || 540;
+      const ratio=window.devicePixelRatio || 1;
+      if(canvas.width!==Math.round(width*ratio) || canvas.height!==Math.round(height*ratio)){
+        canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
+      }
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      ctx.clearRect(0,0,width,height);ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
       const corners=[];for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1])corners.push([x,y,z]);
       for(let i=0;i<corners.length;i++)for(let j=i+1;j<corners.length;j++)if(corners[i].filter((v,k)=>v!==corners[j][k]).length===1)line(corners[i],corners[j],'#e3d9d2');
       const origin=[-1,-1,-1];
       for(const [index,key,label] of [[0,'fat','純脂肪'],[1,'egg','卵'],[2,'liquid','水分']]){
         const end=[...origin];end[index]=1;line(origin,end,'#6b5d54');
-        ctx.font='13px sans-serif';ctx.fillStyle='#6b5d54';ctx.textAlign='center';
+        ctx.font='14px sans-serif';ctx.fillStyle='#6b5d54';ctx.textAlign='center';
         for(const fraction of [0,.5,1]){
           const v=[...origin];v[index]=fraction*2-1;
-          const p=project(v);ctx.fillText(Math.round(limits[key]*fraction),p.x+(index===1?-17:0),p.y+(index===1?4:17));
+          const p=project(v);labelText(Math.round(limits[key]*fraction),p.x+(index===1?-17:0),p.y+(index===1?4:17));
         }
-        const v=[...end];v[index]=1.3;const p=project(v);ctx.font='bold 15px sans-serif';ctx.fillText(label+' g',p.x,p.y);
+        const v=[...end];v[index]=1.3;const p=project(v);ctx.font='bold 16px sans-serif';labelText(label+' g',p.x,p.y);
       }
       const base=anchors.filter(a=>!a.id.endsWith('-home'));
       points=rows.map(row=>({...project(coordinates(row)),row,kind:'recipe',shape:base.find(a=>a.name===row.category).shape,radius:4.5}));
@@ -48,7 +59,7 @@
     canvas.addEventListener('pointerup',event=>{
       if(!drag)return;
       if(!drag.moved){
-        const rect=canvas.getBoundingClientRect(),x=(event.clientX-rect.left)*canvas.width/rect.width,y=(event.clientY-rect.top)*canvas.height/rect.height;
+        const rect=canvas.getBoundingClientRect(),x=(event.clientX-rect.left)*width/rect.width,y=(event.clientY-rect.top)*height/rect.height;
         const nearest=[...points].sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0];
         if(nearest && Math.hypot(nearest.x-x,nearest.y-y)<16)onSelect(nearest.row);
       }
@@ -63,6 +74,7 @@
       else if(event.key==='-'){event.preventDefault();changeZoom(1/1.1);}
       else if(event.key==='Home'){event.preventDefault();reset();}
     });
+    const resizeObserver=new ResizeObserver(()=>render());resizeObserver.observe(canvas);
     return {render,reset,changeZoom,getPoints:()=>points.map(p=>({id:p.row.id,x:p.x,y:p.y}))};
   }
   root.RecipeOverview={create};

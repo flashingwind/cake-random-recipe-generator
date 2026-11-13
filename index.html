@@ -170,16 +170,37 @@ function randomBlend(){
   render();
 }
 
+// ===== 膨らみモデル（仕組みベース。種類の分類器とは別に置く） =====
+// 供給 = 卵の泡（立て方で効率が違う。共立て・別立ては油脂で泡が潰れる）＋クリーミングの空気＋BPのガス
+// 負荷 = 粉（基準100）＋油脂の重み。膨らみ指数 = 供給 ÷ 負荷。アンカー11件は全て ok 側に入るよう校正した
+function riseModel(s){
+  const COEF = { separate:1.0, foam:0.55, cream:0.25, mix:0.10 };
+  if (s.method === 'mix' && s.liquid >= 150)
+    return [{ level:'ok', text:'膨らみ：薄い生地なので、膨らみ自体がほぼ不要（仕組みモデル）' }];
+  let foam = s.egg * COEF[s.method];
+  let retention = 1;
+  if (s.method === 'foam' || s.method === 'separate'){
+    retention = Math.max(0.25, Math.min(1, 1 - s.fat/140));
+    foam *= retention;
+  }
+  const cream = (s.method === 'cream' && s.fatType === 'butter') ? s.fat * 0.35 : 0;
+  const ratio = (foam + cream + s.bp * 30) / (100 + s.fat * 1.2);
+  let level = ratio >= 0.38 ? 'ok' : ratio >= 0.22 ? 'warn' : 'bad';
+  const head = `膨らみ指数 ${ratio.toFixed(2)}（泡とBPの供給 ÷ 粉と油脂の負荷、仕組みモデル）`;
+  const out = [{ level, text: head + (level === 'ok' ? '：膨らむだけの供給がある' : level === 'warn' ? '：膨らみが際どい' : '：供給不足で膨らまない可能性が高い') }];
+  if ((s.method === 'foam' || s.method === 'separate') && retention <= 0.5){
+    out.push({ level:'warn', text:'油脂が多く、泡が潰れやすい' });
+    if (level === 'ok') out[0] = { level:'warn', text: out[0].text };
+  }
+  return out;
+}
+
 // ===== 成立判定（ヒューリスティクス、理由つき） =====
 function judge(s){
   const rules = [];
   const add = (level, text) => rules.push({ level, text });
   const totalWater = s.egg*0.75 + s.liquid + (s.fatType==='butter' ? s.fat*0.19 : 0);
-  if (s.bp === 0 && s.fat <= 5 && s.egg < 150 && s.method !== 'separate' && s.method !== 'mix')
-    add('bad', '膨らみ不足：泡（卵）もベーキングパウダーも足りず、膨らまない可能性が高い');
-  else add('ok', '膨らみの供給は最低限ある');
-  if (s.fat >= 70 && s.bp === 0 && s.egg < 130 && s.method === 'foam')
-    add('warn', '共立てでこの脂肪量は泡が潰れやすい');
+  for (const r of riseModel(s)) add(r.level, r.text);
   const wBad = s.method==='mix' ? 560 : 360, wWarn = s.method==='mix' ? 460 : 300;
   if (totalWater > wBad) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);
   else if (totalWater > wWarn) add('warn', `水分が多め（粉100あたり約${Math.round(totalWater)}g）：焼き縮みに注意`);

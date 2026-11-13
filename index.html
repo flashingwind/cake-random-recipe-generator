@@ -86,6 +86,9 @@
           <button data-v="butter">バター</button><button data-v="oil">油</button><button data-v="none">なし</button>
         </span>
       </span>
+      <span>ベーキングパウダー：
+        <span class="seg"><button id="btnBp" type="button">入れる</button></span>
+      </span>
     </div>
   </section>
 
@@ -191,11 +194,10 @@ const PARAMS = [
   { key:'egg',    label:'卵（全卵換算）', min:0, max:420, step:1, unit:'g' },
   { key:'fat',    label:'油脂（純脂肪）', min:0, max:110, step:1, unit:'g' },
   { key:'liquid', label:'水分（牛乳・水など）', min:0, max:400, step:1, unit:'g' },
-  { key:'bp',     label:'ベーキングパウダー', min:0, max:8, step:0.5, unit:'g' },
 ];
 let state = { ...pickAnchor('pound'), method:'cream', fatType:'butter' };
 let blendInfo = 'パウンドケーキ（アンカーそのもの）';
-function pickAnchor(id){ const a = ANCHORS.find(x=>x.id===id); const o={}; for (const p of PARAMS) o[p.key]=a[p.key]; o.temp=a.temp; o.time=a.time; return o; }
+function pickAnchor(id){ const a = ANCHORS.find(x=>x.id===id); const o={}; for (const p of PARAMS) o[p.key]=a[p.key]; o.bp=a.bp; o.temp=a.temp; o.time=a.time; return o; }
 
 // ===== ランダム生成：アンカー2つを補間 =====
 function randomBlend(){
@@ -205,6 +207,7 @@ function randomBlend(){
   const t = 0.2 + Math.random()*0.6; // b の重み。端に寄せすぎない
   const o = {};
   for (const p of PARAMS) o[p.key] = +(a[p.key]*(1-t) + b[p.key]*t).toFixed(1);
+  o.bp = +(a.bp*(1-t) + b.bp*t).toFixed(1);
   o.temp = Math.round((a.temp*(1-t) + b.temp*t)/5)*5;
   o.time = Math.round(a.time*(1-t) + b.time*t);
   const dom = t < 0.5 ? a : b;
@@ -286,6 +289,9 @@ function segWire(id, key){
   el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { state[key] = b.dataset.v; render(false); }));
 }
 segWire('segMethod','method'); segWire('segFat','fatType');
+// BPは立て方と排他ではない（泡とも併用できる）ので、単独のトグルにする。押さなければ無選択＝入れない。
+// オンで入る量はデータの最頻値である小さじ1（4g）を既定にする。
+document.getElementById('btnBp').addEventListener('click', () => { state.bp = state.bp > 0 ? 0 : 4; render(false); });
 document.getElementById('btnRandom').addEventListener('click', randomBlend);
 const legendEl = document.getElementById('legend');
 legendEl.innerHTML = DISPLAY_ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}［${profileLabel(a)}］</span>`).join('');
@@ -469,6 +475,9 @@ function render(syncSliders = true){
   }
   for (const [id, key] of [['segMethod','method'],['segFat','fatType']])
     document.getElementById(id).querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v===state[key]));
+  const bpBtn = document.getElementById('btnBp');
+  bpBtn.classList.toggle('on', state.bp > 0);
+  bpBtn.textContent = state.bp > 0 ? `入れる（${state.bp}g）` : '入れる';
   const { rules, worst } = judge(state);
   const v = document.getElementById('verdict');
   v.textContent = worst==='ok' ? '成立しそう' : worst==='warn' ? '際どい（焼けるが癖が強い）' : '不成立の可能性が高い';

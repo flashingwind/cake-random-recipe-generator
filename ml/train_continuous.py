@@ -56,6 +56,13 @@ class KDEClassifier(BaseEstimator, ClassifierMixin):
         return p / p.sum(axis=1, keepdims=True)
     def predict(self, X):
         return self.classes_[np.argmax(self.predict_proba(X), axis=1)]
+    def log_total_density(self, X):
+        # Total (all-class) log density: the model's own support signal,
+        # used as the display gate instead of a geometric convex hull.
+        from scipy.special import logsumexp
+        Z = self.scaler_.transform(X)
+        cols = np.column_stack([self.models_[c].score_samples(Z) + self.log_prior_[c] for c in self.classes_])
+        return logsumexp(cols, axis=1)
 def build_kde():
     return KDEClassifier()
 ESTIMATORS={
@@ -120,7 +127,15 @@ def main():
     axes=[list(range(0,111,5)),list(range(0,421,15)),list(range(0,401,20))]
     points=np.array([[f,e,w] for f in axes[0] for e in axes[1] for w in axes[2]])
     probs=final.predict_proba(points)
-    out={'domain':domain,'model':report['model'],'estimator':args.model,'features':FEATURES,'classes':final.classes_.tolist(),'axes':axes,
+    # Display gate: when the estimator carries a density (KDE), export the
+    # per-point support and its threshold (the least dense training point).
+    # Estimators without a density (SVM) export nulls and the page falls
+    # back to the convex-hull domain below.
+    support=None; support_min=None
+    if hasattr(final,'log_total_density'):
+        support=np.round(final.log_total_density(points),3).tolist()
+        support_min=float(final.log_total_density(Xall).min())
+    out={'domain':domain,'support':support,'supportMin':support_min,'model':report['model'],'estimator':args.model,'features':FEATURES,'classes':final.classes_.tolist(),'axes':axes,
       'order':'fat-major, egg, liquid, class','probabilities':np.round(probs,5).tolist(),'rows':public,
       'summary':{'publicRecipes':len(rows),'anchorEstimates':len(anchor_rows),'trainingTotal':len(rows)+len(anchor_rows),'anchorIds':[a['id'] for a in anchor_rows],'evaluation':report},
       'limits_note':'Continuous interpolated SVM scores describe category similarity, not measured baking outcomes or ingredient blend fractions.'}

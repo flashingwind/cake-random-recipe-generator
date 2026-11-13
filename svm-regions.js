@@ -25,6 +25,26 @@
     const rgb=[0,0,0];for(const g of scores){const n=parseInt(g.color.slice(1),16);[n>>16&255,n>>8&255,n&255].forEach((v,i)=>rgb[i]+=v*g.score);}
     return '#'+rgb.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
   }
+  function interpolateScalar(field,values,point){
+    const coordinates=field.features.map((key,i)=>{
+      const axis=field.axes[i],position=Math.max(0,Math.min(axis.length-1,(point[key]-axis[0])/(axis[1]-axis[0])));
+      const low=Math.min(axis.length-2,Math.floor(position));return {low,t:position-low};
+    });
+    let value=0;
+    for(const a of [0,1])for(const b of [0,1])for(const c of [0,1]){
+      const corner=[a,b,c],indices=coordinates.map((q,i)=>q.low+corner[i]);
+      const weight=coordinates.reduce((p,q,i)=>p*(corner[i]?q.t:1-q.t),1);
+      value+=values[(indices[0]*field.axes[1].length+indices[1])*field.axes[2].length+indices[2]]*weight;
+    }
+    return value;
+  }
+  // Display gate. When the field carries the estimator's own density
+  // support, a point is inside when its interpolated support reaches the
+  // least dense training point. Otherwise fall back to the hull domain.
+  function supported(field,point){
+    if(field.support)return interpolateScalar(field,field.support,point)>=field.supportMin-1e-9;
+    return insideDomain(field,point);
+  }
   function insideDomain(field,point){
     if(!field.domain)return true;
     const v=field.features.map((key,i)=>point[key]/field.domain.scale[i]);
@@ -34,7 +54,7 @@
     const voxels=[];let contact=null;
     for(let x=0;x<resolution[0];x++)for(let y=0;y<resolution[1];y++)for(let z=0;z<resolution[2];z++){
       const indices=[x,y,z],point=Object.fromEntries(field.features.map((f,i)=>[f,(indices[i]+.5)/resolution[i]*limits[f]]));
-      if(!extrapolate && !insideDomain(field,point))continue;
+      if(!extrapolate && !supported(field,point))continue;
       const scores=predict(field,point,selected),first=scores[0];
       // Optional carve: drop voxels the caller's mechanism model rejects
       // (e.g. cannot rise). Carved voxels leave the volume entirely, no grey.
@@ -97,7 +117,7 @@
       return {type:!relevant.length?'other-method':relevant.length>1?'conflict':'supported',categories};
     }};
   }
-  const api={predict,blend,buildVolume,insideDomain,meshVolume,projectVolume};
+  const api={predict,blend,buildVolume,insideDomain,supported,meshVolume,projectVolume};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   else root.SVMRegions=api;
 })(globalThis);

@@ -6,37 +6,61 @@
     "liquid"
   ],
   "evaluation": "leave-one-source-host-out; public recipes only",
-  "observed_recipes": 83,
-  "correct": 73,
-  "accuracy": 0.8795180722891566,
+  "observed_recipes": 179,
+  "correct": 108,
+  "accuracy": 0.6033519553072626,
   "per_category": {
     "エンゼルフード": {
       "count": 8,
-      "correct": 4
+      "correct": 1
     },
     "カステラ": {
       "count": 10,
-      "correct": 9
+      "correct": 3
     },
     "クレープ": {
       "count": 15,
       "correct": 13
     },
     "シフォンケーキ": {
-      "count": 13,
-      "correct": 11
+      "count": 25,
+      "correct": 24
     },
     "ジェノワーズ": {
-      "count": 12,
-      "correct": 11
+      "count": 24,
+      "correct": 24
+    },
+    "スコーン": {
+      "count": 10,
+      "correct": 10
+    },
+    "ソーダブレッド": {
+      "count": 10,
+      "correct": 0
     },
     "パウンドケーキ": {
-      "count": 11,
-      "correct": 11
+      "count": 23,
+      "correct": 22
+    },
+    "フォカッチャ": {
+      "count": 10,
+      "correct": 0
     },
     "ホットケーキ": {
       "count": 14,
-      "correct": 14
+      "correct": 3
+    },
+    "ポップオーバー": {
+      "count": 10,
+      "correct": 1
+    },
+    "マフィン": {
+      "count": 10,
+      "correct": 1
+    },
+    "ワッフル": {
+      "count": 10,
+      "correct": 6
     }
   }
 }

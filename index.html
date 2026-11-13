@@ -117,7 +117,7 @@
     <p class="note" id="trainingSummary"></p>
     <details id="sliceView">
       <summary>2D投影図を開く（3D領域を水分方向に重ねる）</summary>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定せず、3Dで塗った領域を水分方向に重ねた投影図です。2Dだけで分類し直すことはしません。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定せず、3Dで塗った領域を水分方向に重ねた投影図です。2Dだけで分類し直すことはしません。SVMの領域で分類し、境界付近のグリッドを細かく表示します。</p>
     <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方のカテゴリ領域が投影で重なる場所。データ全体の範囲外はグレーです。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
     <p class="note">水分が異なるレシピも同じ平面に重なるため、2Dの斜線は投影上の重なりであり、3Dの同じ位置でデータが食い違うとは限りません。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
 
@@ -144,10 +144,8 @@
     </div>
   </section>
 </main>
-<script src="data/classifier-model.js?v=607c4290b09f"></script>
-<script src="data/svm-field.js?v=4a7d18d301be"></script>
-<script src="svm-regions.js?v=94901c8508aa"></script>
-<script src="region-grid.js?v=b2b22be54374"></script>
+<script src="data/svm-field.js?v=345e372194cf"></script>
+<script src="svm-regions.js?v=48d3d1a8f7f4"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
 // ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
@@ -165,6 +163,12 @@ const ANCHORS = [
   { id:'angel-home',    name:'エンゼルフード（家庭用）', color:'#d3ba6b', shape:'star', method:'separate', sugar:100, egg:210, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
   { id:'hotcake', name:'ホットケーキ', color:'#e8912d', shape:'down', method:'mix', sugar:24, egg:33,  fat:0,  fatType:'none',   liquid:89,  bp:4, temp:170, time:5 },
   { id:'crepe',   name:'クレープ',     color:'#6a9a7d', shape:'cross', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
+  { id:'sodabread', name:'ソーダブレッド', color:'#9c6644', shape:'pentagon', method:'mix', sugar:2,  egg:0,   fat:0,  fatType:'none',   liquid:80,  bp:2,   temp:190, time:35 },
+  { id:'scone',     name:'スコーン',       color:'#e07a5f', shape:'hexagon',  method:'mix', sugar:13, egg:5,   fat:21, fatType:'butter', liquid:46,  bp:4,   temp:200, time:15 },
+  { id:'muffin',    name:'マフィン',       color:'#bc4749', shape:'ring',     method:'mix', sugar:54, egg:51,  fat:44, fatType:'butter', liquid:43,  bp:3.5, temp:180, time:25 },
+  { id:'popover',   name:'ポップオーバー', color:'#2a9d8f', shape:'drop',     method:'mix', sugar:0,  egg:100, fat:13, fatType:'butter', liquid:158, bp:0,   temp:220, time:25 },
+  { id:'waffle',    name:'ワッフル',       color:'#e76f51', shape:'frame',    method:'mix', sugar:28, egg:50,  fat:21, fatType:'butter', liquid:135, bp:4,   temp:180, time:5 },
+  { id:'focaccia',  name:'フォカッチャ',   color:'#606c38', shape:'rect',     method:'mix', sugar:4,  egg:0,   fat:8,  fatType:'oil',    liquid:74,  bp:0,   temp:220, time:25 },
 ];
 function isStandardRecipe(recipe){
   return !/[（(]家庭用[）)]/.test(recipe.name);
@@ -329,19 +333,26 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
   else if (shape==='diamond'){ ctx.moveTo(x, y-r); ctx.lineTo(x+r*0.85, y); ctx.lineTo(x, y+r); ctx.lineTo(x-r*0.85, y); ctx.closePath(); }
   else if (shape==='star'){ for (let i=0;i<10;i++){ const rr = i%2 ? r*0.45 : r; const a = -Math.PI/2 + i*Math.PI/5; const px = x+rr*Math.cos(a), py = y+rr*Math.sin(a); if (i) ctx.lineTo(px,py); else ctx.moveTo(px,py); } ctx.closePath(); }
   else if (shape==='cross'){ const w=r*0.38; ctx.moveTo(x-w,y-r); ctx.lineTo(x+w,y-r); ctx.lineTo(x+w,y-w); ctx.lineTo(x+r,y-w); ctx.lineTo(x+r,y+w); ctx.lineTo(x+w,y+w); ctx.lineTo(x+w,y+r); ctx.lineTo(x-w,y+r); ctx.lineTo(x-w,y+w); ctx.lineTo(x-r,y+w); ctx.lineTo(x-r,y-w); ctx.lineTo(x-w,y-w); ctx.closePath(); }
+  else if (shape==='pentagon'){ for (let i=0;i<5;i++){ const a=-Math.PI/2+i*Math.PI*2/5; const px=x+r*Math.cos(a), py=y+r*Math.sin(a); if (i) ctx.lineTo(px,py); else ctx.moveTo(px,py); } ctx.closePath(); }
+  else if (shape==='hexagon'){ for (let i=0;i<6;i++){ const a=-Math.PI/2+i*Math.PI/3; const px=x+r*Math.cos(a), py=y+r*Math.sin(a); if (i) ctx.lineTo(px,py); else ctx.moveTo(px,py); } ctx.closePath(); }
+  else if (shape==='ring'){ ctx.arc(x, y, r, 0, Math.PI*2); ctx.moveTo(x+r*0.52, y); ctx.arc(x, y, r*0.52, 0, Math.PI*2, true); }
+  else if (shape==='drop'){ ctx.moveTo(x, y-r); ctx.bezierCurveTo(x+r*0.95, y+r*0.05, x+r*0.55, y+r, x, y+r); ctx.bezierCurveTo(x-r*0.55, y+r, x-r*0.95, y+r*0.05, x, y-r); ctx.closePath(); }
+  else if (shape==='frame'){ const o=r*0.9, ii=r*0.45; ctx.moveTo(x-o,y-o); ctx.lineTo(x+o,y-o); ctx.lineTo(x+o,y+o); ctx.lineTo(x-o,y+o); ctx.closePath(); ctx.moveTo(x-ii,y-ii); ctx.lineTo(x-ii,y+ii); ctx.lineTo(x+ii,y+ii); ctx.lineTo(x+ii,y-ii); ctx.closePath(); }
+  else if (shape==='rect'){ ctx.rect(x-r, y-r*0.55, r*2, r*1.1); }
   if (fill){ ctx.fillStyle = fill; ctx.fill(); }
   if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); ctx.lineWidth = 1; }
 }
 
-// ===== 実データの支持範囲と、異なるラベルの近接 =====
+// ===== SVMの3D領域と、その2D投影 =====
 
 const X_MAX = 110, Y_MAX = 420;
-const REGION_MODEL = RecipeRegions.prepare(RECIPE_MODEL.rows);
-const PROJECTION_MODEL = RecipeRegions.prepare(RECIPE_MODEL.rows,['fat','egg']);
+const ROWS = SVM_FIELD.rows;
+const rowScales = ['fat','egg'].map(key=>{ const mean=ROWS.reduce((s,r)=>s+r[key],0)/ROWS.length; return Math.sqrt(ROWS.reduce((s,r)=>s+(r[key]-mean)**2,0)/ROWS.length)||1; });
+function rowDistance(a,b){ return Math.sqrt(((a.fat-b.fat)/rowScales[0])**2+((a.egg-b.egg)/rowScales[1])**2); }
 const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
 let regionTiles = [];
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
-  rows:REGION_MODEL.rows,anchors:ANCHORS,drawMarker,getState:()=>state,
+  rows:ROWS,anchors:ANCHORS,drawMarker,getState:()=>state,
   buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:SVM_FIELD.classes,[18,24,24],document.getElementById('showExtrapolation').checked),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
@@ -350,7 +361,7 @@ const overview = RecipeOverview.create(document.getElementById('overview3d'),{
   }
 });
 let VOLUME = overview.getVolume();
-let PROJECTION = RecipeRegions.projectVolume(VOLUME,VOLUME.limits);
+let PROJECTION = SVMRegions.projectVolume(VOLUME,VOLUME.limits);
 function updateVolumeStatus(){
   let text=document.getElementById('showRegions').checked
     ? `SVMの3D領域を表示中（脂肪・卵・水分の3項目）。${VOLUME.extrapolate?'データ範囲外への推定も表示しています。':'実レシピとアンカー全体が囲む範囲内を表示しています。'}`
@@ -359,13 +370,13 @@ function updateVolumeStatus(){
   if(VOLUME.contact){
     const c=VOLUME.contact;
     text+=` 他カテゴリが優勢な場所を除き、3種のスコアが最も近い格子付近：脂肪 ${c.point.fat.toFixed(1)}g・卵 ${c.point.egg.toFixed(1)}g・水分 ${c.point.liquid.toFixed(1)}g／粉100g。`+
-      c.scores.map(g=>`${g.category} ${(g.score*100).toFixed(0)}%（全7種内では${(g.absolute*100).toFixed(0)}%）`).join('／')+'。これは学習モデル上の候補で、実際の焼き上がりの混合率ではありません。';
+      c.scores.map(g=>`${g.category} ${(g.score*100).toFixed(0)}%（全${SVM_FIELD.classes.length}種内では${(g.absolute*100).toFixed(0)}%）`).join('／')+'。これは学習モデル上の候補で、実際の焼き上がりの混合率ではありません。';
   }
   document.getElementById('volumeStatus').textContent=text;
 }
 updateVolumeStatus();
 document.getElementById('showRegions').addEventListener('change',event=>{overview.setRegions(event.target.checked);updateVolumeStatus();});
-function rebuildSVMView(){overview.rebuildRegions();VOLUME=overview.getVolume();PROJECTION=RecipeRegions.projectVolume(VOLUME,VOLUME.limits);updateVolumeStatus();render(false);}
+function rebuildSVMView(){overview.rebuildRegions();VOLUME=overview.getVolume();PROJECTION=SVMRegions.projectVolume(VOLUME,VOLUME.limits);updateVolumeStatus();render(false);}
 document.getElementById('focusThree').addEventListener('change',rebuildSVMView);
 document.getElementById('showExtrapolation').addEventListener('change',rebuildSVMView);
 document.getElementById('resetOverview').addEventListener('click',overview.reset);
@@ -378,7 +389,7 @@ function nearest2D(fat, egg, category){
 function regionAt(x,y,method){
   const point={fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX};
   const result=PROJECTION.inspect(point,method);
-  const neighbors=PROJECTION_MODEL.rows.map(row=>({row,distance:RecipeRegions.distance(point,row,PROJECTION_MODEL.scales,['fat','egg'])}))
+  const neighbors=ROWS.map(row=>({row,distance:rowDistance(point,row)}))
     .sort((a,b)=>a.distance-b.distance||a.row.id.localeCompare(b.row.id)).slice(0,5);
   return {...result,neighbors};
 }
@@ -421,7 +432,7 @@ function drawPlot(canvas, method){
   ctx.textAlign='center';
   ctx.fillText('純脂肪 g（下）／バター換算 g（上）', L+PW/2, H-6);
   ctx.save(); ctx.translate(11, T+PH/2); ctx.rotate(-Math.PI/2); ctx.fillText('卵 g', 0, 0); ctx.restore();
-  for (const row of REGION_MODEL.rows.filter(r=>r.method===method)){
+  for (const row of ROWS.filter(r=>r.method===method)){
     if(row.fat>X_MAX || row.egg>Y_MAX)continue;
     const base=baseAnchors.find(a=>a.name===row.category);
     drawMarker(ctx,base.shape,X(row.fat),Y(row.egg),2.7,row.color,'#fff',.5);
@@ -464,7 +475,7 @@ function render(syncSliders = true){
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `使用モデル：校正付きRBF SVM（元のモデル方式）。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。近傍投票は領域分類に使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。`;
+document.getElementById('trainingSummary').textContent = `使用モデル：校正付きRBF SVM（元のモデル方式）。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。分類はすべてこのSVMで行い、近傍投票は使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();
@@ -472,7 +483,7 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const y=(event.clientY-rect.top)*canvas.height/rect.height-30;
     if(x<0||x>402||y<0||y>294)return;
     const result=regionAt(x,y,canvas.id.slice(5));
-    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'実データの近傍'};
+    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'SVMの領域内'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
     heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;

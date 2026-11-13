@@ -1,12 +1,12 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const {predict,buildVolume,insideDomain}=require('../svm-regions.js');
+const {predict,buildVolume,insideDomain,projectVolume}=require('../svm-regions.js');
 const context={};vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../data/svm-field.js'),'utf8'),context);
 const field=context.SVM_FIELD;
 const anchors=vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8').match(/const ANCHORS = (\[[\s\S]*?\n\]);/)[0]+'; ANCHORS');
 const focus=['パウンドケーキ','シフォンケーキ','ジェノワーズ'];
-test('SVM final training includes all observed recipes and all 11 anchors; evaluation excludes anchors',()=>{
- assert.equal(field.summary.publicRecipes,83);assert.equal(field.summary.anchorEstimates,11);assert.equal(field.summary.trainingTotal,94);
- assert.equal(field.summary.anchorIds.length,11);assert.equal(field.summary.evaluation.observed_recipes,83);
+test('SVM final training includes all observed recipes and all 17 anchors; evaluation excludes anchors',()=>{
+ assert.equal(field.summary.publicRecipes,179);assert.equal(field.summary.anchorEstimates,17);assert.equal(field.summary.trainingTotal,196);
+ assert.equal(field.summary.anchorIds.length,17);assert.equal(field.summary.evaluation.observed_recipes,179);
  assert.match(field.model,/SVM/);assert.deepEqual(Array.from(field.features),['fat','egg','liquid']);
 });
 test('scores are continuous and sum to one; a focused view preserves the same underlying SVM scores',()=>{
@@ -30,4 +30,26 @@ test('outside-data extrapolation is an explicit view option; training points and
  assert.equal(insideDomain(field,{fat:110,egg:420,liquid:400}),false);
  const extrapolated=buildVolume(field,anchors,{fat:110,egg:420,liquid:400},focus,[8,10,10],true);
  assert.equal(extrapolated.cells,800);assert.equal(extrapolated.extrapolate,true);
+});
+
+test('field rows carry every public recipe for the point displays',()=>{
+ assert.equal(field.rows.length,179);
+ assert.ok(field.rows.every(r=>r.kind==='public-recipe'&&r.source&&r.source.url&&r.color&&r.method));
+ assert.deepEqual(new Set(field.rows.map(r=>r.category)),new Set(field.classes));
+});
+test('2D projection is the union of actual 3D voxels along water, not a new 2D classifier',()=>{
+ const group=(category,method)=>({category,method,color:'#123456'});
+ const volume={resolution:[2,2,3],voxels:[
+  {indices:[0,0,0],categories:[group('A','foam')],profiles:['standard']},
+  {indices:[0,0,2],categories:[group('B','foam')],profiles:['home']},
+  {indices:[0,0,1],categories:[group('C','separate')],profiles:['home']}
+ ]};
+ const projection=projectVolume(volume,{fat:100,egg:200,liquid:300});
+ const point={fat:25,egg:50};
+ const foam=projection.inspect(point,'foam');
+ assert.equal(foam.type,'conflict');assert.deepEqual(foam.categories.map(g=>g.category),['A','B']);
+ assert.equal(projection.inspect(point,'separate').type,'supported');
+ assert.equal(projection.inspect(point,'mix').type,'other-method');
+ assert.equal(projection.inspect({fat:75,egg:150},'foam').type,'insufficient');
+ assert.deepEqual(projection.inspect({...point,liquid:0},'foam'),projection.inspect({...point,liquid:300},'foam'));
 });

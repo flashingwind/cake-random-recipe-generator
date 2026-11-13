@@ -1,0 +1,70 @@
+{
+  "target_per_category": 30,
+  "categories": [
+    {
+      "category": "パウンドケーキ",
+      "existing_public_recipes": 9,
+      "remaining": 21
+    },
+    {
+      "category": "ジェノワーズ",
+      "existing_public_recipes": 10,
+      "remaining": 20
+    },
+    {
+      "category": "シフォンケーキ",
+      "existing_public_recipes": 10,
+      "remaining": 20
+    },
+    {
+      "category": "カステラ",
+      "existing_public_recipes": 10,
+      "remaining": 20
+    },
+    {
+      "category": "エンゼルフード",
+      "existing_public_recipes": 8,
+      "remaining": 22
+    },
+    {
+      "category": "ホットケーキ",
+      "existing_public_recipes": 14,
+      "remaining": 16
+    },
+    {
+      "category": "クレープ",
+      "existing_public_recipes": 15,
+      "remaining": 15
+    }
+  ],
+  "review_rules": [
+    "原文の材料重量・出典URL・確認日を記録する",
+    "転載・倍量違いは重複として除外する",
+    "粉100gあたりに換算し、卵の仮定・純脂肪換算・焼き油やトッピング除外を記録する",
+    "立て方を原文で確認する",
+    "家庭用を既定とし、標準的な区分は根拠を明記する",
+    "概算アンカーと実レシピを区別する"
+  ],
+  "candidate_sources": [
+    {
+      "category": "パウンドケーキ",
+      "url": "https://www.morinagamilk.co.jp/recipe/detail/recipe.php?id=99151K"
+    },
+    {
+      "category": "ジェノワーズ",
+      "url": "https://www.cotta.jp/special/article/?p=65362"
+    },
+    {
+      "category": "シフォンケーキ",
+      "url": "https://www.rakuten.ne.jp/gold/tomizawa/recipe/9019.html"
+    },
+    {
+      "category": "カステラ",
+      "url": "https://www.nisshin-seifun-welna.com/index/recipe/detail/s-043.html"
+    },
+    {
+      "category": "エンゼルフード",
+      "url": "https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609"
+    }
+  ]
+}

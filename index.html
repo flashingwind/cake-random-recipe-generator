@@ -85,8 +85,12 @@
 
   <section class="card">
     <h2>パラメータ空間</h2>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。領域の色は、収集した実レシピ77件で学習した分類器（SVM）が予測するケーキの種類で、色の濃さが予測確率です（薄いところは種類が混ざり合う境界）。砂糖・水分・ベーキングパウダーはデータの中央値（砂糖93・水分63・BP 0）に固定した断面で、交差検証の正解率は0.88。
-    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、他の立て方に属する種類の領域はグレーにします。収集した実レシピ77件は、立て方ごとのグラフに小さな点で重ねています（形と色はアンカーと同じ種類分け）。</p>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。砂糖・水分・BPは現在のスライダー値に固定した断面です。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
+    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝異なるカテゴリの実データが近接する領域。グレー＝データ不足。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
+    <p class="note">点は脂肪・卵の位置への投影なので、他の材料の違いによってグレーや別色の領域にも現れます。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
+    <p class="note" id="trainingSummary"></p>
+    <p class="note"><a href="data/region-review.json">追加収集・原文確認の優先候補（JSON）</a></p>
+
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
       <div class="plot-box"><h3>共立て</h3><canvas class="plot" id="plot-foam" width="460" height="360"></canvas></div>
@@ -94,6 +98,7 @@
       <div class="plot-box"><h3>混ぜるだけ</h3><canvas class="plot" id="plot-mix" width="460" height="360"></canvas></div>
     </div>
     <div class="legend" id="legend"></div>
+    <div class="note" id="regionDetails" aria-live="polite">グラフをクリックして領域の根拠を確認できます。</div>
     <div class="note" style="margin-top:16px">
       <p style="margin:0 0 4px"><b>参考文献（アンカーの目安）</b></p>
       <p style="margin:0">アンカーは定番レシピを小麦粉100gあたりに換算した概算です。「家庭用」は下記のレシピの換算値、その他は定番レシピの範囲から置いた値です。</p>
@@ -108,8 +113,12 @@
     </div>
   </section>
 </main>
+<script src="classifier.js"></script>
+<script src="data/classifier-model.js"></script>
+<script src="region-grid.js"></script>
 <script>
 // ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
+// 名前に「（家庭用）」が付くアンカーは家庭用、それ以外は標準的な配合。
 // fat は純脂肪g。バターは重量×0.83、油は重量そのまま。
 const ANCHORS = [
   { id:'pound',   name:'パウンドケーキ', color:'#c96f2e', shape:'circle', method:'cream',    sugar:100, egg:100, fat:83, fatType:'butter', liquid:0,  bp:1, temp:170, time:45 },
@@ -124,6 +133,14 @@ const ANCHORS = [
   { id:'hotcake', name:'ホットケーキ', color:'#e8912d', shape:'down', method:'mix', sugar:24, egg:33,  fat:0,  fatType:'none',   liquid:89,  bp:4, temp:170, time:5 },
   { id:'crepe',   name:'クレープ',     color:'#6a9a7d', shape:'cross', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
 ];
+function isStandardRecipe(recipe){
+  return !/[（(]家庭用[）)]/.test(recipe.name);
+}
+function profileLabel(recipe){ return isStandardRecipe(recipe) ? '標準的' : '家庭用'; }
+function regionColor(recipe, method){
+  if (recipe.method !== method) return '#8a83782e';
+  return recipe.color + (isStandardRecipe(recipe) ? '55' : '2e');
+}
 const METHOD_LABEL = { cream:'クリーミング', foam:'共立て', separate:'別立て', mix:'混ぜるだけ' };
 
 
@@ -227,7 +244,7 @@ function segWire(id, key){
 segWire('segMethod','method'); segWire('segFat','fatType');
 document.getElementById('btnRandom').addEventListener('click', randomBlend);
 const legendEl = document.getElementById('legend');
-legendEl.innerHTML = ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}</span>`).join('');
+legendEl.innerHTML = ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}［${profileLabel(a)}］</span>`).join('');
 legendEl.querySelectorAll('canvas').forEach((cv, i)=>{ const a = ANCHORS[i]; drawMarker(cv.getContext('2d'), a.shape, 7.5, 7.5, 6, a.color, null); });
 
 // ===== レシピ生成 =====
@@ -283,28 +300,60 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
   if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); ctx.lineWidth = 1; }
 }
 
-// ===== 分類器の確率グリッド（ml/model_grid.json、学習済みSVM） =====
-const CLASS_COLOR = { 'パウンドケーキ':'#c96f2e', 'ジェノワーズ':'#4a7fb5', 'シフォンケーキ':'#5da24a', 'カステラ':'#8a5fb0', 'エンゼルフード':'#c2a13d', 'ホットケーキ':'#e8912d', 'クレープ':'#6a9a7d' };
-const CLASS_METHOD = { 'パウンドケーキ':'cream', 'ジェノワーズ':'foam', 'カステラ':'foam', 'シフォンケーキ':'separate', 'エンゼルフード':'separate', 'ホットケーキ':'mix', 'クレープ':'mix' };
-const CLASS_SHAPE = { 'パウンドケーキ':'circle', 'ジェノワーズ':'triangle', 'シフォンケーキ':'square', 'カステラ':'diamond', 'エンゼルフード':'star', 'ホットケーキ':'down', 'クレープ':'cross' };
-let RECIPES = null;
-fetch('data/recipes.json').then(r => r.ok ? r.json() : null).then(d => { if (d){ RECIPES = d.recipes; render(false); } }).catch(()=>{});
-let GRID = null;
-fetch('ml/model_grid.json').then(r => r.ok ? r.json() : null).then(d => { if (d){ GRID = d; render(false); } }).catch(()=>{});
-function hexA(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; }
-function gridCell(fat, egg){
-  if (!GRID) return null;
-  const fi = Math.max(0, Math.min(GRID.fat_axis.length-1, Math.round(fat/5)));
-  const ei = Math.max(0, Math.min(GRID.egg_axis.length-1, Math.round(egg/10)));
-  return GRID.grid[ei][fi];
-}
+// ===== 実データの支持範囲と、異なるラベルの近接 =====
 
-// ===== プロット =====
 const X_MAX = 110, Y_MAX = 420;
-function nearest2D(fat, egg){
-  let best=null, bd=1e9;
-  for (const a of ANCHORS){ const d = ((fat-a.fat)/X_MAX)**2 + ((egg-a.egg)/Y_MAX)**2; if (d<bd){ bd=d; best=a; } }
-  return best;
+const REGION_MODEL = RecipeRegions.prepare(RECIPE_MODEL.rows);
+const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
+let regionTiles = [];
+function nearest2D(fat, egg, category){
+  return ANCHORS.filter(a=>baseAnchors.find(b=>b.id===a.id.replace(/-home$/, '')).name===category)
+    .sort((a,b)=>((fat-a.fat)/X_MAX)**2+((egg-a.egg)/Y_MAX)**2-((fat-b.fat)/X_MAX)**2-((egg-b.egg)/Y_MAX)**2)[0];
+}
+function regionAt(x,y,method){
+  return RecipeRegions.inspect(REGION_MODEL,{...state,fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX},method);
+}
+function makeRegionTiles(){
+  const cache=new Map();
+  const inspect=(x,y)=>{
+    const key=x+','+y;
+    if(!cache.has(key))cache.set(key,regionAt(x,y,state.method));
+    return cache.get(key);
+  };
+  const signature=r=>r.categories.map(g=>g.category).join('|') || 'insufficient';
+  const tiles=[];
+  function divide(x,y,w,h){
+    const center=inspect(x+w/2,y+h/2);
+    const samples=[inspect(x,y),inspect(x+w,y),inspect(x,y+h),inspect(x+w,y+h)];
+    if(Math.max(w,h)>3 && (center.categories.length>1 || samples.some(r=>signature(r)!==signature(center)))){
+      const hw=w/2,hh=h/2;
+      for(const dx of [0,hw])for(const dy of [0,hh])divide(x+dx,y+dy,hw,hh);
+    }else tiles.push({x,y,w,h});
+  }
+  for(let x=0;x<402;x+=24)for(let y=0;y<294;y+=24)divide(x,y,Math.min(24,402-x),Math.min(24,294-y));
+  return tiles;
+}
+function paintRegion(ctx,tile,method){
+  const {x,y,w,h}=tile;
+  const result=regionAt(x+w/2,y+h/2,method);
+  const left=46+x,top=30+y;
+  if(result.type==='insufficient' || result.type==='other-method'){
+    ctx.fillStyle=result.type==='insufficient'?'#ddd9d5':'#fff';ctx.fillRect(left,top,w,h);return;
+  }
+  const colors=result.categories.map(g=>{
+    const a=nearest2D((x+w/2)/402*X_MAX,(1-(y+h/2)/294)*Y_MAX,g.category);
+    return g.color+(isStandardRecipe(a)?'55':'2e');
+  });
+  ctx.fillStyle=colors[0];ctx.fillRect(left,top,w,h);
+  if(result.type==='conflict'){
+    ctx.save();ctx.beginPath();ctx.rect(left,top,w,h);ctx.clip();
+    ctx.strokeStyle=colors[1];ctx.lineWidth=4;
+    // Align stripe phase globally so adjacent adaptive cells join cleanly.
+    for(let d=Math.floor((left+top)/8)*8-h;d<left+top+w+h;d+=8){
+      ctx.beginPath();ctx.moveTo(d-top,top);ctx.lineTo(d-top-h,top+h);ctx.stroke();
+    }
+    ctx.restore();
+  }
 }
 function drawPlot(canvas, method){
   const ctx = canvas.getContext('2d');
@@ -312,18 +361,7 @@ function drawPlot(canvas, method){
   const L=46, R=12, T=30, B=36, PW=W-L-R, PH=H-T-B;
   const X = f => L + (f/X_MAX)*PW, Y = e => T + PH - (e/Y_MAX)*PH;
   ctx.clearRect(0,0,W,H);
-  const cell = 10;
-  for (let px=L; px<L+PW; px+=cell) for (let py=T; py<T+PH; py+=cell){
-    const f = (px-L)/PW*X_MAX, e = (1-(py-T)/PH)*Y_MAX;
-    const gc = gridCell(f, e);
-    if (gc){
-      ctx.fillStyle = hexA(CLASS_METHOD[gc.class]===method ? CLASS_COLOR[gc.class] : '#8a8378', 0.06 + 0.30*gc.p);
-    } else {
-      const nb = nearest2D(f,e);
-      ctx.fillStyle = (nb.method===method ? nb.color : '#8a8378') + '2e';
-    }
-    ctx.fillRect(px, py, cell, cell);
-  }
+  for (const tile of regionTiles) paintRegion(ctx,tile,method);
   ctx.strokeStyle = '#cbb'; ctx.strokeRect(L,T,PW,PH);
   ctx.fillStyle = '#6b5d54'; ctx.font = '10px sans-serif'; ctx.textAlign='center';
   for (let f=0; f<=100; f+=25){ ctx.fillText(f, X(f), H-22); ctx.fillText(Math.round(f/0.83), X(f), T-8); }
@@ -332,15 +370,12 @@ function drawPlot(canvas, method){
   ctx.textAlign='center';
   ctx.fillText('純脂肪 g（下）／バター換算 g（上）', L+PW/2, H-6);
   ctx.save(); ctx.translate(11, T+PH/2); ctx.rotate(-Math.PI/2); ctx.fillText('卵 g', 0, 0); ctx.restore();
-  if (RECIPES){
-    for (const r of RECIPES){
-      if ((r.method || CLASS_METHOD[r.category]) !== method) continue;
-      if (r.fat > X_MAX || r.egg > Y_MAX) continue;
-      ctx.globalAlpha = .85;
-      drawMarker(ctx, CLASS_SHAPE[r.category], X(r.fat), Y(r.egg), 3.2, CLASS_COLOR[r.category], '#fff', .5);
-      ctx.globalAlpha = 1;
-    }
+  for (const row of REGION_MODEL.rows.filter(r=>r.method===method)){
+    if(row.fat>X_MAX || row.egg>Y_MAX)continue;
+    const base=baseAnchors.find(a=>a.name===row.category);
+    drawMarker(ctx,base.shape,X(row.fat),Y(row.egg),2.7,row.color,'#fff',.5);
   }
+
   for (const a of ANCHORS){
     if (a.method===method) drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, a.color, '#fff', 1);
     else drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, '#fff', a.color, 2);
@@ -356,6 +391,7 @@ function drawPlot(canvas, method){
 
 // ===== 描画 =====
 function render(syncSliders = true){
+  document.getElementById('regionDetails').textContent = 'グラフをクリックして領域の根拠を確認できます。';
   document.getElementById('blendName').textContent = blendInfo;
   for (const p of PARAMS){
     if (syncSliders) document.getElementById('sl-'+p.key).value = state[p.key];
@@ -373,7 +409,28 @@ function render(syncSliders = true){
   document.getElementById('recipeHead').textContent = `${METHOD_LABEL[state.method]}／${r.mold} 1台分（小麦粉あたりの配合を換算）`;
   document.getElementById('recipeTable').innerHTML = r.rows.map(([n,g])=>`<tr><td>${n}</td><td>${g} g</td></tr>`).join('');
   document.getElementById('steps').innerHTML = r.steps.map(s=>`<li>${s}</li>`).join('');
+  regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
+}
+document.getElementById('trainingSummary').textContent = `実レシピ${REGION_MODEL.rows.length}件を使用。概算アンカーはデータの有無・食い違いの判定には含めません。近接判定は脂肪・卵・砂糖・水分・BPの5項目を標準化した距離による目安です。斜線は誤分類や焼き上がりの混合を断定するものではありません。`;
+for(const canvas of document.querySelectorAll('canvas.plot')){
+  canvas.addEventListener('click',event=>{
+    const rect=canvas.getBoundingClientRect();
+    const x=(event.clientX-rect.left)*canvas.width/rect.width-46;
+    const y=(event.clientY-rect.top)*canvas.height/rect.height-30;
+    if(x<0||x>402||y<0||y>294)return;
+    const result=regionAt(x,y,canvas.id.slice(5));
+    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'異なるカテゴリの実データが近接','supported':'実データの近傍'};
+    const detail=document.getElementById('regionDetails');detail.replaceChildren();
+    const heading=document.createElement('p');
+    heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（砂糖 ${state.sugar}g・水分 ${state.liquid}g・BP ${state.bp}g）`;
+    detail.append(heading);
+    for(const {row,distance} of result.neighbors.slice(0,3)){
+      const p=document.createElement('p');
+      p.textContent=`${row.category}［${row.id}］ 脂肪 ${row.fat}／卵 ${row.egg}／砂糖 ${row.sugar}／水分 ${row.liquid}／BP ${row.bp}g、距離 ${distance.toFixed(2)}：`;
+      const link=document.createElement('a');link.textContent=row.source.site;link.href=row.source.url;link.target='_blank';link.rel='noopener';p.append(link);detail.append(p);
+    }
+  });
 }
 render();
 </script>

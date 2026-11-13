@@ -70,8 +70,17 @@
   パラメータはすべて「小麦粉100gあたり」で表し、油脂は純脂肪のグラム数で数えます（バター換算はグラフの二重目盛りで読み替え）。</p>
 </header>
 <main>
+  
+
   <section class="card">
-    <h2>生成とパラメータ</h2>
+    <h2>成立判定（目安）</h2>
+    <div class="verdict" id="verdict"></div>
+    <ul class="rules" id="rules"></ul>
+  </section>
+
+  <section class="card">
+    <h2>レシピ</h2>
+    <h3>生成とパラメータ</h3>
     <p><button id="btnRandom">🎲 ランダム生成</button></p>
     <p id="blendName"></p>
     <p class="note" id="blendDetail"></p>
@@ -91,16 +100,7 @@
         <span class="seg"><button id="btnBp" type="button">入れる</button></span>
       </span>
     </div>
-  </section>
-
-  <section class="card">
-    <h2>成立判定（目安）</h2>
-    <div class="verdict" id="verdict"></div>
-    <ul class="rules" id="rules"></ul>
-  </section>
-
-  <section class="card">
-    <h2>レシピ</h2>
+  
     <div id="recipeHead" class="note"></div>
     <p class="note">分量は直接書き換えて反映できます。粉の量は表示の基準で、他の材料は粉100gあたりに換算してパラメータへ反映します。</p>
     <table class="recipe" id="recipeTable"></table>

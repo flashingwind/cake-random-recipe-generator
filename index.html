@@ -217,7 +217,7 @@ function randomBlend(){
 }
 
 // ===== 膨らみモデル（仕組みベース。種類の分類器とは別に置く） =====
-// 供給 = 卵の泡（立て方で効率が違う。共立て・別立ては油脂で泡が潰れる）＋クリーミングの空気＋BPのガス
+// 供給 = 卵の泡（立て方で効率が違う。共立て・別立ては油脂で泡が潰れるが、卵の乳化が和らげ、砂糖が泡を安定させる）＋クリーミングの空気＋BPのガス
 // 負荷 = 粉（基準100）＋油脂の重み。膨らみ指数 = 供給 ÷ 負荷。アンカー11件は全て ok 側に入るよう校正した
 function riseModel(s){
   const COEF = { separate:1.0, foam:0.55, cream:0.25, mix:0.10 };
@@ -226,8 +226,11 @@ function riseModel(s){
   let foam = s.egg * COEF[s.method];
   let retention = 1;
   if (s.method === 'foam' || s.method === 'separate'){
-    retention = Math.max(0.25, Math.min(1, 1 - s.fat/140));
-    foam *= retention;
+    // 相互作用：脂肪は泡を壊すが、卵（卵黄レシチン）の乳化が脂肪を分散させて被害を和らげる。
+    retention = Math.max(0.25, Math.min(1, 1 - s.fat/(140 + s.egg*0.6)));
+    // 相互作用：砂糖はメレンゲの泡を安定させる（泡の保持を助ける）。
+    const sugarStab = 1 + 0.3 * Math.max(0, Math.min(1, s.sugar/120));
+    foam *= retention * sugarStab;
   }
   const cream = (s.method === 'cream' && s.fatType === 'butter') ? s.fat * 0.35 : 0;
   const ratio = (foam + cream + s.bp * 30) / (100 + s.fat * 1.2);

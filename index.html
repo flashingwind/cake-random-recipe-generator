@@ -22,7 +22,6 @@
   .slider-row label b { color: var(--ink); font-weight: 600; }
   input[type=range] { width: 100%; accent-color: var(--accent); }
   .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-  .recipe input[type=number] { width: 92px; padding: 4px 6px; font: inherit; text-align: right; border: 1px solid var(--line); border-radius: 6px; }
   .seg button { background: #fff; color: var(--ink); border-radius: 0; padding: 7px 12px; font-size: 13px; }
   .seg button.on { background: var(--accent); color: #fff; }
   .seg-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-size: 13px; color: var(--sub); }
@@ -102,7 +101,6 @@
     </div>
   
     <div id="recipeHead" class="note"></div>
-    <table class="recipe" id="recipeTable"></table>
     <ol class="steps" id="steps"></ol>
   </section>
 
@@ -295,22 +293,6 @@ segWire('segMethod','method'); segWire('segFat','fatType');
 // オンで入る量はデータの最頻値である小さじ1（4g）を既定にする。
 document.getElementById('btnBp').addEventListener('click', () => { state.bp = state.bp > 0 ? 0 : 4; render(false); });
 document.getElementById('btnRandom').addEventListener('click', randomBlend);
-// 材料フォーム：実分量（g）を書き換えると、粉100gあたりのパラメータへ換算して反映する。
-document.getElementById('recipeTable').addEventListener('change', e => {
-  const input = e.target.closest('input[data-key]');
-  if (!input) return;
-  const value = parseFloat(input.value);
-  if (!(value >= 0)) { render(false); return; }
-  const k = (recipeFlourOverride ?? FLOUR_BY_METHOD[state.method]) / 100;
-  const key = input.dataset.key;
-  if (key === 'flour') recipeFlourOverride = value > 0 ? value : null;
-  else if (key === 'fat') state.fat = +(state.fatType === 'butter' ? value*0.83/k : value/k).toFixed(1);
-  else if (key === 'bp') state.bp = +(value/k).toFixed(1);
-  else state[key] = Math.round(value/k);
-  blendInfo = '材料フォームから入力した配合';
-  document.getElementById('blendDetail').textContent = `一番近い既存ケーキは「${nearestAnchor(state).a.name}」です。`;
-  render(false);
-});
 const legendEl = document.getElementById('legend');
 legendEl.innerHTML = DISPLAY_ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}［${profileLabel(a)}］</span>`).join('');
 legendEl.querySelectorAll('canvas').forEach((cv, i)=>{ const a = DISPLAY_ANCHORS[i]; drawMarker(cv.getContext('2d'), a.shape, 7.5, 7.5, 6, a.color, null); });
@@ -521,7 +503,6 @@ function render(syncSliders = true){
     `<li><span class="mark">${r.level==='ok'?'○':r.level==='warn'?'△':'×'}</span>${r.text}</li>`).join('');
   const r = recipeFor(state);
   document.getElementById('recipeHead').textContent = `${METHOD_LABEL[state.method]}／${r.mold} 1台分（小麦粉あたりの配合を換算）`;
-  document.getElementById('recipeTable').innerHTML = r.rows.map(row=>`<tr><td>${row.label}</td><td><input type="number" data-key="${row.key}" value="${row.grams}" min="0" step="any" aria-label="${row.label}（グラム）"> g</td></tr>`).join('');
   document.getElementById('steps').innerHTML = r.steps.map(s=>`<li>${s}</li>`).join('');
   overview.render();
   regionTiles = makeRegionTiles();

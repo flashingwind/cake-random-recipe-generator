@@ -35,3 +35,11 @@ test('sugar and BP cannot move region boundaries',()=>{
  const point=row('p','A',11);
  assert.deepEqual(inspect(model,point,'foam'),inspect(model,{...point,sugar:200,bp:8},'foam'));
 });
+test('volume leaves unsupported cells empty and never hatches across methods',()=>{
+ const {buildVolume}=require('../region-grid.js');
+ const model=prepare([row('a1','A',10,'foam'),row('a2','A',20,'foam'),row('b1','B',10,'separate'),row('b2','B',20,'separate')]);
+ const volume=buildVolume(model,[{...row('a','A',10),name:'A'},{...row('b','B',10),name:'B'}],{fat:100,egg:200,liquid:40},[10,21,21]);
+ assert.ok(volume.cells>0);assert.ok(volume.cells<volume.totalCells);assert.ok(volume.faces.length>0);
+ assert.ok(volume.faces.every(f=>f.categories.length===1));
+ assert.ok(volume.faces.every(f=>f.vertices.every(v=>v.every(n=>n>=-1&&n<=1))));
+});

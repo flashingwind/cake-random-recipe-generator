@@ -109,6 +109,7 @@
     <p class="note">上部の水分スライダーは生成レシピの調整用です。全体図のデータは絞り込みません。</p>
     <canvas id="overview3d" width="960" height="540" tabindex="0" role="img"></canvas>
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
+    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。データ不足は透明です。</p>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
     <p class="note" id="trainingSummary"></p>
     <details id="sliceView">
@@ -336,12 +337,14 @@ const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
 let regionTiles = [];
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
   rows:REGION_MODEL.rows,anchors:ANCHORS,drawMarker,getState:()=>state,
+  buildVolume:limits=>RecipeRegions.buildVolume(REGION_MODEL,ANCHORS,limits),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
     detail.append(`${row.category}［${row.id}］ 脂肪 ${row.fat}g・卵 ${row.egg}g・水分 ${row.liquid}g／粉100g：`);
     const link=document.createElement('a');link.textContent=row.source.site;link.href=row.source.url;link.target='_blank';link.rel='noopener';detail.append(link);
   }
 });
+document.getElementById('showRegions').addEventListener('change',event=>overview.setRegions(event.target.checked));
 document.getElementById('resetOverview').addEventListener('click',overview.reset);
 document.getElementById('zoomOverviewIn').addEventListener('click',()=>overview.changeZoom(1.1));
 document.getElementById('zoomOverviewOut').addEventListener('click',()=>overview.changeZoom(1/1.1));

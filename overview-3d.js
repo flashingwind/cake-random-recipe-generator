@@ -1,8 +1,10 @@
 // A dependency-free, rotatable projection of all observed recipes.
 (function(root){
-  function create(canvas,{rows,anchors,drawMarker,getState,onSelect}){
+  function create(canvas,{rows,anchors,drawMarker,getState,onSelect,buildVolume}){
     const ctx=canvas.getContext('2d');
     const limits={fat:Math.max(110,...rows.map(r=>r.fat)),egg:Math.max(420,...rows.map(r=>r.egg)),liquid:Math.max(400,...rows.map(r=>r.liquid))};
+    const volume=buildVolume(limits);
+    let showRegions=true;
     let width=960,height=540;
     let yaw=-.65,pitch=.3,zoom=1,drag=null,points=[];
     function project(v){
@@ -18,6 +20,22 @@
       const half=ctx.measureText(String(text)).width/2;
       ctx.fillText(text,Math.max(half+5,Math.min(width-half-5,x)),Math.max(18,Math.min(height-8,y)));
     }
+    function paintVolume(){
+      if(!showRegions)return;
+      const faces=volume.faces.map(face=>({...face,projected:face.vertices.map(project)}));
+      faces.sort((a,b)=>b.projected.reduce((s,p)=>s+p.depth,0)-a.projected.reduce((s,p)=>s+p.depth,0));
+      for(const face of faces){
+        const ps=face.projected;
+        ctx.save();ctx.beginPath();ps.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
+        ctx.globalAlpha=face.profiles[0]==='standard'?.18:.09;ctx.fillStyle=face.categories[0].color;ctx.fill();
+        if(face.categories.length>1){
+          ctx.clip();ctx.globalAlpha=face.profiles[1]==='standard'?.26:.15;ctx.strokeStyle=face.categories[1].color;ctx.lineWidth=2;
+          const left=Math.min(...ps.map(p=>p.x)),right=Math.max(...ps.map(p=>p.x)),top=Math.min(...ps.map(p=>p.y)),bottom=Math.max(...ps.map(p=>p.y));
+          for(let d=Math.floor((left+top)/6)*6;d<=right+bottom;d+=6){ctx.beginPath();ctx.moveTo(d-top,top);ctx.lineTo(d-bottom,bottom);ctx.stroke();}
+        }
+        ctx.restore();
+      }
+    }
     function render(){
       width=canvas.clientWidth || 960;height=canvas.clientHeight || 540;
       const ratio=window.devicePixelRatio || 1;
@@ -26,6 +44,7 @@
       }
       ctx.setTransform(ratio,0,0,ratio,0,0);
       ctx.clearRect(0,0,width,height);ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
+      paintVolume();
       const corners=[];for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1])corners.push([x,y,z]);
       for(let i=0;i<corners.length;i++)for(let j=i+1;j<corners.length;j++)if(corners[i].filter((v,k)=>v!==corners[j][k]).length===1)line(corners[i],corners[j],'#e3d9d2');
       const origin=[-1,-1,-1];
@@ -75,7 +94,7 @@
       else if(event.key==='Home'){event.preventDefault();reset();}
     });
     const resizeObserver=new ResizeObserver(()=>render());resizeObserver.observe(canvas);
-    return {render,reset,changeZoom,getPoints:()=>points.map(p=>({id:p.row.id,x:p.x,y:p.y}))};
+    return {render,reset,changeZoom,setRegions:enabled=>{showRegions=enabled;render();},getVolume:()=>volume,getPoints:()=>points.map(p=>({id:p.row.id,x:p.x,y:p.y}))};
   }
   root.RecipeOverview={create};
 })(globalThis);

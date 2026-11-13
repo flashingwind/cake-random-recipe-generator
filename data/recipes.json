@@ -2508,6 +2508,516 @@
     "site": "富澤商店",
     "url": "https://tomiz.com/recipe/pro/detail/o-se-201303a-01"
    }
+  },
+  {
+   "id": "popover-01",
+   "category": "ポップオーバー",
+   "name": "ポップオーバー（共立食品）",
+   "flour": "薄力粉",
+   "sugar": 0,
+   "egg": 200,
+   "fat": 16.6,
+   "liquid": 100,
+   "bp": 0,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "共立食品",
+    "url": "https://www.kyoritsu-foods.co.jp/recipe/25552/"
+   }
+  },
+  {
+   "id": "popover-02",
+   "category": "ポップオーバー",
+   "name": "ポップオーバーwithフィリー",
+   "flour": "薄力粉",
+   "sugar": 6,
+   "egg": 100,
+   "fat": 10,
+   "liquid": 166.6667,
+   "bp": 0,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "森永乳業",
+    "url": "https://www.morinagamilk.co.jp/recipe/detail/recipe.php?id=92328K"
+   }
+  },
+  {
+   "id": "popover-03",
+   "category": "ポップオーバー",
+   "name": "失敗知らず！ポップオーバー",
+   "flour": "薄力粉・強力粉",
+   "sugar": 0,
+   "egg": 100,
+   "fat": 16.6,
+   "liquid": 200,
+   "bp": 0,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "セブンプレミアム公式",
+    "url": "https://7premium.jp/recipe/search/detail?id=10143"
+   }
+  },
+  {
+   "id": "popover-04",
+   "category": "ポップオーバー",
+   "name": "抹茶ポップオーバー",
+   "flour": "薄力粉・強力粉",
+   "sugar": 0,
+   "egg": 100,
+   "fat": 20,
+   "liquid": 150,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "味の素AGF",
+    "url": "https://agf.ajinomoto.co.jp/recipe/original/342/"
+   }
+  },
+  {
+   "id": "popover-05",
+   "category": "ポップオーバー",
+   "name": "ポップオーバー（ホクレン）",
+   "flour": "薄力粉・強力粉",
+   "sugar": 0,
+   "egg": 111.1111,
+   "fat": 16.6667,
+   "liquid": 111.1111,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "ホクレン GREEN WEB",
+    "url": "https://www.hokuren.or.jp/_greenweb_/recipe/result/detail.php?id=1017"
+   }
+  },
+  {
+   "id": "popover-06",
+   "category": "ポップオーバー",
+   "name": "ポップオーバー（福井県民生活協同組合）",
+   "flour": "薄力粉・強力粉",
+   "sugar": 2,
+   "egg": 66.6667,
+   "fat": 20,
+   "liquid": 100,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "福井県民生活協同組合",
+    "url": "https://www.fukui.coop/recipe/2024/11/1265/"
+   }
+  },
+  {
+   "id": "popover-07",
+   "category": "ポップオーバー",
+   "name": "ポップオーバー＆ハムとゆで卵のサラダ",
+   "flour": "薄力粉・強力粉",
+   "sugar": 0,
+   "egg": 100,
+   "fat": 5,
+   "liquid": 150,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "プリマハム",
+    "url": "https://www.primaham.co.jp/recipe/detail/h-057.html"
+   }
+  },
+  {
+   "id": "popover-08",
+   "category": "ポップオーバー",
+   "name": "ポップオーバー（Nadia）",
+   "flour": "薄力粉・強力粉",
+   "sugar": 0,
+   "egg": 100,
+   "fat": 8.3,
+   "liquid": 200,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/11285/recipe/117214"
+   }
+  },
+  {
+   "id": "popover-09",
+   "category": "ポップオーバー",
+   "name": "ヨークシャープディング（クラシル）",
+   "flour": "薄力粉",
+   "sugar": 0,
+   "egg": 166.6667,
+   "fat": 0,
+   "liquid": 200,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "クラシル",
+    "url": "https://www.kurashiru.com/recipes/2b1d7291-5be2-43af-9bd9-1ffd9983aa11"
+   }
+  },
+  {
+   "id": "popover-10",
+   "category": "ポップオーバー",
+   "name": "ヨークシャープディング（世界ごはん紀行）",
+   "flour": "薄力粉",
+   "sugar": 0,
+   "egg": 62.5,
+   "fat": 0,
+   "liquid": 175,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "世界ごはん紀行",
+    "url": "https://sekaigohan.com/recipes/europe/united-kingdom/yorkshire-pudding"
+   }
+  },
+  {
+   "id": "waffle-01",
+   "category": "ワッフル",
+   "name": "アメリカンワッフル",
+   "flour": "小麦粉",
+   "sugar": 30,
+   "egg": 50,
+   "fat": 44.9,
+   "liquid": 80,
+   "bp": 4,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/special/article/?p=65254"
+   }
+  },
+  {
+   "id": "waffle-02",
+   "category": "ワッフル",
+   "name": "アメリカンワッフル",
+   "flour": "小麦粉",
+   "sugar": 30,
+   "egg": 60,
+   "fat": 16.6,
+   "liquid": 140,
+   "bp": 4,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://recipe.cotta.jp/recipe.php?recipeid=00015911"
+   }
+  },
+  {
+   "id": "waffle-03",
+   "category": "ワッフル",
+   "name": "美味しい☆ワッフル",
+   "flour": "小麦粉",
+   "sugar": 15,
+   "egg": 100,
+   "fat": 24.9,
+   "liquid": 141,
+   "bp": 5,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "クラシル",
+    "url": "https://www.kurashiru.com/recipe_cards/912cb9a8-052f-40f1-99fe-07ecc849fb3d"
+   }
+  },
+  {
+   "id": "waffle-04",
+   "category": "ワッフル",
+   "name": "ワッフル",
+   "flour": "小麦粉",
+   "sugar": 25,
+   "egg": 31.25,
+   "fat": 20.75,
+   "liquid": 156.25,
+   "bp": 5,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "みんなのきょうの料理",
+    "url": "https://www.kyounoryouri.jp/recipe/601899_%E3%83%AF%E3%83%83%E3%83%95%E3%83%AB.html"
+   }
+  },
+  {
+   "id": "waffle-05",
+   "category": "ワッフル",
+   "name": "基本のリエージュワッフル",
+   "flour": "小麦粉",
+   "sugar": 35,
+   "egg": 25,
+   "fat": 20.75,
+   "liquid": 37.5,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://recipe.cotta.jp/recipe.php?recipeid=00027531"
+   }
+  },
+  {
+   "id": "waffle-06",
+   "category": "ワッフル",
+   "name": "ふわもち♪ワッフル",
+   "flour": "小麦粉",
+   "sugar": 30,
+   "egg": 50,
+   "fat": 12.45,
+   "liquid": 140,
+   "bp": 3,
+   "method": "separate",
+   "profile": "home",
+   "source": {
+    "site": "楽天レシピ",
+    "url": "https://recipe.rakuten.co.jp/recipe/1910018997/"
+   }
+  },
+  {
+   "id": "waffle-07",
+   "category": "ワッフル",
+   "name": "アメリカンワッフル",
+   "flour": "小麦粉",
+   "sugar": 20,
+   "egg": 50,
+   "fat": 24.9,
+   "liquid": 110,
+   "bp": 5,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "ビタントニオ",
+    "url": "https://cdn.shopify.com/s/files/1/0629/1351/1658/files/VWH-600.pdf?v=1687428896"
+   }
+  },
+  {
+   "id": "waffle-08",
+   "category": "ワッフル",
+   "name": "ブリュッセルワッフル",
+   "flour": "小麦粉",
+   "sugar": 30,
+   "egg": 50,
+   "fat": 20.75,
+   "liquid": 145,
+   "bp": 0,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "ビタントニオ",
+    "url": "https://cdn.shopify.com/s/files/1/0629/1351/1658/files/VWH-600.pdf?v=1687428896"
+   }
+  },
+  {
+   "id": "waffle-09",
+   "category": "ワッフル",
+   "name": "リエージュワッフル",
+   "flour": "強力粉",
+   "sugar": 22.5,
+   "egg": 25,
+   "fat": 20.75,
+   "liquid": 37.5,
+   "bp": 0,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "ビタントニオ",
+    "url": "https://cdn.shopify.com/s/files/1/0629/1351/1658/files/VWH-600.pdf?v=1687428896"
+   }
+  },
+  {
+   "id": "waffle-10",
+   "category": "ワッフル",
+   "name": "ペロッといけちゃう♪軽い食感のアメリカンワッフル",
+   "flour": "小麦粉",
+   "sugar": 25,
+   "egg": 50,
+   "fat": 25,
+   "liquid": 130,
+   "bp": 4,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/166337/recipe/382376"
+   }
+  },
+  {
+   "id": "focaccia-01",
+   "category": "フォカッチャ",
+   "name": "オーバーナイトで作るフォカッチャ",
+   "flour": "強力粉",
+   "sugar": 1.6667,
+   "egg": 0,
+   "fat": 10,
+   "liquid": 83.3333,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00029924"
+   }
+  },
+  {
+   "id": "focaccia-02",
+   "category": "フォカッチャ",
+   "name": "フォカッチャ",
+   "flour": "強力粉",
+   "sugar": 5,
+   "egg": 0,
+   "fat": 3,
+   "liquid": 65,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00009565"
+   }
+  },
+  {
+   "id": "focaccia-03",
+   "category": "フォカッチャ",
+   "name": "基本のフォカッチャ",
+   "flour": "強力粉・薄力粉",
+   "sugar": 4,
+   "egg": 0,
+   "fat": 8,
+   "liquid": 96,
+   "bp": 0,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00028648"
+   }
+  },
+  {
+   "id": "focaccia-04",
+   "category": "フォカッチャ",
+   "name": "オリーブオイル香るフォカッチャ",
+   "flour": "準強力粉",
+   "sugar": 4,
+   "egg": 0,
+   "fat": 7.5,
+   "liquid": 60,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "cotta",
+    "url": "https://www.cotta.jp/recipe/recipe.php?recipeid=00021163"
+   }
+  },
+  {
+   "id": "focaccia-05",
+   "category": "フォカッチャ",
+   "name": "ふわもち食感♪こねないフォカッチャ",
+   "flour": "強力粉",
+   "sugar": 1.2,
+   "egg": 0,
+   "fat": 4,
+   "liquid": 88,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/675093/recipe/526816"
+   }
+  },
+  {
+   "id": "focaccia-06",
+   "category": "フォカッチャ",
+   "name": "モチふわ絶品★簡単！高加水フォカッチャ",
+   "flour": "強力粉",
+   "sugar": 4,
+   "egg": 0,
+   "fat": 12,
+   "liquid": 90,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/239216/recipe/518259"
+   }
+  },
+  {
+   "id": "focaccia-07",
+   "category": "フォカッチャ",
+   "name": "朝20分で焼きたて！本格フォカッチャ",
+   "flour": "強力粉・薄力粉",
+   "sugar": 6,
+   "egg": 0,
+   "fat": 12,
+   "liquid": 60,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/446500/recipe/450517"
+   }
+  },
+  {
+   "id": "focaccia-08",
+   "category": "フォカッチャ",
+   "name": "ふわもち食感◎丸型で作る基本のフォカッチャ",
+   "flour": "強力粉",
+   "sugar": 6.6667,
+   "egg": 0,
+   "fat": 10,
+   "liquid": 63.3333,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/84190/recipe/484586"
+   }
+  },
+  {
+   "id": "focaccia-09",
+   "category": "フォカッチャ",
+   "name": "こねないフォカッチャ",
+   "flour": "強力粉",
+   "sugar": 6,
+   "egg": 0,
+   "fat": 8,
+   "liquid": 90,
+   "bp": 0,
+   "method": "mix",
+   "profile": "home",
+   "source": {
+    "site": "Nadia",
+    "url": "https://oceans-nadia.com/user/260624/recipe/510834"
+   }
+  },
+  {
+   "id": "focaccia-10",
+   "category": "フォカッチャ",
+   "name": "フォカッチャ",
+   "flour": "強力粉・薄力粉",
+   "sugar": 1.6,
+   "egg": 0,
+   "fat": 4.8,
+   "liquid": 60,
+   "bp": 0,
+   "method": "mix",
+   "profile": "standard",
+   "source": {
+    "site": "日立",
+    "url": "https://kadenfan.hitachi.co.jp/ih/recipe/pc/k200t/o072.html"
+   }
   }
  ]
 }

@@ -43,3 +43,12 @@ test('volume leaves unsupported cells empty and never hatches across methods',()
  assert.ok(volume.faces.every(f=>f.categories.length===1));
  assert.ok(volume.faces.every(f=>f.vertices.every(v=>v.every(n=>n>=-1&&n<=1))));
 });
+
+test('2D projection ignores water while 3D retains its distance',()=>{
+ const rows=[row('a','A',10),row('b','A',20)];
+ const projection=prepare(rows,['fat','egg']);const spatial=prepare(rows);
+ const point=row('p','A',10),wet={...point,liquid:1000};
+ assert.deepEqual(inspect(projection,point,'foam'),inspect(projection,wet,'foam'));
+ assert.equal(inspect(projection,wet,'foam').type,'supported');
+ assert.equal(inspect(spatial,wet,'foam').type,'insufficient');
+});

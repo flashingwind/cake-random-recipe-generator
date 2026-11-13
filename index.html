@@ -106,17 +106,17 @@
     <h2>パラメータ空間</h2>
     <h3>3D全体図</h3>
     <p class="note">脂肪・卵・水分の3軸で、すべての実レシピを同時に表示します。ドラッグまたは矢印キーで回転できます。点の色・形がケーキの種類、白抜きの大きな点がアンカー、★が生成中の配合です。</p>
-    <p class="note">上部の水分スライダーは生成レシピの調整用です。全体図のデータは絞り込みません。</p>
+    <p class="note">上部の水分スライダーは生成レシピの調整用です。3D・2Dの全体図のデータは絞り込みません。</p>
     <canvas id="overview3d" width="960" height="540" tabindex="0" role="img"></canvas>
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
     <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。データ不足は透明です。</p>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
     <p class="note" id="trainingSummary"></p>
     <details id="sliceView">
-      <summary>2D断面図を開く（水分 <span id="sliceWater"></span> g／粉100g）</summary>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分は現在のスライダー値に固定した断面です。分類は脂肪・卵・水分の3項目で行い、砂糖・BPはレシピと成立判定に使います。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
+      <summary>2D投影図を開く（脂肪×卵・水分は無視）</summary>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定するのではなく、水分の違いを無視して脂肪・卵の2項目で分類します。すべての実レシピを同じ平面に投影します。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
     <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方の異なるカテゴリの実データが近接する領域。グレー＝データ不足。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
-    <p class="note">点は脂肪・卵の位置への投影なので、水分の違いによってグレーや別色の領域にも現れます。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
+    <p class="note">水分が異なるレシピも同じ平面に重なるため、2Dでの近接は3Dでの近接とは限りません。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
 
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
@@ -333,6 +333,7 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
 
 const X_MAX = 110, Y_MAX = 420;
 const REGION_MODEL = RecipeRegions.prepare(RECIPE_MODEL.rows);
+const PROJECTION_MODEL = RecipeRegions.prepare(RECIPE_MODEL.rows,['fat','egg']);
 const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
 let regionTiles = [];
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
@@ -353,7 +354,7 @@ function nearest2D(fat, egg, category){
     .sort((a,b)=>((fat-a.fat)/X_MAX)**2+((egg-a.egg)/Y_MAX)**2-((fat-b.fat)/X_MAX)**2-((egg-b.egg)/Y_MAX)**2)[0];
 }
 function regionAt(x,y,method){
-  return RecipeRegions.inspect(REGION_MODEL,{...state,fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX},method);
+  return RecipeRegions.inspect(PROJECTION_MODEL,{fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX},method);
 }
 function makeRegionTiles(){
   const cache=new Map();
@@ -452,11 +453,10 @@ function render(syncSliders = true){
   document.getElementById('recipeTable').innerHTML = r.rows.map(([n,g])=>`<tr><td>${n}</td><td>${g} g</td></tr>`).join('');
   document.getElementById('steps').innerHTML = r.steps.map(s=>`<li>${s}</li>`).join('');
   overview.render();
-  document.getElementById('sliceWater').textContent=state.liquid;
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `実レシピ${REGION_MODEL.rows.length}件を使用。概算アンカーはデータの有無・食い違いの判定には含めません。近接判定は脂肪・卵・水分の3項目を標準化した距離による目安です。斜線は誤分類や焼き上がりの混合を断定するものではありません。`;
+document.getElementById('trainingSummary').textContent = `実レシピ${REGION_MODEL.rows.length}件を使用。概算アンカーはデータの有無・食い違いの判定には含めません。3Dの近接判定は脂肪・卵・水分、2Dは脂肪・卵のみを標準化した距離による目安です。斜線は誤分類や焼き上がりの混合を断定するものではありません。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();
@@ -467,7 +467,7 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'異なるカテゴリの実データが近接','supported':'実データの近傍'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
-    heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（砂糖 ${state.sugar}g・水分 ${state.liquid}g・BP ${state.bp}g）`;
+    heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（水分・砂糖・BPは投影分類に使いません）`;
     detail.append(heading);
     for(const {row,distance} of result.neighbors.slice(0,3)){
       const p=document.createElement('p');

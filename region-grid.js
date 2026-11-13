@@ -1,8 +1,8 @@
 // Data support and label overlap are computed from observed recipes, never anchors.
 (function(root){
-  const features=['fat','egg','liquid'];
-  const distance=(a,b,scales)=>Math.sqrt(features.reduce((sum,key,i)=>sum+((a[key]-b[key])/scales[i])**2,0));
-  function prepare(rows){
+  const defaultFeatures=['fat','egg','liquid'];
+  const distance=(a,b,scales,features=defaultFeatures)=>Math.sqrt(features.reduce((sum,key,i)=>sum+((a[key]-b[key])/scales[i])**2,0));
+  function prepare(rows,features=defaultFeatures){
     const observed=rows.filter(r=>r.kind==='public-recipe');
     if(!observed.length)throw Error('No observed recipes');
     const scales=features.map(key=>{
@@ -12,14 +12,14 @@
     const radii={};
     for(const category of new Set(observed.map(r=>r.category))){
       const group=observed.filter(r=>r.category===category);
-      const nearest=group.map(r=>Math.min(...group.filter(q=>q.id!==r.id).map(q=>distance(r,q,scales)))).filter(Number.isFinite).sort((a,b)=>a-b);
+      const nearest=group.map(r=>Math.min(...group.filter(q=>q.id!==r.id).map(q=>distance(r,q,scales,features)))).filter(Number.isFinite).sort((a,b)=>a-b);
       // A local-support heuristic, not a calibrated probability or a validity test.
       radii[category]=Math.max(.35,Math.min(1.25,nearest[Math.ceil(nearest.length*.9)-1]||.35));
     }
-    return {rows:observed,scales,radii};
+    return {rows:observed,scales,radii,features:[...features]};
   }
   function inspect(model,point,method){
-    const neighbors=model.rows.map(row=>({row,distance:distance(point,row,model.scales)})).sort((a,b)=>a.distance-b.distance || a.row.id.localeCompare(b.row.id));
+    const neighbors=model.rows.map(row=>({row,distance:distance(point,row,model.scales,model.features)})).sort((a,b)=>a.distance-b.distance || a.row.id.localeCompare(b.row.id));
     const supported=neighbors.filter(n=>n.distance<=model.radii[n.row.category]);
     if(!supported.length)return {type:'insufficient',neighbors:neighbors.slice(0,3),categories:[]};
     const groups=new Map();
@@ -45,7 +45,7 @@
       const categories=result.categories;
       const profiles=categories.map(g=>{
         const candidates=anchors.filter(a=>anchors.find(b=>b.id===a.id.replace(/-home$/,'')).name===g.category);
-        candidates.sort((a,b)=>distance(point,a,model.scales)-distance(point,b,model.scales));
+        candidates.sort((a,b)=>distance(point,a,model.scales,model.features)-distance(point,b,model.scales,model.features));
         return /[（(]家庭用[）)]/.test(candidates[0].name)?'home':'standard';
       });
       const cell={indices,categories,profiles,signature:categories.map((g,i)=>g.category+':'+profiles[i]).join('|')};

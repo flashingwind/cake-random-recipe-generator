@@ -85,8 +85,8 @@
 
   <section class="card">
     <h2>パラメータ空間</h2>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。領域の色は「脂肪×卵の2軸で一番近い既存ケーキ」。
-    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、そのアンカーが最も近い領域はグレーにします。混ぜるだけのグラフには、収集した実レシピ29件（ホットケーキ14・クレープ15）を小さな点で重ねています。</p>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。領域の色は、収集した実レシピ77件で学習した分類器（SVM）が予測するケーキの種類で、色の濃さが予測確率です（薄いところは種類が混ざり合う境界）。砂糖・水分・ベーキングパウダーはデータの中央値（砂糖93・水分63・BP 0）に固定した断面で、交差検証の正解率は0.88。
+    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、他の立て方に属する種類の領域はグレーにします。混ぜるだけのグラフには、収集した実レシピ29件（ホットケーキ14・クレープ15）を小さな点で重ねています。</p>
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
       <div class="plot-box"><h3>共立て</h3><canvas class="plot" id="plot-foam" width="460" height="360"></canvas></div>
@@ -274,6 +274,19 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
   if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); ctx.lineWidth = 1; }
 }
 
+// ===== 分類器の確率グリッド（ml/model_grid.json、学習済みSVM） =====
+const CLASS_COLOR = { 'パウンドケーキ':'#c96f2e', 'ジェノワーズ':'#4a7fb5', 'シフォンケーキ':'#5da24a', 'カステラ':'#8a5fb0', 'エンゼルフード':'#c2a13d', 'ホットケーキ':'#e8912d', 'クレープ':'#6a9a7d' };
+const CLASS_METHOD = { 'パウンドケーキ':'cream', 'ジェノワーズ':'foam', 'カステラ':'foam', 'シフォンケーキ':'separate', 'エンゼルフード':'separate', 'ホットケーキ':'mix', 'クレープ':'mix' };
+let GRID = null;
+fetch('ml/model_grid.json').then(r => r.ok ? r.json() : null).then(d => { if (d){ GRID = d; render(false); } }).catch(()=>{});
+function hexA(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; }
+function gridCell(fat, egg){
+  if (!GRID) return null;
+  const fi = Math.max(0, Math.min(GRID.fat_axis.length-1, Math.round(fat/5)));
+  const ei = Math.max(0, Math.min(GRID.egg_axis.length-1, Math.round(egg/10)));
+  return GRID.grid[ei][fi];
+}
+
 // ===== プロット =====
 const X_MAX = 110, Y_MAX = 420;
 function nearest2D(fat, egg){
@@ -290,8 +303,13 @@ function drawPlot(canvas, method){
   const cell = 10;
   for (let px=L; px<L+PW; px+=cell) for (let py=T; py<T+PH; py+=cell){
     const f = (px-L)/PW*X_MAX, e = (1-(py-T)/PH)*Y_MAX;
-    const nb = nearest2D(f,e);
-    ctx.fillStyle = (nb.method===method ? nb.color : '#8a8378') + '2e';
+    const gc = gridCell(f, e);
+    if (gc){
+      ctx.fillStyle = hexA(CLASS_METHOD[gc.class]===method ? CLASS_COLOR[gc.class] : '#8a8378', 0.06 + 0.30*gc.p);
+    } else {
+      const nb = nearest2D(f,e);
+      ctx.fillStyle = (nb.method===method ? nb.color : '#8a8378') + '2e';
+    }
     ctx.fillRect(px, py, cell, cell);
   }
   ctx.strokeStyle = '#cbb'; ctx.strokeRect(L,T,PW,PH);

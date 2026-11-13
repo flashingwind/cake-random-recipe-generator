@@ -64,9 +64,7 @@
 <body>
 <header>
   <h1>ケーキランダムレシピジェネレーター</h1>
-  <p>パウンド・スポンジ・シフォンなどのレシピは、パラメータ空間では連続しているのではないか、という仮説の実験道具。
-  既存のケーキ（アンカー）の間をランダムに補間して、名前のない中間域のケーキのレシピを生成します。
-  パラメータはすべて「小麦粉100gあたり」で表し、油脂は純脂肪のグラム数で数えます（バター換算はグラフの二重目盛りで読み替え）。</p>
+  <p>レシピはパラメータ空間で連続している、という仮説の実験道具。既存ケーキの間を補間して中間域のレシピを生成します。パラメータは小麦粉100gあたり、油脂は純脂肪gです。</p>
 </header>
 <main>
   <section class="card">
@@ -108,22 +106,20 @@
   <section class="card">
     <h2>パラメータ空間</h2>
     <h3>3D全体図</h3>
-    <p class="note">脂肪・卵・水分の3軸で、各ケーキの領域を色付きの立体と名前で表示します。ドラッグまたは矢印キーで回転できます。小さい点は学習データの確認用、白抜きはアンカー、★が生成中の配合です。</p>
+    <p class="note">ドラッグ／矢印キーで回転。小さい点は実レシピ、白抜きはアンカー、★は生成中の配合です。</p>
     <p class="note">上部の水分スライダーは生成レシピの調整用です。3D・2Dの全体図のデータは絞り込みません。</p>
-    <p class="note"><label><input id="focusThree" type="checkbox"> パウンド・シフォン・ジェノワーズの関係に絞って表示</label>（学習モデルは全7カテゴリ共通。オンにすると、他のケーキに近い場所もこの3種内での相対比較になります。）</p>
-    <p class="note"><label><input id="showExtrapolation" type="checkbox"> データ範囲外への推定も表示</label>（通常は実データの密度が届く範囲内を表示）</p>
+    <p class="note"><label><input id="focusThree" type="checkbox"> パウンド・シフォン・ジェノワーズの関係に絞って表示</label></p>
+    <p class="note"><label><input id="showExtrapolation" type="checkbox"> データ範囲外への推定も表示</label>（通常は密度の届く範囲のみ）</p>
     <canvas id="overview3d" width="960" height="540" tabindex="0" role="img"></canvas>
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
     <p class="note" id="volumeStatus" aria-live="polite"></p>
-    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。個別の距離閾値では切り落とさず、モデルの密度が届かない場所は通常表示しません。膨らみ指数で供給不足になる領域は、色を塗らず体積から除きます（クレープは膨らませない設計のため除きません）。</p>
+    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。</p>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
     <p class="note" id="trainingSummary"></p>
+    <p class="note"><a href="https://github.com/flashingwind/cake-random-recipe-generator#readme" target="_blank" rel="noopener">学習方法・モデル・データ収集・可視化手法はREADME</a></p>
     <details id="sliceView">
       <summary>2D投影図を開く（3D領域を水分方向に重ねる）</summary>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定せず、3Dで塗った領域を水分方向に重ねた投影図です。2Dだけで分類し直すことはしません。学習モデルの領域で分類し、境界付近のグリッドを細かく表示します。</p>
-    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方のカテゴリ領域が投影で重なる場所。モデルの密度が届かない場所はグレーです。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
-    <p class="note">水分が異なるレシピも同じ平面に重なるため、2Dの斜線は投影上の重なりであり、3Dの同じ位置でデータが食い違うとは限りません。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
-
+            
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
       <div class="plot-box"><h3>共立て</h3><canvas class="plot" id="plot-foam" width="460" height="360"></canvas></div>
@@ -133,18 +129,6 @@
     <div class="note" id="regionDetails" aria-live="polite">グラフをクリックして領域の根拠を確認できます。</div>
     </details>
     <div class="legend" id="legend"></div>
-    <div class="note" style="margin-top:16px">
-      <p style="margin:0 0 4px"><b>参考文献（アンカーの目安）</b></p>
-      <p style="margin:0">アンカーは定番レシピを小麦粉100gあたりに換算した概算です。「家庭用」は下記のレシピの換算値、その他は定番レシピの範囲から置いた値です。</p>
-      <ul style="margin:4px 0 0; padding-left:18px">
-        <li>パウンドケーキ：<a href="https://www.morinagamilk.co.jp/recipe/detail/recipe.php?id=99151K" target="_blank" rel="noopener">森永乳業「基本のパウンドケーキ」</a></li>
-        <li>ジェノワーズ（家庭用）：<a href="https://www.cotta.jp/special/article/?p=65362" target="_blank" rel="noopener">cotta「基本のスポンジケーキのレシピ」</a></li>
-        <li>シフォンケーキ（家庭用）：<a href="https://www.rakuten.ne.jp/gold/tomizawa/recipe/9019.html" target="_blank" rel="noopener">富澤商店「基本のシフォンケーキ」</a></li>
-        <li>カステラ（家庭用）：<a href="https://www.nisshin-seifun-welna.com/index/recipe/detail/s-043.html" target="_blank" rel="noopener">日清製粉ウェルナ「カステラ」</a></li>
-        <li>エンゼルフードケーキ（家庭用）：<a href="https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609" target="_blank" rel="noopener">クラシル「エンゼルフードケーキ」</a></li>
-      </ul>
-      <p style="margin:6px 0 0">収集した実レシピのデータと出典は <a href="data/recipes.json">data/recipes.json</a>（端クラスは <a href="data/edge_recipes.json">data/edge_recipes.json</a>）にあります。</p>
-    </div>
   </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
@@ -509,7 +493,7 @@ function render(syncSliders = true){
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `使用モデル：${SVM_FIELD.model}。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。分類はすべてこのモデルで行い、近傍投票は使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。境界用の6カテゴリは学習のみに使い、表示と生成は7カテゴリです。`;
+document.getElementById('trainingSummary').textContent = `使用モデル：${SVM_FIELD.model}。実レシピ${SVM_FIELD.summary.publicRecipes}件＋アンカー${SVM_FIELD.summary.anchorEstimates}件で学習。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();

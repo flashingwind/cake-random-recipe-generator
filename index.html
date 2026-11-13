@@ -86,7 +86,7 @@
   <section class="card">
     <h2>パラメータ空間</h2>
     <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。領域の色は、収集した実レシピ77件で学習した分類器（SVM）が予測するケーキの種類で、色の濃さが予測確率です（薄いところは種類が混ざり合う境界）。砂糖・水分・ベーキングパウダーはデータの中央値（砂糖93・水分63・BP 0）に固定した断面で、交差検証の正解率は0.88。
-    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、他の立て方に属する種類の領域はグレーにします。混ぜるだけのグラフには、収集した実レシピ29件（ホットケーキ14・クレープ15）を小さな点で重ねています。</p>
+    立て方ごとにグラフを分け、★が現在のパラメータです。他の立て方のグラフではアンカーを白抜きで示し、他の立て方に属する種類の領域はグレーにします。収集した実レシピ77件は、立て方ごとのグラフに小さな点で重ねています（形と色はアンカーと同じ種類分け）。</p>
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
       <div class="plot-box"><h3>共立て</h3><canvas class="plot" id="plot-foam" width="460" height="360"></canvas></div>
@@ -125,19 +125,7 @@ const ANCHORS = [
   { id:'crepe',   name:'クレープ',     color:'#6a9a7d', shape:'cross', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
 ];
 const METHOD_LABEL = { cream:'クリーミング', foam:'共立て', separate:'別立て', mix:'混ぜるだけ' };
-// ===== 収集した実レシピ（data/recipes.json と同じデータのうち脂肪×卵のみ）。混ぜるだけのグラフに点で重ねる =====
-const SAMPLE_COLORS = { hotcake:'#e8912d', crepe:'#6a9a7d' };
-const SAMPLE_SHAPES = { hotcake:'down', crepe:'cross' };
-const SAMPLES = [
-  { c:'hotcake', fat:0, egg:50 }, { c:'hotcake', fat:12, egg:25 }, { c:'hotcake', fat:0, egg:33.3 }, { c:'hotcake', fat:0, egg:50 },
-  { c:'hotcake', fat:8.3, egg:50 }, { c:'hotcake', fat:20.8, egg:62.5 }, { c:'hotcake', fat:3.8, egg:0 }, { c:'hotcake', fat:0, egg:0 },
-  { c:'hotcake', fat:4, egg:50 }, { c:'hotcake', fat:0, egg:71.4 }, { c:'hotcake', fat:0, egg:0 }, { c:'hotcake', fat:0, egg:31.3 },
-  { c:'hotcake', fat:8, egg:33.3 }, { c:'hotcake', fat:0, egg:33.3 },
-  { c:'crepe', fat:6.6, egg:200 }, { c:'crepe', fat:17.5, egg:131.6 }, { c:'crepe', fat:20.8, egg:125 }, { c:'crepe', fat:16.6, egg:100 },
-  { c:'crepe', fat:16, egg:76.9 }, { c:'crepe', fat:16.6, egg:100 }, { c:'crepe', fat:12.5, egg:100 }, { c:'crepe', fat:8.3, egg:50 },
-  { c:'crepe', fat:24, egg:100 }, { c:'crepe', fat:0, egg:125 }, { c:'crepe', fat:16.6, egg:100 }, { c:'crepe', fat:16.6, egg:133.3 },
-  { c:'crepe', fat:0, egg:50 }, { c:'crepe', fat:16.6, egg:100 }, { c:'crepe', fat:0, egg:58.8 },
-];
+
 
 const FAT_LABEL = { butter:'バター', oil:'油', none:'なし' };
 const PARAMS = [
@@ -298,6 +286,9 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
 // ===== 分類器の確率グリッド（ml/model_grid.json、学習済みSVM） =====
 const CLASS_COLOR = { 'パウンドケーキ':'#c96f2e', 'ジェノワーズ':'#4a7fb5', 'シフォンケーキ':'#5da24a', 'カステラ':'#8a5fb0', 'エンゼルフード':'#c2a13d', 'ホットケーキ':'#e8912d', 'クレープ':'#6a9a7d' };
 const CLASS_METHOD = { 'パウンドケーキ':'cream', 'ジェノワーズ':'foam', 'カステラ':'foam', 'シフォンケーキ':'separate', 'エンゼルフード':'separate', 'ホットケーキ':'mix', 'クレープ':'mix' };
+const CLASS_SHAPE = { 'パウンドケーキ':'circle', 'ジェノワーズ':'triangle', 'シフォンケーキ':'square', 'カステラ':'diamond', 'エンゼルフード':'star', 'ホットケーキ':'down', 'クレープ':'cross' };
+let RECIPES = null;
+fetch('data/recipes.json').then(r => r.ok ? r.json() : null).then(d => { if (d){ RECIPES = d.recipes; render(false); } }).catch(()=>{});
 let GRID = null;
 fetch('ml/model_grid.json').then(r => r.ok ? r.json() : null).then(d => { if (d){ GRID = d; render(false); } }).catch(()=>{});
 function hexA(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; }
@@ -341,18 +332,20 @@ function drawPlot(canvas, method){
   ctx.textAlign='center';
   ctx.fillText('純脂肪 g（下）／バター換算 g（上）', L+PW/2, H-6);
   ctx.save(); ctx.translate(11, T+PH/2); ctx.rotate(-Math.PI/2); ctx.fillText('卵 g', 0, 0); ctx.restore();
+  if (RECIPES){
+    for (const r of RECIPES){
+      if ((r.method || CLASS_METHOD[r.category]) !== method) continue;
+      if (r.fat > X_MAX || r.egg > Y_MAX) continue;
+      ctx.globalAlpha = .85;
+      drawMarker(ctx, CLASS_SHAPE[r.category], X(r.fat), Y(r.egg), 3.2, CLASS_COLOR[r.category], '#fff', .5);
+      ctx.globalAlpha = 1;
+    }
+  }
   for (const a of ANCHORS){
     if (a.method===method) drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, a.color, '#fff', 1);
     else drawMarker(ctx, a.shape, X(a.fat), Y(a.egg), 6.5, '#fff', a.color, 2);
     ctx.fillStyle='#2b2320'; ctx.font='10px sans-serif'; ctx.textAlign='left';
     ctx.fillText(a.name, X(a.fat)+9, Y(a.egg)+3);
-  }
-  if (method==='mix'){
-    for (const sm of SAMPLES){
-      ctx.globalAlpha = .85;
-      drawMarker(ctx, SAMPLE_SHAPES[sm.c], X(sm.fat), Y(sm.egg), 3.2, SAMPLE_COLORS[sm.c], '#fff', .5);
-      ctx.globalAlpha = 1;
-    }
   }
   if (state.method===method){
     const x=X(state.fat), y=Y(state.egg);

@@ -72,8 +72,9 @@ test('a focused view with zero rounded mass at a point still returns finite scor
 });
 
 test('carve hook drops voxels entirely instead of greying them',()=>{
- const full=buildVolume(field,anchors,limits,classes,[18,24,24],false);
- const carved=buildVolume(field,anchors,limits,classes,[18,24,24],false,(category)=>category==='パウンドケーキ');
+ const lim={fat:110,egg:420,liquid:400};
+ const full=buildVolume(field,anchors,lim,field.classes,[18,24,24],false);
+ const carved=buildVolume(field,anchors,lim,field.classes,[18,24,24],false,(category)=>category==='パウンドケーキ');
  assert.ok(carved.cells<full.cells);
  assert.ok(carved.voxels.every(v=>v.categories[0].category!=='パウンドケーキ'));
 });

@@ -8,14 +8,14 @@ globalThis.RECIPE_MODEL = {
     "liquid"
   ],
   "means": [
-    24.117241379310343,
-    151.74712643678163,
-    85.1977011494253
+    26.388182978723396,
+    152.62493191489364,
+    81.62187765957448
   ],
   "scales": [
-    27.423650363993538,
-    85.60792051534148,
-    95.14450108476741
+    28.3898314009167,
+    83.58990780779187,
+    92.8673913339214
   ],
   "rows": [
     {
@@ -1387,6 +1387,280 @@ globalThis.RECIPE_MODEL = {
       "kind": "public-recipe"
     },
     {
+      "id": "kyono-600776",
+      "category": "パウンドケーキ",
+      "name": "レモンのパウンドケーキ",
+      "flour": "小麦粉",
+      "sugar": 100,
+      "egg": 83.3333,
+      "fat": 83,
+      "liquid": 16.6667,
+      "bp": 1.6667,
+      "method": "cream",
+      "profile": "home",
+      "source": {
+        "site": "みんなのきょうの料理",
+        "url": "https://www.kyounoryouri.jp/recipe/600776_%E3%83%AC%E3%83%A2%E3%83%B3%E3%81%AE%E3%83%91%E3%82%A6%E3%83%B3%E3%83%89%E3%82%B1%E3%83%BC%E3%82%AD.html"
+      },
+      "review": {
+        "checked_on": "2026-11-13",
+        "basis_flour_g": 120,
+        "source_amounts": {
+          "薄力粉_g": 120,
+          "粉砂糖_g": 120,
+          "卵_個": 2,
+          "バター_g": 120,
+          "レモン汁_小さじ": 4,
+          "BP_小さじ": 0.5
+        },
+        "notes": "砂糖衣の粉砂糖50gとレモン汁小さじ2は除外。レモンの皮は少量の風味付けとして特徴量に含めない。",
+        "conversion_assumptions": [
+          "全卵1個=50g、卵黄1個=20g、卵白1個=30g（重量記載がない場合）",
+          "バター純脂肪=重量×0.83、サラダ油=0.92g/ml、油は全量を脂肪として扱う",
+          "小さじ=5ml、大さじ=15ml、カップ=200ml、BP小さじ=4g",
+          "水・果汁・牛乳は追加液体量としてmlをg相当で扱う。材料全体の総水分ではない"
+        ],
+        "source_html_sha256": "406eb7ee4c5b99a0713433ff7621d8af5a71787e582e8294082f82aba86b46ae"
+      },
+      "color": "#c96f2e",
+      "kind": "public-recipe"
+    },
+    {
+      "id": "kyono-3696",
+      "category": "パウンドケーキ",
+      "name": "カトルカール",
+      "flour": "小麦粉",
+      "sugar": 95,
+      "egg": 105,
+      "fat": 90.55,
+      "liquid": 0,
+      "bp": 0,
+      "method": "cream",
+      "profile": "home",
+      "source": {
+        "site": "みんなのきょうの料理",
+        "url": "https://www.kyounoryouri.jp/recipe/3696_%E3%82%AB%E3%83%88%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%AB.html"
+      },
+      "review": {
+        "checked_on": "2026-11-13",
+        "basis_flour_g": 100,
+        "source_amounts": {
+          "薄力粉_g": 100,
+          "グラニュー糖_g": 95,
+          "全卵_g": 70,
+          "卵黄_g": 35,
+          "バター_g": 85,
+          "オリーブ油_g": 20
+        },
+        "notes": "全卵70gと卵黄35gを卵量として合算。レモンは手順で皮だけを使用。型用バター・粉と仕上げ粉糖を除外。",
+        "conversion_assumptions": [
+          "全卵1個=50g、卵黄1個=20g、卵白1個=30g（重量記載がない場合）",
+          "バター純脂肪=重量×0.83、サラダ油=0.92g/ml、油は全量を脂肪として扱う",
+          "小さじ=5ml、大さじ=15ml、カップ=200ml、BP小さじ=4g",
+          "水・果汁・牛乳は追加液体量としてmlをg相当で扱う。材料全体の総水分ではない"
+        ],
+        "source_html_sha256": "700638b08017601c6716b95c93c5555cdcb2d059eeaf70b5eeb890b9c165f0b1"
+      },
+      "color": "#c96f2e",
+      "kind": "public-recipe"
+    },
+    {
+      "id": "kyono-9755",
+      "category": "ジェノワーズ",
+      "name": "いちごのクリスマスケーキ",
+      "flour": "小麦粉",
+      "sugar": 100,
+      "egg": 166.6667,
+      "fat": 55.3333,
+      "liquid": 0,
+      "bp": 0,
+      "method": "foam",
+      "profile": "home",
+      "source": {
+        "site": "みんなのきょうの料理",
+        "url": "https://www.kyounoryouri.jp/recipe/9755_%E3%81%84%E3%81%A1%E3%81%94%E3%81%AE%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%9E%E3%82%B9%E3%82%B1%E3%83%BC%E3%82%AD.html"
+      },
+      "review": {
+        "checked_on": "2026-11-13",
+        "basis_flour_g": 90,
+        "source_amounts": {
+          "薄力粉_g": 90,
+          "砂糖_g": 90,
+          "卵_個": 3,
+          "バター_g": 60
+        },
+        "notes": "共立てスポンジの生地本体のみ。後塗りシロップの水・リキュール・砂糖、ホイップ、果物を除外。",
+        "conversion_assumptions": [
+          "全卵1個=50g、卵黄1個=20g、卵白1個=30g（重量記載がない場合）",
+          "バター純脂肪=重量×0.83、サラダ油=0.92g/ml、油は全量を脂肪として扱う",
+          "小さじ=5ml、大さじ=15ml、カップ=200ml、BP小さじ=4g",
+          "水・果汁・牛乳は追加液体量としてmlをg相当で扱う。材料全体の総水分ではない"
+        ],
+        "source_html_sha256": "09635ff8eb779e295db5203ad90a68459054f7e52cda5a3e229132fa61629818"
+      },
+      "color": "#4a7fb5",
+      "kind": "public-recipe"
+    },
+    {
+      "id": "kyono-43284",
+      "category": "ジェノワーズ",
+      "name": "いちごのドームケーキ",
+      "flour": "小麦粉",
+      "sugar": 100,
+      "egg": 166.6667,
+      "fat": 13.8333,
+      "liquid": 16.6667,
+      "bp": 0,
+      "method": "foam",
+      "profile": "home",
+      "source": {
+        "site": "みんなのきょうの料理",
+        "url": "https://www.kyounoryouri.jp/recipe/43284_%E3%81%84%E3%81%A1%E3%81%94%E3%81%AE%E3%83%89%E3%83%BC%E3%83%A0%E3%82%B1%E3%83%BC%E3%82%AD.html"
+      },
+      "review": {
+        "checked_on": "2026-11-13",
+        "basis_flour_g": 60,
+        "source_amounts": {
+          "薄力粉_g": 60,
+          "グラニュー糖_g": 60,
+          "卵_個": 2,
+          "バター_g": 10,
+          "牛乳_大さじ": 0.6666666666666666
+        },
+        "notes": "共立てスポンジの生地本体のみ。ホイップ用の生クリームと砂糖25g、ジャム、果物を除外。",
+        "conversion_assumptions": [
+          "全卵1個=50g、卵黄1個=20g、卵白1個=30g（重量記載がない場合）",
+          "バター純脂肪=重量×0.83、サラダ油=0.92g/ml、油は全量を脂肪として扱う",
+          "小さじ=5ml、大さじ=15ml、カップ=200ml、BP小さじ=4g",
+          "水・果汁・牛乳は追加液体量としてmlをg相当で扱う。材料全体の総水分ではない"
+        ],
+        "source_html_sha256": "8fc330f367c2d9f64f64448f8aa399d4d65153941a1e1258b666685f6f1c48d4"
+      },
+      "color": "#4a7fb5",
+      "kind": "public-recipe"
+    },
+    {
+      "id": "kyono-8395",
+      "category": "シフォンケーキ",
+      "name": "レモンシフォンケーキ",
+      "flour": "小麦粉",
+      "sugar": 100,
+      "egg": 233.3333,
+      "fat": 61.3333,
+      "liquid": 83.3333,
+      "bp": 2.2222,
+      "method": "separate",
+      "profile": "home",
+      "source": {
+        "site": "みんなのきょうの料理",
+        "url": "https://www.kyounoryouri.jp/recipe/8395_%E3%83%AC%E3%83%A2%E3%83%B3%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+      },
+      "review": {
+        "checked_on": "2026-11-13",
+        "basis_flour_g": 120,
+        "source_amounts": {
+          "薄力粉_g": 120,
+          "グラニュー糖_g": 120,
+          "卵黄_個": 5,
+          "卵白_個": 6,
+          "サラダ油_ml": 80,
+          "水_ml": 70,
+          "レモン汁_ml": 30,
+          "BP_小さじ": 0.6666666666666666
+        },
+        "notes": "レモンの皮と塩は3特徴の計算対象外。卵黄・卵白の重量は仮定を明記。",
+        "conversion_assumptions": [
+          "全卵1個=50g、卵黄1個=20g、卵白1個=30g（重量記載がない場合）",
+          "バター純脂肪=重量×0.83、サラダ油=0.92g/ml、油は全量を脂肪として扱う",
+          "小さじ=5ml、大さじ=15ml、カップ=200ml、BP小さじ=4g",
+          "水・果汁・牛乳は追加液体量としてmlをg相当で扱う。材料全体の総水分ではない"
+        ],
+        "source_html_sha256": "ad50270e6c4a5af0f956157acea348f1d83a32b873684f7b44a486170a1be40b"
+      },
+      "color": "#5da24a",
+      "kind": "public-recipe"
+    },
+    {
+      "id": "kyono-2299",
+      "category": "シフォンケーキ",
+      "name": "バニラシフォンケーキ",
+      "flour": "小麦粉",
+      "sugar": 107.6923,
+      "egg": 223.0769,
+      "fat": 42.4615,
+      "liquid": 76.9231,
+      "bp": 3.0769,
+      "method": "separate",
+      "profile": "home",
+      "source": {
+        "site": "みんなのきょうの料理",
+        "url": "https://www.kyounoryouri.jp/recipe/2299_%E3%83%90%E3%83%8B%E3%83%A9%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+      },
+      "review": {
+        "checked_on": "2026-11-13",
+        "basis_flour_g": 130,
+        "source_amounts": {
+          "薄力粉_g": 130,
+          "グラニュー糖_g": 140,
+          "卵黄_個": 4,
+          "卵白_個": 7,
+          "サラダ油_ml": 60,
+          "水_カップ": 0.5,
+          "BP_小さじ": 1
+        },
+        "notes": "砂糖70g＋メレンゲ用70gを合算。仕上げ粉砂糖、バニラ、酒石酸と塩は3特徴の計算対象外。",
+        "conversion_assumptions": [
+          "全卵1個=50g、卵黄1個=20g、卵白1個=30g（重量記載がない場合）",
+          "バター純脂肪=重量×0.83、サラダ油=0.92g/ml、油は全量を脂肪として扱う",
+          "小さじ=5ml、大さじ=15ml、カップ=200ml、BP小さじ=4g",
+          "水・果汁・牛乳は追加液体量としてmlをg相当で扱う。材料全体の総水分ではない"
+        ],
+        "source_html_sha256": "ab0254580bb5be5db7859a65a34d88347d74d79e742cc3e350bf54d90fe92e25"
+      },
+      "color": "#5da24a",
+      "kind": "public-recipe"
+    },
+    {
+      "id": "kyono-601926",
+      "category": "シフォンケーキ",
+      "name": "シフォンケーキ",
+      "flour": "小麦粉",
+      "sugar": 138.8889,
+      "egg": 166.6667,
+      "fat": 35.7778,
+      "liquid": 66.6667,
+      "bp": 3.3333,
+      "method": "separate",
+      "profile": "home",
+      "source": {
+        "site": "みんなのきょうの料理",
+        "url": "https://www.kyounoryouri.jp/recipe/601926_%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+      },
+      "review": {
+        "checked_on": "2026-11-13",
+        "basis_flour_g": 90,
+        "source_amounts": {
+          "薄力粉_g": 90,
+          "グラニュー糖_g": 125,
+          "卵黄_個": 3,
+          "卵白_個": 3,
+          "サラダ油_ml": 35,
+          "オレンジ果汁_ml": 60,
+          "BP_g": 3
+        },
+        "notes": "1948年公開レシピの再現と記載。グレイズのバター40g・粉糖125g・果汁15ml・リキュール10mlを除外。卵黄3個＋卵白3個を合算。",
+        "conversion_assumptions": [
+          "全卵1個=50g、卵黄1個=20g、卵白1個=30g（重量記載がない場合）",
+          "バター純脂肪=重量×0.83、サラダ油=0.92g/ml、油は全量を脂肪として扱う",
+          "小さじ=5ml、大さじ=15ml、カップ=200ml、BP小さじ=4g",
+          "水・果汁・牛乳は追加液体量としてmlをg相当で扱う。材料全体の総水分ではない"
+        ],
+        "source_html_sha256": "eb2cbc4d929ea2c1c43803bcdbcea4fe5a23ddbf1c642c1a34e66ea8e0ee6242"
+      },
+      "color": "#5da24a",
+      "kind": "public-recipe"
+    },
+    {
       "id": "pound",
       "name": "パウンドケーキ",
       "color": "#c96f2e",
@@ -1586,12 +1860,12 @@ globalThis.RECIPE_MODEL = {
     }
   ],
   "summary": {
-    "publicRecipes": 76,
+    "publicRecipes": 83,
     "anchorEstimates": 11,
     "counts": {
-      "パウンドケーキ": 9,
-      "ジェノワーズ": 10,
-      "シフォンケーキ": 10,
+      "パウンドケーキ": 11,
+      "ジェノワーズ": 12,
+      "シフォンケーキ": 13,
       "カステラ": 10,
       "エンゼルフード": 8,
       "ホットケーキ": 14,

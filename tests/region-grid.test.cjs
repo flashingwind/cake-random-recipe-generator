@@ -52,3 +52,21 @@ test('2D projection ignores water while 3D retains its distance',()=>{
  assert.equal(inspect(projection,wet,'foam').type,'supported');
  assert.equal(inspect(spatial,wet,'foam').type,'insufficient');
 });
+
+test('projection is the union of actual 3D voxels along water, not a new 2D classifier',()=>{
+ const {projectVolume}=require('../region-grid.js');
+ const group=(category,method)=>({category,method,color:'#123456'});
+ const volume={resolution:[2,2,3],voxels:[
+  {indices:[0,0,0],categories:[group('A','foam')],profiles:['standard']},
+  {indices:[0,0,2],categories:[group('B','foam')],profiles:['home']},
+  {indices:[0,0,1],categories:[group('C','separate')],profiles:['home']}
+ ]};
+ const projection=projectVolume(volume,{fat:100,egg:200,liquid:300});
+ const point={fat:25,egg:50};
+ const foam=projection.inspect(point,'foam');
+ assert.equal(foam.type,'conflict');assert.deepEqual(foam.categories.map(g=>g.category),['A','B']);
+ assert.equal(projection.inspect(point,'separate').type,'supported');
+ assert.equal(projection.inspect(point,'mix').type,'other-method');
+ assert.equal(projection.inspect({fat:75,egg:150},'foam').type,'insufficient');
+ assert.deepEqual(projection.inspect({...point,liquid:0},'foam'),projection.inspect({...point,liquid:300},'foam'));
+});

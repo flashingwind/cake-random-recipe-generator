@@ -6,20 +6,20 @@
     "liquid"
   ],
   "k": 5,
-  "publicRecipes": 76,
+  "publicRecipes": 83,
   "anchorEstimates": 11,
   "counts": {
-    "パウンドケーキ": 9,
-    "ジェノワーズ": 10,
-    "シフォンケーキ": 10,
+    "パウンドケーキ": 11,
+    "ジェノワーズ": 12,
+    "シフォンケーキ": 13,
     "カステラ": 10,
     "エンゼルフード": 8,
     "ホットケーキ": 14,
     "クレープ": 15
   },
-  "evaluated": 76,
-  "correct": 67,
-  "accuracy": 0.881578947368421,
+  "evaluated": 83,
+  "correct": 77,
+  "accuracy": 0.927710843373494,
   "limitations": [
     "Only categories with public recipes are evaluated.",
     "Source URLs and ingredient conversions are inherited data, not reverified by training.",
@@ -162,7 +162,7 @@
     {
       "id": "genoise-04",
       "expected": "ジェノワーズ",
-      "predicted": "エンゼルフード",
+      "predicted": "ジェノワーズ",
       "heldOutHost": "www.cotta.jp"
     },
     {
@@ -271,6 +271,48 @@
       "id": "crepe-04",
       "expected": "クレープ",
       "predicted": "クレープ",
+      "heldOutHost": "www.kyounoryouri.jp"
+    },
+    {
+      "id": "kyono-600776",
+      "expected": "パウンドケーキ",
+      "predicted": "パウンドケーキ",
+      "heldOutHost": "www.kyounoryouri.jp"
+    },
+    {
+      "id": "kyono-3696",
+      "expected": "パウンドケーキ",
+      "predicted": "パウンドケーキ",
+      "heldOutHost": "www.kyounoryouri.jp"
+    },
+    {
+      "id": "kyono-9755",
+      "expected": "ジェノワーズ",
+      "predicted": "ジェノワーズ",
+      "heldOutHost": "www.kyounoryouri.jp"
+    },
+    {
+      "id": "kyono-43284",
+      "expected": "ジェノワーズ",
+      "predicted": "ジェノワーズ",
+      "heldOutHost": "www.kyounoryouri.jp"
+    },
+    {
+      "id": "kyono-8395",
+      "expected": "シフォンケーキ",
+      "predicted": "シフォンケーキ",
+      "heldOutHost": "www.kyounoryouri.jp"
+    },
+    {
+      "id": "kyono-2299",
+      "expected": "シフォンケーキ",
+      "predicted": "シフォンケーキ",
+      "heldOutHost": "www.kyounoryouri.jp"
+    },
+    {
+      "id": "kyono-601926",
+      "expected": "シフォンケーキ",
+      "predicted": "シフォンケーキ",
       "heldOutHost": "www.kyounoryouri.jp"
     },
     {
@@ -426,7 +468,7 @@
     {
       "id": "castella-06",
       "expected": "カステラ",
-      "predicted": "ジェノワーズ",
+      "predicted": "カステラ",
       "heldOutHost": "tomiz.com"
     },
     {
@@ -450,7 +492,7 @@
     {
       "id": "castella-03",
       "expected": "カステラ",
-      "predicted": "エンゼルフード",
+      "predicted": "カステラ",
       "heldOutHost": "kadenfan.hitachi.co.jp"
     },
     {

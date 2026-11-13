@@ -105,18 +105,20 @@
   <section class="card">
     <h2>パラメータ空間</h2>
     <h3>3D全体図</h3>
-    <p class="note">脂肪・卵・水分の3軸で、すべての実レシピを同時に表示します。ドラッグまたは矢印キーで回転できます。点の色・形がケーキの種類、白抜きの大きな点がアンカー、★が生成中の配合です。</p>
+    <p class="note">脂肪・卵・水分の3軸で、各ケーキの領域を色付きの立体と名前で表示します。ドラッグまたは矢印キーで回転できます。小さい点は学習データの確認用、白抜きはアンカー、★が生成中の配合です。</p>
     <p class="note">上部の水分スライダーは生成レシピの調整用です。3D・2Dの全体図のデータは絞り込みません。</p>
+    <p class="note"><label><input id="focusThree" type="checkbox"> パウンド・シフォン・ジェノワーズの関係に絞って表示</label>（学習モデルは全7カテゴリ共通。オンにすると、他のケーキに近い場所もこの3種内での相対比較になります。）</p>
     <canvas id="overview3d" width="960" height="540" tabindex="0" role="img"></canvas>
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
-    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。データ不足は透明です。</p>
+    <p class="note" id="volumeStatus" aria-live="polite"></p>
+    <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。同じ立て方のカテゴリが近接する部分は2色の斜線。距離による領域の切り落としは行いません。</p>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
     <p class="note" id="trainingSummary"></p>
     <details id="sliceView">
-      <summary>2D投影図を開く（脂肪×卵・水分は無視）</summary>
-    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定するのではなく、水分の違いを無視して脂肪・卵の2項目で分類します。すべての実レシピを同じ平面に投影します。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
-    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方の異なるカテゴリの実データが近接する領域。グレー＝データ不足。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
-    <p class="note">水分が異なるレシピも同じ平面に重なるため、2Dでの近接は3Dでの近接とは限りません。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
+      <summary>2D投影図を開く（3D領域を水分方向に重ねる）</summary>
+    <p class="note">横軸＝純脂肪（下目盛り）／バター換算（上目盛り）、縦軸＝卵。水分を0gに固定せず、3Dで塗った領域を水分方向に重ねた投影図です。2Dだけで分類し直すことはしません。実レシピの近傍から分類し、境界付近のグリッドを細かく表示します。</p>
+    <p class="note">色付き＝近くに実データがある領域（家庭用は薄く、標準的は濃く）。2色の斜線＝同じ立て方のカテゴリ領域が投影で重なる場所。空白でつながりを切らず、SVMの推定領域を投影します。白抜き＝別の立て方に属する領域。重心は表示しません。</p>
+    <p class="note">水分が異なるレシピも同じ平面に重なるため、2Dの斜線は投影上の重なりであり、3Dの同じ位置でデータが食い違うとは限りません。各グラフをクリックすると、その座標で近い実レシピと出典を確認できます。</p>
 
     <div class="plots">
       <div class="plot-box"><h3>クリーミング</h3><canvas class="plot" id="plot-cream" width="460" height="360"></canvas></div>
@@ -141,10 +143,11 @@
     </div>
   </section>
 </main>
-<script src="classifier.js"></script>
-<script src="data/classifier-model.js"></script>
-<script src="region-grid.js"></script>
-<script src="overview-3d.js"></script>
+<script src="data/classifier-model.js?v=607c4290b09f"></script>
+<script src="data/svm-field.js?v=089a64bf29fe"></script>
+<script src="svm-regions.js?v=dc9359edb6e7"></script>
+<script src="region-grid.js?v=b2b22be54374"></script>
+<script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
 // ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
 // 名前に「（家庭用）」が付くアンカーは家庭用、それ以外は標準的な配合。
@@ -338,14 +341,30 @@ const baseAnchors = ANCHORS.filter(a=>!a.id.endsWith('-home'));
 let regionTiles = [];
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
   rows:REGION_MODEL.rows,anchors:ANCHORS,drawMarker,getState:()=>state,
-  buildVolume:limits=>RecipeRegions.buildVolume(REGION_MODEL,ANCHORS,limits),
+  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:SVM_FIELD.classes),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
     detail.append(`${row.category}［${row.id}］ 脂肪 ${row.fat}g・卵 ${row.egg}g・水分 ${row.liquid}g／粉100g：`);
     const link=document.createElement('a');link.textContent=row.source.site;link.href=row.source.url;link.target='_blank';link.rel='noopener';detail.append(link);
   }
 });
-document.getElementById('showRegions').addEventListener('change',event=>overview.setRegions(event.target.checked));
+let VOLUME = overview.getVolume();
+let PROJECTION = RecipeRegions.projectVolume(VOLUME,VOLUME.limits);
+function updateVolumeStatus(){
+  let text=document.getElementById('showRegions').checked
+    ? `SVMの3D領域を表示中（脂肪・卵・水分の3項目）。データから遠い場所もモデルの推定としてつなげて表示します。`
+    : '3D領域は非表示です。「領域の塗り分けを表示」をオンにすると表示します。';
+  if(VOLUME.selected.length===3 && !VOLUME.contact){text+=' 他カテゴリの優勢な場所を除くと、3種のスコアが拮抗する候補は見つかりません。';}
+  if(VOLUME.contact){
+    const c=VOLUME.contact;
+    text+=` 他カテゴリが優勢な場所を除き、3種のスコアが最も近い格子付近：脂肪 ${c.point.fat.toFixed(1)}g・卵 ${c.point.egg.toFixed(1)}g・水分 ${c.point.liquid.toFixed(1)}g／粉100g。`+
+      c.scores.map(g=>`${g.category} ${(g.score*100).toFixed(0)}%（全7種内では${(g.absolute*100).toFixed(0)}%）`).join('／')+'。これは学習モデル上の候補で、実際の焼き上がりの混合率ではありません。';
+  }
+  document.getElementById('volumeStatus').textContent=text;
+}
+updateVolumeStatus();
+document.getElementById('showRegions').addEventListener('change',event=>{overview.setRegions(event.target.checked);updateVolumeStatus();});
+document.getElementById('focusThree').addEventListener('change',()=>{overview.rebuildRegions();VOLUME=overview.getVolume();PROJECTION=RecipeRegions.projectVolume(VOLUME,VOLUME.limits);updateVolumeStatus();render(false);});
 document.getElementById('resetOverview').addEventListener('click',overview.reset);
 document.getElementById('zoomOverviewIn').addEventListener('click',()=>overview.changeZoom(1.1));
 document.getElementById('zoomOverviewOut').addEventListener('click',()=>overview.changeZoom(1/1.1));
@@ -354,26 +373,15 @@ function nearest2D(fat, egg, category){
     .sort((a,b)=>((fat-a.fat)/X_MAX)**2+((egg-a.egg)/Y_MAX)**2-((fat-b.fat)/X_MAX)**2-((egg-b.egg)/Y_MAX)**2)[0];
 }
 function regionAt(x,y,method){
-  return RecipeRegions.inspect(PROJECTION_MODEL,{fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX},method);
+  const point={fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX};
+  const result=PROJECTION.inspect(point,method);
+  const neighbors=PROJECTION_MODEL.rows.map(row=>({row,distance:RecipeRegions.distance(point,row,PROJECTION_MODEL.scales,['fat','egg'])}))
+    .sort((a,b)=>a.distance-b.distance||a.row.id.localeCompare(b.row.id)).slice(0,5);
+  return {...result,neighbors};
 }
 function makeRegionTiles(){
-  const cache=new Map();
-  const inspect=(x,y)=>{
-    const key=x+','+y;
-    if(!cache.has(key))cache.set(key,regionAt(x,y,state.method));
-    return cache.get(key);
-  };
-  const signature=r=>r.categories.map(g=>g.category).join('|') || 'insufficient';
-  const tiles=[];
-  function divide(x,y,w,h){
-    const center=inspect(x+w/2,y+h/2);
-    const samples=[inspect(x,y),inspect(x+w,y),inspect(x,y+h),inspect(x+w,y+h)];
-    if(Math.max(w,h)>3 && (center.categories.length>1 || samples.some(r=>signature(r)!==signature(center)))){
-      const hw=w/2,hh=h/2;
-      for(const dx of [0,hw])for(const dy of [0,hh])divide(x+dx,y+dy,hw,hh);
-    }else tiles.push({x,y,w,h});
-  }
-  for(let x=0;x<402;x+=24)for(let y=0;y<294;y+=24)divide(x,y,Math.min(24,402-x),Math.min(24,294-y));
+  const [nx,ny]=VOLUME.resolution,tiles=[];
+  for(let x=0;x<nx;x++)for(let y=0;y<ny;y++)tiles.push({x:x/nx*402,y:y/ny*294,w:402/nx,h:294/ny});
   return tiles;
 }
 function paintRegion(ctx,tile,method){
@@ -383,10 +391,7 @@ function paintRegion(ctx,tile,method){
   if(result.type==='insufficient' || result.type==='other-method'){
     ctx.fillStyle=result.type==='insufficient'?'#ddd9d5':'#fff';ctx.fillRect(left,top,w,h);return;
   }
-  const colors=result.categories.map(g=>{
-    const a=nearest2D((x+w/2)/402*X_MAX,(1-(y+h/2)/294)*Y_MAX,g.category);
-    return g.color+(isStandardRecipe(a)?'55':'2e');
-  });
+  const colors=result.categories.map(g=>g.color+(g.profile==='standard'?'55':'2e'));
   ctx.fillStyle=colors[0];ctx.fillRect(left,top,w,h);
   if(result.type==='conflict'){
     ctx.save();ctx.beginPath();ctx.rect(left,top,w,h);ctx.clip();
@@ -456,7 +461,7 @@ function render(syncSliders = true){
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `実レシピ${REGION_MODEL.rows.length}件を使用。概算アンカーはデータの有無・食い違いの判定には含めません。3Dの近接判定は脂肪・卵・水分、2Dは脂肪・卵のみを標準化した距離による目安です。斜線は誤分類や焼き上がりの混合を断定するものではありません。`;
+document.getElementById('trainingSummary').textContent = `使用モデル：校正付きRBF SVM（元のモデル方式）。実レシピ${SVM_FIELD.summary.publicRecipes}件＋概算アンカー${SVM_FIELD.summary.anchorEstimates}件で再学習。実レシピのみ・出典ホスト単位の交差検証で ${SVM_FIELD.summary.evaluation.correct}/${SVM_FIELD.summary.publicRecipes}件正解。近傍投票は領域分類に使いません。色はカテゴリへの連続的な近さ、2Dは3D領域の投影です。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();
@@ -464,10 +469,10 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const y=(event.clientY-rect.top)*canvas.height/rect.height-30;
     if(x<0||x>402||y<0||y>294)return;
     const result=regionAt(x,y,canvas.id.slice(5));
-    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'異なるカテゴリの実データが近接','supported':'実データの近傍'};
+    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'実データの近傍'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
-    heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（水分・砂糖・BPは投影分類に使いません）`;
+    heading.textContent=`${names[result.type]}：脂肪 ${(x/402*X_MAX).toFixed(1)}g・卵 ${((1-y/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
     detail.append(heading);
     for(const {row,distance} of result.neighbors.slice(0,3)){
       const p=document.createElement('p');

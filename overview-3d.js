@@ -3,7 +3,8 @@
   function create(canvas,{rows,anchors,drawMarker,getState,onSelect,buildVolume}){
     const ctx=canvas.getContext('2d');
     const limits={fat:Math.max(110,...rows.map(r=>r.fat)),egg:Math.max(420,...rows.map(r=>r.egg)),liquid:Math.max(400,...rows.map(r=>r.liquid))};
-    const volume=buildVolume(limits);
+    let volume=buildVolume(limits);
+    volume.limits=limits;
     let showRegions=true;
     let width=960,height=540;
     let yaw=-.65,pitch=.3,zoom=1,drag=null,points=[];
@@ -27,13 +28,37 @@
       for(const face of faces){
         const ps=face.projected;
         ctx.save();ctx.beginPath();ps.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
-        ctx.globalAlpha=face.profiles[0]==='standard'?.18:.09;ctx.fillStyle=face.categories[0].color;ctx.fill();
+        ctx.globalAlpha=face.profiles[0]==='standard'?.18:.09;ctx.fillStyle=face.color||face.categories[0].color;ctx.fill();
         if(face.categories.length>1){
           ctx.clip();ctx.globalAlpha=face.profiles[1]==='standard'?.26:.15;ctx.strokeStyle=face.categories[1].color;ctx.lineWidth=2;
           const left=Math.min(...ps.map(p=>p.x)),right=Math.max(...ps.map(p=>p.x)),top=Math.min(...ps.map(p=>p.y)),bottom=Math.max(...ps.map(p=>p.y));
           for(let d=Math.floor((left+top)/6)*6;d<=right+bottom;d+=6){ctx.beginPath();ctx.moveTo(d-top,top);ctx.lineTo(d-bottom,bottom);ctx.stroke();}
         }
         ctx.restore();
+      }
+    }
+    function paintRegionNames(){
+      if(!showRegions)return;
+      const groups=new Map();
+      for(const face of volume.faces){
+        const name=face.categories[0].category;
+        if(!groups.has(name))groups.set(name,{name,color:face.categories[0].color,ps:[]});
+        groups.get(name).ps.push(...face.vertices.map(project));
+      }
+      const labels=[...groups.values()].map(g=>({...g,
+        x:(Math.min(...g.ps.map(p=>p.x))+Math.max(...g.ps.map(p=>p.x)))/2,
+        y:(Math.min(...g.ps.map(p=>p.y))+Math.max(...g.ps.map(p=>p.y)))/2})).sort((a,b)=>a.y-b.y);
+      const occupied=[];ctx.font='bold 14px sans-serif';ctx.textAlign='center';
+      for(const g of labels){
+        const w=ctx.measureText(g.name).width+10,h=22,x=Math.max(w/2+4,Math.min(width-w/2-4,g.x));
+        let y=g.y;
+        for(const offset of [0,-24,24,-48,48,-72,72]){
+          const candidate=Math.max(18,Math.min(height-18,g.y+offset));
+          if(!occupied.some(r=>Math.abs(x-r.x)<(w+r.w)/2+3&&Math.abs(candidate-r.y)<h)){y=candidate;break;}
+        }
+        occupied.push({x,y,w});
+        ctx.fillStyle='#fffffff0';ctx.fillRect(x-w/2,y-15,w,h);
+        ctx.fillStyle=g.color;ctx.fillText(g.name,x,y);
       }
     }
     function render(){
@@ -58,13 +83,14 @@
         const v=[...end];v[index]=1.3;const p=project(v);ctx.font='bold 16px sans-serif';labelText(label+' g',p.x,p.y);
       }
       const base=anchors.filter(a=>!a.id.endsWith('-home'));
-      points=rows.map(row=>({...project(coordinates(row)),row,kind:'recipe',shape:base.find(a=>a.name===row.category).shape,radius:4.5}));
-      const reference=anchors.map(row=>({...project(coordinates(row)),row,kind:'anchor',shape:row.shape,radius:7}));
+      points=rows.map(row=>({...project(coordinates(row)),row,kind:'recipe',shape:base.find(a=>a.name===row.category).shape,radius:1.8}));
+      const reference=anchors.map(row=>({...project(coordinates(row)),row,kind:'anchor',shape:row.shape,radius:3.5}));
       for(const p of [...points,...reference].sort((a,b)=>b.depth-a.depth)){
         drawMarker(ctx,p.shape,p.x,p.y,p.radius,p.kind==='anchor'?'#fff':p.row.color,p.kind==='anchor'?p.row.color:'#fff',p.kind==='anchor'?2:1);
       }
+      paintRegionNames();
       const current=project(coordinates(getState()));ctx.fillStyle='#b3261e';ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('★',current.x,current.y+8);
-      canvas.setAttribute('aria-label',`脂肪・卵・水分の3D全体図。全${rows.length}件の実レシピと${anchors.length}件のアンカー。矢印キーで回転、プラス・マイナスで拡大縮小。`);
+      canvas.setAttribute('aria-label',`脂肪・卵・水分の3D全体図。${showRegions?volume.cells+'個の領域セルを表示。':'領域は非表示。'}全${rows.length}件の実レシピと${anchors.length}件のアンカー。矢印キーで回転、プラス・マイナスで拡大縮小。`);
     }
     function reset(){yaw=-.65;pitch=.3;zoom=1;render();}
     function changeZoom(factor){zoom=Math.max(.65,Math.min(1.5,zoom*factor));render();}
@@ -94,7 +120,7 @@
       else if(event.key==='Home'){event.preventDefault();reset();}
     });
     const resizeObserver=new ResizeObserver(()=>render());resizeObserver.observe(canvas);
-    return {render,reset,changeZoom,setRegions:enabled=>{showRegions=enabled;render();},getVolume:()=>volume,getPoints:()=>points.map(p=>({id:p.row.id,x:p.x,y:p.y}))};
+    return {render,reset,changeZoom,rebuildRegions:()=>{volume=buildVolume(limits);volume.limits=limits;render();},setRegions:enabled=>{showRegions=enabled;render();},getVolume:()=>volume,getPoints:()=>points.map(p=>({id:p.row.id,x:p.x,y:p.y}))};
   }
   root.RecipeOverview={create};
 })(globalThis);

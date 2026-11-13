@@ -1,0 +1,42 @@
+{
+  "model": "RBF SVM C=2 gamma=scale + sigmoid calibration cv=3 (original estimator family)",
+  "features": [
+    "fat",
+    "egg",
+    "liquid"
+  ],
+  "evaluation": "leave-one-source-host-out; public recipes only",
+  "observed_recipes": 83,
+  "correct": 73,
+  "accuracy": 0.8795180722891566,
+  "per_category": {
+    "エンゼルフード": {
+      "count": 8,
+      "correct": 4
+    },
+    "カステラ": {
+      "count": 10,
+      "correct": 9
+    },
+    "クレープ": {
+      "count": 15,
+      "correct": 13
+    },
+    "シフォンケーキ": {
+      "count": 13,
+      "correct": 11
+    },
+    "ジェノワーズ": {
+      "count": 12,
+      "correct": 11
+    },
+    "パウンドケーキ": {
+      "count": 11,
+      "correct": 11
+    },
+    "ホットケーキ": {
+      "count": 14,
+      "correct": 14
+    }
+  }
+}

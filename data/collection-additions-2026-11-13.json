@@ -1,0 +1,53 @@
+{
+  "added": 7,
+  "records": [
+    {
+      "id": "kyono-600776",
+      "category": "パウンドケーキ",
+      "name": "レモンのパウンドケーキ",
+      "source": "https://www.kyounoryouri.jp/recipe/600776_%E3%83%AC%E3%83%A2%E3%83%B3%E3%81%AE%E3%83%91%E3%82%A6%E3%83%B3%E3%83%89%E3%82%B1%E3%83%BC%E3%82%AD.html"
+    },
+    {
+      "id": "kyono-3696",
+      "category": "パウンドケーキ",
+      "name": "カトルカール",
+      "source": "https://www.kyounoryouri.jp/recipe/3696_%E3%82%AB%E3%83%88%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%AB.html"
+    },
+    {
+      "id": "kyono-9755",
+      "category": "ジェノワーズ",
+      "name": "いちごのクリスマスケーキ",
+      "source": "https://www.kyounoryouri.jp/recipe/9755_%E3%81%84%E3%81%A1%E3%81%94%E3%81%AE%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%9E%E3%82%B9%E3%82%B1%E3%83%BC%E3%82%AD.html"
+    },
+    {
+      "id": "kyono-43284",
+      "category": "ジェノワーズ",
+      "name": "いちごのドームケーキ",
+      "source": "https://www.kyounoryouri.jp/recipe/43284_%E3%81%84%E3%81%A1%E3%81%94%E3%81%AE%E3%83%89%E3%83%BC%E3%83%A0%E3%82%B1%E3%83%BC%E3%82%AD.html"
+    },
+    {
+      "id": "kyono-8395",
+      "category": "シフォンケーキ",
+      "name": "レモンシフォンケーキ",
+      "source": "https://www.kyounoryouri.jp/recipe/8395_%E3%83%AC%E3%83%A2%E3%83%B3%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+    },
+    {
+      "id": "kyono-2299",
+      "category": "シフォンケーキ",
+      "name": "バニラシフォンケーキ",
+      "source": "https://www.kyounoryouri.jp/recipe/2299_%E3%83%90%E3%83%8B%E3%83%A9%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+    },
+    {
+      "id": "kyono-601926",
+      "category": "シフォンケーキ",
+      "name": "シフォンケーキ",
+      "source": "https://www.kyounoryouri.jp/recipe/601926_%E3%82%B7%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B1%E3%83%BC%E3%82%AD.html"
+    }
+  ],
+  "not_added": [
+    "型違い・倍量違いなど元配合を共有する派生レシピ",
+    "BPひとつまみなど重量を一意に換算できないもの",
+    "果物・ペースト・ナッツ等の未定量成分が生地に多いもの"
+  ],
+  "new_synthetic_recipes": 0
+}

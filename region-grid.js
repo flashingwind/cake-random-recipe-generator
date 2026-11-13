@@ -51,6 +51,11 @@
       const cell={indices,categories,profiles,signature:categories.map((g,i)=>g.category+':'+profiles[i]).join('|')};
       cells.set(key(x,y,z),cell);
     }
+    return meshVolume([...cells.values()],resolution);
+  }
+  function meshVolume(voxels,resolution){
+    const key=(x,y,z)=>`${x},${y},${z}`;
+    const cells=new Map(voxels.map(cell=>[key(...cell.indices),cell]));
     const faces=[];
     for(const cell of cells.values())for(let axis=0;axis<3;axis++)for(const side of [-1,1]){
       const neighbor=[...cell.indices];neighbor[axis]+=side;
@@ -61,11 +66,33 @@
         others.forEach((i,j)=>v[i]+=corner[j]);
         return v.map((n,i)=>n/resolution[i]*2-1);
       });
-      faces.push({vertices,categories:cell.categories,profiles:cell.profiles});
+      faces.push({vertices,categories:cell.categories,profiles:cell.profiles,color:cell.color});
     }
-    return {faces,cells:cells.size,totalCells:resolution.reduce((a,b)=>a*b,1),resolution};
+    return {faces,voxels:[...cells.values()],cells:cells.size,totalCells:resolution.reduce((a,b)=>a*b,1),resolution};
   }
-  const api={prepare,inspect,distance,buildVolume};
+  function projectVolume(volume,limits){
+    const columns=new Map();
+    for(const voxel of volume.voxels){
+      const key=voxel.indices.slice(0,2).join(',');
+      if(!columns.has(key))columns.set(key,new Map());
+      const groups=columns.get(key);
+      voxel.categories.forEach((category,i)=>{
+        let g=groups.get(category.category);
+        if(!g){g={...category,depth:0,home:0,standard:0};groups.set(category.category,g);}
+        g.depth++;g[voxel.profiles[i]]++;
+      });
+    }
+    return {inspect(point,method){
+      const x=Math.min(volume.resolution[0]-1,Math.max(0,Math.floor(point.fat/limits.fat*volume.resolution[0])));
+      const y=Math.min(volume.resolution[1]-1,Math.max(0,Math.floor(point.egg/limits.egg*volume.resolution[1])));
+      const all=[...(columns.get(`${x},${y}`)?.values()||[])];
+      if(!all.length)return {type:'insufficient',categories:[]};
+      const relevant=all.filter(g=>g.method===method).sort((a,b)=>b.depth-a.depth||a.category.localeCompare(b.category));
+      const categories=(relevant.length?relevant:all).slice(0,2).map(g=>({...g,profile:g.home>=g.standard?'home':'standard'}));
+      return {type:!relevant.length?'other-method':relevant.length>1?'conflict':'supported',categories};
+    }};
+  }
+  const api={prepare,inspect,distance,buildVolume,projectVolume,meshVolume};
   if(typeof module!=='undefined' && module.exports)module.exports=api;
   else root.RecipeRegions=api;
 })(globalThis);

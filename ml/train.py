@@ -3,7 +3,7 @@
 
 - 特徴量: [sugar, egg, fat, liquid, bp]（標準化）
 - 本命: SVM (RBF) + 確率校正 / 対抗: 勾配ブースティング + 確率校正
-- 評価: 層化交差検証（収集レシピのみで測る）。最終モデルは収集レシピ+アンカーで学習。
+- 評価: 層化交差検証（収集レシピのみで測る）。最終モデルは収集レシピ+基準点で学習。
 - 端クラス（粉なし）は比率座標への組み替えが前提のため、この版では対象外。
 - 出力: report.txt（CV成績・混同行列）と model_grid.json（fat×egg 平面のクラス確率グリッド。
   sugar/liquid/bp はデータ中央値に固定。サイト側の領域色付けに使える）
@@ -20,7 +20,7 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 BASE = '/home/hatch/workspace/cake-fix'
 FEATURES = ['sugar', 'egg', 'fat', 'liquid', 'bp']
 
-ANCHORS = [  # index.html のアンカー（カテゴリは基本形に寄せる）
+ANCHORS = [  # index.html の基準点（カテゴリは基本形に寄せる）
     ('パウンドケーキ', 100, 100, 83, 0, 1), ('ジェノワーズ', 95, 190, 20, 20, 0),
     ('シフォンケーキ', 100, 300, 50, 65, 2), ('カステラ', 140, 240, 0, 30, 0),
     ('エンゼルフード', 135, 370, 0, 0, 0), ('ジェノワーズ', 114, 143, 24, 36, 0),
@@ -94,7 +94,7 @@ def main():
     best = max(results, key=results.get)
     lines.append(f'\n採用モデル: {best}（CV {results[best]:.3f}）')
 
-    # 最終モデル: 収集レシピ + アンカーで学習
+    # 最終モデル: 収集レシピ + 基準点で学習
     Xa = np.array([[s, e, f, l, b] for _, s, e, f, l, b in ANCHORS], dtype=float)
     ya = le.transform([a[0] for a in ANCHORS])
     Xall = np.vstack([X, Xa]); yall = np.concatenate([yi, ya])

@@ -106,7 +106,7 @@
   <section class="card">
     <h2>パラメータ空間</h2>
     <h3>3D全体図</h3>
-    <p class="note">ドラッグ／矢印キーで回転。小さい点は実レシピ、白抜きはアンカー、★は生成中の配合です。</p>
+    <p class="note">ドラッグ／矢印キーで回転。小さい点は実レシピ、白抜きは基準点、★は生成中の配合です。</p>
     <p class="note">上部の水分スライダーは生成レシピの調整用です。3D・2Dの全体図のデータは絞り込みません。</p>
     <p class="note"><label><input id="focusThree" type="checkbox"> パウンド・シフォン・ジェノワーズの関係に絞って表示</label></p>
     <p class="note"><label><input id="showExtrapolation" type="checkbox"> データ範囲外への推定も表示</label>（通常は密度の届く範囲のみ）</p>
@@ -135,8 +135,8 @@
 <script src="svm-regions.js?v=fd546b5d9df6"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
-// ===== アンカー（既存ケーキ）。すべて小麦粉100gあたり =====
-// 名前に「（家庭用）」が付くアンカーは家庭用、それ以外は標準的な配合。
+// ===== 基準点（既存ケーキ）。すべて小麦粉100gあたり =====
+// 名前に「（家庭用）」が付く基準点は家庭用、それ以外は標準的な配合。
 // fat は純脂肪g。バターは重量×0.83、油は重量そのまま。
 const ANCHORS = [
   { id:'pound',   name:'パウンドケーキ', color:'#c96f2e', shape:'circle', method:'cream',    sugar:100, egg:100, fat:83, fatType:'butter', liquid:0,  bp:1, temp:170, time:45 },
@@ -180,10 +180,10 @@ const PARAMS = [
   { key:'liquid', label:'水分（牛乳・水など）', min:0, max:400, step:1, unit:'g' },
 ];
 let state = { ...pickAnchor('pound'), method:'cream', fatType:'butter' };
-let blendInfo = 'パウンドケーキ（アンカーそのもの）';
+let blendInfo = 'パウンドケーキ（基準点そのもの）';
 function pickAnchor(id){ const a = ANCHORS.find(x=>x.id===id); const o={}; for (const p of PARAMS) o[p.key]=a[p.key]; o.bp=a.bp; o.temp=a.temp; o.time=a.time; return o; }
 
-// ===== ランダム生成：アンカー2つを補間 =====
+// ===== ランダム生成：基準点2つを補間 =====
 function randomBlend(){
   const a = DISPLAY_ANCHORS[Math.floor(Math.random()*DISPLAY_ANCHORS.length)];
   let b = DISPLAY_ANCHORS[Math.floor(Math.random()*DISPLAY_ANCHORS.length)];
@@ -200,13 +200,13 @@ function randomBlend(){
   const near = nearestAnchor(state);
   blendInfo = `${a.name} × ${b.name}（${Math.round((1-t)*100)} : ${Math.round(t*100)}）`;
   document.getElementById('blendDetail').textContent =
-    `一番近い既存ケーキは「${near.a.name}」（距離 ${near.d.toFixed(2)}）。立て方と油脂の種類は重みの大きい方のアンカーを引き継いでいます。`;
+    `一番近い既存ケーキは「${near.a.name}」（距離 ${near.d.toFixed(2)}）。立て方と油脂の種類は重みの大きい方の基準点を引き継いでいます。`;
   render();
 }
 
 // ===== 膨らみモデル（仕組みベース。種類の分類器とは別に置く） =====
 // 供給 = 卵の泡（立て方で効率が違う。共立て・別立ては油脂で泡が潰れるが、卵の乳化が和らげ、砂糖が泡を安定させる）＋クリーミングの空気＋BPのガス
-// 負荷 = 粉（基準100）＋油脂の重み。膨らみ指数 = 供給 ÷ 負荷。アンカー11件は全て ok 側に入るよう校正した
+// 負荷 = 粉（基準100）＋油脂の重み。膨らみ指数 = 供給 ÷ 負荷。基準点11件は全て ok 側に入るよう校正した
 function riseModel(s){
   const COEF = { separate:1.0, foam:0.55, cream:0.25, mix:0.10 };
   if (s.method === 'mix' && s.liquid >= 150)
@@ -253,7 +253,7 @@ function judge(s){
   return { rules, worst };
 }
 
-// ===== 最寄りアンカー（全パラメータの正規化距離） =====
+// ===== 最寄り基準点（全パラメータの正規化距離） =====
 function distFull(s, a){
   const d = (x,y,m) => ((x-y)/m)**2;
   return Math.sqrt(d(s.fat,a.fat,110) + d(s.egg,a.egg,420) + d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,200));
@@ -348,7 +348,7 @@ const X_MAX = 110, Y_MAX = 420;
 const ROWS = SVM_FIELD.rows;
 const DISPLAY_ROWS = ROWS.filter(r=>DISPLAY_CATEGORIES.includes(r.category));
 // 膨らまない領域はグレーにせず、体積から削る。その場所の第1位カテゴリの流儀
-// （アンカーの砂糖・BP・立て方・油脂種別）で膨らみ指数を計算し、供給不足なら除く。
+// （基準点の砂糖・BP・立て方・油脂種別）で膨らみ指数を計算し、供給不足なら除く。
 // クレープは膨らませない設計なので対象にしない。
 function carveNoRise(category, point){
   if (category === 'クレープ') return false;
@@ -493,7 +493,7 @@ function render(syncSliders = true){
   regionTiles = makeRegionTiles();
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
-document.getElementById('trainingSummary').textContent = `使用モデル：${SVM_FIELD.model}。実レシピ${SVM_FIELD.summary.publicRecipes}件＋アンカー${SVM_FIELD.summary.anchorEstimates}件で学習。`;
+document.getElementById('trainingSummary').textContent = `使用モデル：${SVM_FIELD.model}。実レシピ${SVM_FIELD.summary.publicRecipes}件＋基準点${SVM_FIELD.summary.anchorEstimates}件で学習。`;
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();

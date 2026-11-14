@@ -90,7 +90,7 @@
       }
       paintRegionNames();
       const current=project(coordinates(getState()));ctx.fillStyle='#b3261e';ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('★',current.x,current.y+8);
-      canvas.setAttribute('aria-label',`脂肪・卵・水分の3D全体図。${showRegions?volume.cells+'個の領域セルを表示。':'領域は非表示。'}全${rows.length}件の実レシピと${anchors.length}件のアンカー。矢印キーで回転、プラス・マイナスで拡大縮小。`);
+      canvas.setAttribute('aria-label',`脂肪・卵・水分の3D全体図。${showRegions?volume.cells+'個の領域セルを表示。':'領域は非表示。'}全${rows.length}件の実レシピと${anchors.length}件の基準点。矢印キーで回転、プラス・マイナスで拡大縮小。`);
     }
     function reset(){yaw=-.65;pitch=.3;zoom=1;render();}
     function changeZoom(factor){zoom=Math.max(.65,Math.min(1.5,zoom*factor));render();}

@@ -129,7 +129,7 @@
       const failedForMethod=failedColumns.get(`${x},${y}`)?.has(method);
       if(!all.length)return {type:failedForMethod?'invalid':'insufficient',categories:[]};
       const relevant=all.filter(g=>g.method===method).sort((a,b)=>b.depth-a.depth||a.category.localeCompare(b.category));
-      const categories=(relevant.length?relevant:all).slice(0,2).map(g=>({...g,profile:g.home>=g.standard?'home':'standard'}));
+      const categories=(relevant.length?relevant:all).map(g=>({...g,profile:g.home>=g.standard?'home':'standard'}));
       return {type:!relevant.length?(failedForMethod?'invalid':'other-method'):relevant.length>1?'conflict':'supported',categories:relevant.length?categories:failedForMethod?[]:categories};
     }};
   }

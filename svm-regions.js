@@ -55,19 +55,23 @@
     for(let x=0;x<resolution[0];x++)for(let y=0;y<resolution[1];y++)for(let z=0;z<resolution[2];z++){
       const indices=[x,y,z],point=Object.fromEntries(field.features.map((f,i)=>[f,(indices[i]+.5)/resolution[i]*limits[f]]));
       if(!extrapolate && !supported(field,point))continue;
-      const scores=predict(field,point,selected),first=scores[0];
-      // Optional carve: drop voxels the caller's mechanism model rejects
-      // (e.g. cannot rise). Carved voxels leave the volume entirely, no grey.
-      if(carve&&carve(first.category,point))continue;
-      const other=scores.find(g=>g.category!==first.category&&g.method===first.method&&g.score>=first.score*.75);
+      const scores=predict(field,point,selected);
+      // Judge each category independently: when regions overlap, an invalid
+      // recipe becomes transparent without hiding other viable categories.
+      const viable=scores.filter(g=>!carve||!carve(g.category,point));
+      if(!viable.length)continue;
+      const viableMass=viable.reduce((sum,g)=>sum+g.score,0);
+      const visibleScores=viable.map(g=>({...g,score:viableMass>0?g.score/viableMass:1/viable.length}));
+      const first=visibleScores[0];
+      const other=visibleScores.find(g=>g.category!==first.category&&g.method===first.method&&g.score>=first.score*.75);
       const categories=other?[first,other]:[first];
       const profiles=categories.map(g=>{
         const candidates=anchors.filter(a=>anchors.find(b=>b.id===a.id.replace(/-home$/,'')).name===g.category);
         candidates.sort((a,b)=>field.features.reduce((d,f)=>d+((point[f]-a[f])/limits[f])**2,0)-field.features.reduce((d,f)=>d+((point[f]-b[f])/limits[f])**2,0));
         return candidates[0].id.endsWith('-home')?'home':'standard';
       });
-      voxels.push({indices,categories,profiles,color:blend(scores),signature:categories.map((g,i)=>g.category+':'+profiles[i]).join('|')});
-      if(selected.length===3){
+      voxels.push({indices,categories,profiles,color:blend(visibleScores),signature:categories.map((g,i)=>g.category+':'+profiles[i]).join('|')});
+      if(selected.length===3 && viable.length===3){
         const all=predict(field,point),outside=all.filter(g=>!selected.includes(g.category));
         const mass=scores.reduce((sum,g)=>sum+g.absolute,0),otherMax=Math.max(0,...outside.map(g=>g.absolute));
         const gap=scores[0].score-scores[2].score;

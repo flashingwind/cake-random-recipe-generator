@@ -151,30 +151,30 @@
   </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
-<script src="svm-regions.js?v=6207893dc0fb"></script>
+<script src="svm-regions.js?v=78d2c2f1f9da"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
 // ===== 基準点（既存ケーキ）。すべて小麦粉100gあたり =====
 // 名前に「（家庭用）」が付く基準点は家庭用、それ以外は標準的な配合。
 // fat は純脂肪g。バターは重量×0.83、油は重量そのまま。
 const ANCHORS = [
-  { id:'pound',   name:'パウンドケーキ', color:'#c96f2e', shape:'circle', method:'cream',    sugar:100, egg:100, fat:83, fatType:'butter', liquid:0,  bp:1, temp:170, time:45 },
-  { id:'genoise', name:'ジェノワーズ',   color:'#4a7fb5', shape:'triangle', method:'foam',     sugar:95,  egg:190, fat:20, fatType:'butter', liquid:20, bp:0, temp:170, time:28 },
-  { id:'chiffon', name:'シフォンケーキ', color:'#5da24a', shape:'square', method:'separate', sugar:100, egg:300, fat:50, fatType:'oil',    liquid:65, bp:2, temp:170, time:35 },
-  { id:'castella',name:'カステラ',       color:'#8a5fb0', shape:'diamond', method:'foam',     sugar:140, egg:240, fat:0,  fatType:'none',   liquid:30, bp:0, temp:160, time:55 },
-  { id:'angel',   name:'エンゼルフード', color:'#c2a13d', shape:'star', method:'separate', sugar:135, egg:370, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
-  { id:'genoise-home',  name:'ジェノワーズ（家庭用）',   color:'#7fa8cc', shape:'triangle', method:'foam',     sugar:114, egg:143, fat:24, fatType:'butter', liquid:36, bp:0, temp:170, time:28 },
-  { id:'chiffon-home',  name:'シフォン（家庭用）',       color:'#8fbc7a', shape:'square', method:'separate', sugar:100, egg:271, fat:43, fatType:'oil',    liquid:57, bp:0, temp:170, time:35 },
-  { id:'castella-home', name:'カステラ（家庭用）',       color:'#a985cc', shape:'diamond', method:'foam',     sugar:157, egg:200, fat:0,  fatType:'none',   liquid:33, bp:0, temp:170, time:50 },
-  { id:'angel-home',    name:'エンゼルフード（家庭用）', color:'#d3ba6b', shape:'star', method:'separate', sugar:100, egg:210, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
-  { id:'hotcake', name:'ホットケーキ', color:'#e8912d', shape:'down', method:'mix', sugar:24, egg:33,  fat:0,  fatType:'none',   liquid:89,  bp:4, temp:170, time:5 },
-  { id:'crepe',   name:'クレープ',     color:'#6a9a7d', shape:'cross', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
-  { id:'sodabread', name:'ソーダブレッド', color:'#9c6644', shape:'pentagon', method:'mix', sugar:2,  egg:0,   fat:0,  fatType:'none',   liquid:80,  bp:2,   temp:190, time:35 },
-  { id:'scone',     name:'スコーン',       color:'#e07a5f', shape:'hexagon',  method:'mix', sugar:13, egg:5,   fat:21, fatType:'butter', liquid:46,  bp:4,   temp:200, time:15 },
-  { id:'muffin',    name:'マフィン',       color:'#bc4749', shape:'ring',     method:'mix', sugar:54, egg:51,  fat:44, fatType:'butter', liquid:43,  bp:3.5, temp:180, time:25 },
-  { id:'popover',   name:'ポップオーバー', color:'#2a9d8f', shape:'drop',     method:'mix', sugar:0,  egg:100, fat:13, fatType:'butter', liquid:158, bp:0,   temp:220, time:25 },
-  { id:'waffle',    name:'ワッフル',       color:'#e76f51', shape:'frame',    method:'mix', sugar:28, egg:50,  fat:21, fatType:'butter', liquid:135, bp:4,   temp:180, time:5 },
-  { id:'focaccia',  name:'フォカッチャ',   color:'#606c38', shape:'rect',     method:'mix', sugar:4,  egg:0,   fat:8,  fatType:'oil',    liquid:74,  bp:0,   temp:220, time:25 },
+  { id:'pound',   name:'パウンドケーキ', color:'#b85b18', shape:'circle', method:'cream',    sugar:100, egg:100, fat:83, fatType:'butter', liquid:0,  bp:1, temp:170, time:45 },
+  { id:'genoise', name:'ジェノワーズ',   color:'#2468d1', shape:'triangle', method:'foam',     sugar:95,  egg:190, fat:20, fatType:'butter', liquid:20, bp:0, temp:170, time:28 },
+  { id:'chiffon', name:'シフォンケーキ', color:'#15945c', shape:'square', method:'separate', sugar:100, egg:300, fat:50, fatType:'oil',    liquid:65, bp:2, temp:170, time:35 },
+  { id:'castella',name:'カステラ',       color:'#863fc5', shape:'diamond', method:'foam',     sugar:140, egg:240, fat:0,  fatType:'none',   liquid:30, bp:0, temp:160, time:55 },
+  { id:'angel',   name:'エンゼルフード', color:'#b39a0a', shape:'star', method:'separate', sugar:135, egg:370, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
+  { id:'genoise-home',  name:'ジェノワーズ（家庭用）',   color:'#74a0e3', shape:'triangle', method:'foam',     sugar:114, egg:143, fat:24, fatType:'butter', liquid:36, bp:0, temp:170, time:28 },
+  { id:'chiffon-home',  name:'シフォン（家庭用）',       color:'#64bc95', shape:'square', method:'separate', sugar:100, egg:271, fat:43, fatType:'oil',    liquid:57, bp:0, temp:170, time:35 },
+  { id:'castella-home', name:'カステラ（家庭用）',       color:'#b082d6', shape:'diamond', method:'foam',     sugar:157, egg:200, fat:0,  fatType:'none',   liquid:33, bp:0, temp:170, time:50 },
+  { id:'angel-home',    name:'エンゼルフード（家庭用）', color:'#d1bf58', shape:'star', method:'separate', sugar:100, egg:210, fat:0,  fatType:'none',   liquid:0,  bp:0, temp:170, time:35 },
+  { id:'hotcake', name:'ホットケーキ', color:'#d33575', shape:'down', method:'mix', sugar:24, egg:33,  fat:0,  fatType:'none',   liquid:89,  bp:4, temp:170, time:5 },
+  { id:'crepe',   name:'クレープ',     color:'#008d9e', shape:'cross', method:'mix', sugar:24, egg:100, fat:17, fatType:'butter', liquid:270, bp:0, temp:170, time:5 },
+  { id:'sodabread', name:'ソーダブレッド', color:'#78452b', shape:'pentagon', method:'mix', sugar:2,  egg:0,   fat:0,  fatType:'none',   liquid:80,  bp:2,   temp:190, time:35 },
+  { id:'scone',     name:'スコーン',       color:'#dc7843', shape:'hexagon',  method:'mix', sugar:13, egg:5,   fat:21, fatType:'butter', liquid:46,  bp:4,   temp:200, time:15 },
+  { id:'muffin',    name:'マフィン',       color:'#ba2646', shape:'ring',     method:'mix', sugar:54, egg:51,  fat:44, fatType:'butter', liquid:43,  bp:3.5, temp:180, time:25 },
+  { id:'popover',   name:'ポップオーバー', color:'#007f78', shape:'drop',     method:'mix', sugar:0,  egg:100, fat:13, fatType:'butter', liquid:158, bp:0,   temp:220, time:25 },
+  { id:'waffle',    name:'ワッフル',       color:'#e64b32', shape:'frame',    method:'mix', sugar:28, egg:50,  fat:21, fatType:'butter', liquid:135, bp:4,   temp:180, time:5 },
+  { id:'focaccia',  name:'フォカッチャ',   color:'#687719', shape:'rect',     method:'mix', sugar:4,  egg:0,   fat:8,  fatType:'oil',    liquid:74,  bp:0,   temp:220, time:25 },
 ];
 
 // 境界カテゴリ（ソーダブレッド等）は領域を締める杭として学習にだけ使う。表示と生成は従来の7カテゴリ。

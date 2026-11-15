@@ -252,11 +252,22 @@ function riseModel(s){
 }
 
 // ===== 成立判定（ヒューリスティクス、理由つき） =====
-function judge(s){
+function judge(s, category=null){
   const rules = [];
   const add = (level, text) => rules.push({ level, text });
   const totalWater = s.egg*0.75 + s.liquid + (s.fatType==='butter' ? s.fat*0.19 : 0);
-  for (const r of riseModel(s)) add(r.level, r.text);
+  const riseRules = riseModel(s);
+  for (const r of riseRules) add(r.level, r.text);
+  // A hotcake must both rise and remain a pourable, thick pan batter.
+  // These are provisional recipe heuristics, not experimentally measured limits.
+  if (category==='ホットケーキ'){
+    if (riseRules[0].level!=='ok')
+      add('bad', 'ホットケーキとしての膨らみが不足する見込み');
+    if (totalWater < 70)
+      add('bad', `ホットケーキには水分が少なすぎ、生地がまとまりにくい（粉100gあたり約${Math.round(totalWater)}g）`);
+    else if (totalWater > 200)
+      add('bad', `ホットケーキには水分が多すぎ、薄い生地になりやすい（粉100gあたり約${Math.round(totalWater)}g）`);
+  }
   const wBad = s.method==='mix' ? 560 : 360, wWarn = s.method==='mix' ? 460 : 300;
   if (totalWater > wBad) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);
   else if (totalWater > wWarn) add('warn', `水分が多め（粉100あたり約${Math.round(totalWater)}g）：焼き縮みに注意`);
@@ -413,7 +424,7 @@ function carveFailedRecipe(category, point){
   const representative=anchors.reduce((best,a)=>
     distance(a)<distance(best)?a:best);
   const candidate={...representative,...point};
-  return judge(candidate).worst==='bad';
+  return judge(candidate,category).worst==='bad';
 }
 const rowScales = ['fat','egg'].map(key=>{ const mean=ROWS.reduce((s,r)=>s+r[key],0)/ROWS.length; return Math.sqrt(ROWS.reduce((s,r)=>s+(r[key]-mean)**2,0)/ROWS.length)||1; });
 function rowDistance(a,b){ return Math.sqrt(((a.fat-b.fat)/rowScales[0])**2+((a.egg-b.egg)/rowScales[1])**2); }
@@ -539,7 +550,8 @@ function render(syncSliders = true){
   const bpBtn = document.getElementById('btnBp');
   bpBtn.classList.toggle('on', state.bp > 0);
   bpBtn.textContent = state.bp > 0 ? `入れる（${state.bp}g）` : '入れる';
-  const { rules, worst } = judge(state);
+  const nearestCategory=nearestAnchor(state).a.name.replace('（家庭用）','');
+  const { rules, worst } = judge(state, state.method==='mix' ? nearestCategory : null);
   const v = document.getElementById('verdict');
   v.textContent = worst==='ok' ? '成立しそう' : worst==='warn' ? '際どい（焼けるが癖が強い）' : '不成立の可能性が高い';
   v.className = 'verdict ' + worst;

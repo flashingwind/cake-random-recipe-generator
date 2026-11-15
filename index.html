@@ -261,7 +261,8 @@ function judge(s){
   if (totalWater > wBad) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);
   else if (totalWater > wWarn) add('warn', `水分が多め（粉100あたり約${Math.round(totalWater)}g）：焼き縮みに注意`);
   else add('ok', `水分バランスは範囲内（粉100あたり約${Math.round(totalWater)}g）`);
-  if (totalWater + s.fat*0.5 < 95) add('warn', '水分が少なく、パサつきやすい');
+  if (totalWater + s.fat*0.5 < 55) add('bad', '水分と油脂が極端に少なく、生地がまとまりにくい');
+  else if (totalWater + s.fat*0.5 < 95) add('warn', '水分が少なく、パサつきやすい');
   if (s.fatType !== 'none' && s.fat > s.egg*0.9 + 25)
     add('warn', '卵に対して脂肪が多く、乳化が追いつかず分離しやすい');
   else if (s.fatType !== 'none') add('ok', '乳化のバランスは範囲内');
@@ -366,14 +367,22 @@ function drawMarker(ctx, shape, x, y, r, fill, stroke, lw){
 const X_MAX = 110, Y_MAX = 420;
 const ROWS = SVM_FIELD.rows;
 const DISPLAY_ROWS = ROWS.filter(r=>DISPLAY_CATEGORIES.includes(r.category));
-// 膨らまない領域はグレーにせず、体積から削る。その場所の第1位カテゴリの流儀
-// （基準点の砂糖・BP・立て方・油脂種別）で膨らみ指数を計算し、供給不足なら除く。
-// クレープは膨らませない設計なので対象にしない。
-function carveNoRise(category, point){
-  if (category === 'クレープ') return false;
-  const a = ANCHORS.find(x=>x.name===category);
-  if (!a) return false;
-  return riseModel({...a, fat:point.fat, egg:point.egg, liquid:point.liquid})[0].level === 'bad';
+// 3Dセルの優勢カテゴリに対応する代表レシピを判定し、
+// 不成立（bad）のセルは描画せず透明にする。2D投影も同じセルを使う。
+// 砂糖・BP・立て方・油脂種別・焼成条件はカテゴリの最も近い基準点を仮定する。
+function carveFailedRecipe(category, point){
+  const anchors=ANCHORS.filter(a=>{
+    const base=ANCHORS.find(b=>b.id===a.id.replace(/-home$/,''));
+    return base && base.name===category;
+  });
+  if(!anchors.length)return true;
+  const limits={fat:110,egg:420,liquid:400};
+  const distance=a=>['fat','egg','liquid'].reduce((sum,key)=>
+    sum+((point[key]-a[key])/limits[key])**2,0);
+  const representative=anchors.reduce((best,a)=>
+    distance(a)<distance(best)?a:best);
+  const candidate={...representative,...point};
+  return judge(candidate).worst==='bad';
 }
 const rowScales = ['fat','egg'].map(key=>{ const mean=ROWS.reduce((s,r)=>s+r[key],0)/ROWS.length; return Math.sqrt(ROWS.reduce((s,r)=>s+(r[key]-mean)**2,0)/ROWS.length)||1; });
 function rowDistance(a,b){ return Math.sqrt(((a.fat-b.fat)/rowScales[0])**2+((a.egg-b.egg)/rowScales[1])**2); }
@@ -382,7 +391,7 @@ let regionTiles = [];
 let clickMark = null;
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
   rows:DISPLAY_ROWS,anchors:DISPLAY_ANCHORS,drawMarker,getState:()=>state,
-  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:DISPLAY_CATEGORIES,[18,24,24],document.getElementById('showExtrapolation').checked,carveNoRise),
+  buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:DISPLAY_CATEGORIES,[18,24,24],document.getElementById('showExtrapolation').checked,carveFailedRecipe),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
     detail.append(`${row.category}［${row.id}］ 脂肪 ${row.fat}g・卵 ${row.egg}g・水分 ${row.liquid}g／粉100g：`);

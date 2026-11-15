@@ -141,6 +141,16 @@
     </details>
     <div class="legend" id="legend"></div>
   </section>
+  <section class="card" aria-label="レシピ共有">
+    <h2>レシピを共有</h2>
+    <div class="share-row" aria-label="レシピを共有">
+      <button type="button" id="shareXBottom">Xで共有</button>
+      <button type="button" id="shareFacebookBottom">Facebookで共有</button>
+      <button type="button" id="shareInstagramBottom">Instagramで共有</button>
+      <button type="button" id="shareCopyBottom">URLコピー</button>
+    </div>
+    <p class="note" id="shareStatusBottom" role="status" aria-live="polite"></p>
+  </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
 <script src="svm-regions.js?v=fd546b5d9df6"></script>
@@ -582,7 +592,8 @@ function recipeShareURL(){
   return url.href;
 }
 function shareStatus(message){
-  document.getElementById('shareStatus').textContent=message;
+  for(const id of ['shareStatus','shareStatusBottom'])
+    document.getElementById(id).textContent=message;
 }
 async function copyRecipeURL(){
   const url=recipeShareURL();
@@ -614,16 +625,16 @@ async function copyRecipeURL(){
 function openSharePage(url){
   window.open(url,'_blank','noopener,noreferrer');
 }
-document.getElementById('shareX').addEventListener('click',()=>{
+for(const id of ['shareX','shareXBottom']) document.getElementById(id).addEventListener('click',()=>{
   const query=new URLSearchParams({text:'このケーキの配合を共有します',url:recipeShareURL()});
   openSharePage('https://x.com/intent/tweet?'+query);
 });
-document.getElementById('shareFacebook').addEventListener('click',()=>{
+for(const id of ['shareFacebook','shareFacebookBottom']) document.getElementById(id).addEventListener('click',()=>{
   const query=new URLSearchParams({u:recipeShareURL()});
   openSharePage('https://www.facebook.com/sharer/sharer.php?'+query);
 });
-document.getElementById('shareCopy').addEventListener('click',copyRecipeURL);
-document.getElementById('shareInstagram').addEventListener('click',()=>{
+for(const id of ['shareCopy','shareCopyBottom']) document.getElementById(id).addEventListener('click',copyRecipeURL);
+for(const id of ['shareInstagram','shareInstagramBottom']) document.getElementById(id).addEventListener('click',()=>{
   openSharePage('https://www.instagram.com/');
   copyRecipeURL().then(copied=>{
     shareStatus(copied

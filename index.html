@@ -43,6 +43,10 @@
   .legend canvas { flex: none; }
   .note { font-size: 12px; color: var(--sub); line-height: 1.7; }
   #blendName { font-size: 18px; font-weight: 700; }
+  .share-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .share-row button { background:#fff; color:var(--ink); border:1px solid var(--line); padding:9px 14px; }
+  .share-row button:hover { background:var(--bg); opacity:1; }
+  #shareStatus { min-height:1.5em; }
   @media (max-width:600px) {
     header { padding:20px 12px 8px; }
     main { padding:12px 12px 32px; }
@@ -90,6 +94,13 @@
       </span>
     </div>
   
+    <div class="share-row" aria-label="レシピを共有">
+      <button type="button" id="shareX">Xで共有</button>
+      <button type="button" id="shareFacebook">Facebookで共有</button>
+      <button type="button" id="shareInstagram">Instagramで共有</button>
+      <button type="button" id="shareCopy">URLコピー</button>
+    </div>
+    <p class="note" id="shareStatus" role="status" aria-live="polite"></p>
     <div id="recipeHead" class="note"></div>
     <ol class="steps" id="steps"></ol>
   </section>
@@ -558,6 +569,69 @@ function applyQueryParams(){
       `一番近い既存ケーキは「${nearestAnchor(state).a.name}」です。`;
   }
 }
+
+function recipeShareURL(){
+  const url=new URL(window.location.href);
+  url.search='';
+  url.hash='';
+  for(const p of PARAMS) url.searchParams.set(p.key,String(state[p.key]));
+  for(const key of ['method','fatType','bp','temp','time'])
+    url.searchParams.set(key,String(state[key]));
+  if(recipeFlourOverride!==null)
+    url.searchParams.set('flour',String(recipeFlourOverride));
+  return url.href;
+}
+function shareStatus(message){
+  document.getElementById('shareStatus').textContent=message;
+}
+async function copyRecipeURL(){
+  const url=recipeShareURL();
+  try{
+    if(!navigator.clipboard || !window.isSecureContext) throw Error('Clipboard API unavailable');
+    await navigator.clipboard.writeText(url);
+    shareStatus('レシピのURLをコピーしました。');
+    return true;
+  }catch(error){
+    const field=document.createElement('textarea');
+    field.value=url;
+    field.setAttribute('readonly','');
+    field.style.position='fixed';
+    field.style.opacity='0';
+    document.body.appendChild(field);
+    field.select();
+    let copied=false;
+    try{copied=document.execCommand('copy');}catch(e){}
+    field.remove();
+    if(copied){
+      shareStatus('レシピのURLをコピーしました。');
+      return true;
+    }
+    window.prompt('次のレシピURLをコピーしてください',url);
+    shareStatus('URLを選択してコピーしてください。');
+    return false;
+  }
+}
+function openSharePage(url){
+  window.open(url,'_blank','noopener,noreferrer');
+}
+document.getElementById('shareX').addEventListener('click',()=>{
+  const query=new URLSearchParams({text:'このケーキの配合を共有します',url:recipeShareURL()});
+  openSharePage('https://x.com/intent/tweet?'+query);
+});
+document.getElementById('shareFacebook').addEventListener('click',()=>{
+  const query=new URLSearchParams({u:recipeShareURL()});
+  openSharePage('https://www.facebook.com/sharer/sharer.php?'+query);
+});
+document.getElementById('shareCopy').addEventListener('click',copyRecipeURL);
+document.getElementById('shareInstagram').addEventListener('click',()=>{
+  openSharePage('https://www.instagram.com/');
+  copyRecipeURL().then(copied=>{
+    shareStatus(copied
+      ? 'URLをコピーしました。Instagramのストーリーズで「リンク」スタンプに貼り付けてください。'
+      : 'Instagramのストーリーズで「リンク」スタンプにURLを貼り付けてください。');
+  });
+});
+
 applyQueryParams();
 render();
 </script>

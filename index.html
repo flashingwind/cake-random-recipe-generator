@@ -251,8 +251,25 @@ function riseModel(s){
   return out;
 }
 
+// BP is an ON/OFF switch: ON computes enough for the current rise index.
+// The result is in grams per 100 g of flour. The 0.5 g floor keeps ON distinct
+// from OFF when egg foam or creaming alone already meets the target.
+function adequateBP(s){
+  const COEF={separate:1.0,foam:0.55,cream:0.25,mix:0.10};
+  let foam=s.egg*COEF[s.method];
+  if(s.method==='foam'||s.method==='separate'){
+    const retention=Math.max(0.25,Math.min(1,1-s.fat/(140+s.egg*0.6)));
+    const sugarStab=1+0.3*Math.max(0,Math.min(1,s.sugar/120));
+    foam*=retention*sugarStab;
+  }
+  const cream=(s.method==='cream'&&s.fatType==='butter')?s.fat*0.35:0;
+  const needed=(0.38*(100+s.fat*1.2)-foam-cream)/30;
+  return Math.ceil(Math.max(0.5,needed)*2)/2;
+}
+
 // ===== 成立判定（ヒューリスティクス、理由つき） =====
 function judge(s, category){
+  if(s.bp>0)s={...s,bp:adequateBP(s)};
   const rules = [];
   const add = (level, text) => rules.push({ level, text });
   const totalWater = s.egg*0.75 + s.liquid + (s.fatType==='butter' ? s.fat*0.19 : 0);
@@ -376,7 +393,7 @@ function segWire(id, key){
 segWire('segMethod','method'); segWire('segFat','fatType');
 // BPは立て方と排他ではない（泡とも併用できる）ので、単独のトグルにする。押さなければ無選択＝入れない。
 // オンで入る量はデータの最頻値である小さじ1（4g）を既定にする。
-document.getElementById('btnBp').addEventListener('click', () => { state.bp = state.bp > 0 ? 0 : 4; render(false); });
+document.getElementById('btnBp').addEventListener('click', () => { state.bp = state.bp > 0 ? 0 : adequateBP(state); render(false); });
 document.getElementById('btnRandom').addEventListener('click', randomBlend);
 const legendEl = document.getElementById('legend');
 legendEl.innerHTML = DISPLAY_ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${a.name}［${profileLabel(a)}］</span>`).join('');
@@ -623,6 +640,7 @@ function drawPlot(canvas, method){
 
 // ===== 描画 =====
 function render(syncSliders = true){
+  if(state.bp>0)state.bp=adequateBP(state);
   document.getElementById('regionDetails').textContent = 'グラフをクリックして領域の根拠を確認できます。';
   document.getElementById('blendName').textContent = blendInfo;
   for (const p of PARAMS){

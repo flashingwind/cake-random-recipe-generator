@@ -51,13 +51,18 @@
     return field.domain.equations.every(eq=>eq.slice(0,3).reduce((sum,n,i)=>sum+n*v[i],eq[3])<=1e-9);
   }
   function buildVolume(field,anchors,limits,selected=field.classes,resolution=[18,24,24],extrapolate=false,carve=null){
-    const voxels=[];let contact=null;
+    const voxels=[],failed=[];let contact=null;
     for(let x=0;x<resolution[0];x++)for(let y=0;y<resolution[1];y++)for(let z=0;z<resolution[2];z++){
       const indices=[x,y,z],point=Object.fromEntries(field.features.map((f,i)=>[f,(indices[i]+.5)/resolution[i]*limits[f]]));
       if(!extrapolate && !supported(field,point))continue;
       const scores=predict(field,point,selected);
       // Judge each category independently: when regions overlap, an invalid
       // recipe becomes transparent without hiding other viable categories.
+      // Record meaningful failed contenders for the 2D click explanation.
+      // Ignore tiny KDE tails of unrelated categories.
+      const contenders=scores.filter(g=>g.score>=scores[0].score*.75);
+      for(const g of contenders)
+        if(carve&&carve(g.category,point))failed.push({indices,method:g.method});
       const viable=scores.filter(g=>!carve||!carve(g.category,point));
       if(!viable.length)continue;
       const viableMass=viable.reduce((sum,g)=>sum+g.score,0);
@@ -79,7 +84,7 @@
         if(mass>=.6 && scores[2].absolute>=otherMax && (!contact||gap<contact.gap))contact={point,scores,gap,mass};
       }
     }
-    return {...meshVolume(voxels,resolution),contact,selected,model:field.estimator,extrapolate};
+    return {...meshVolume(voxels,resolution),failed,contact,selected,model:field.estimator,extrapolate};
   }
   function meshVolume(voxels,resolution){
     const key=(x,y,z)=>`${x},${y},${z}`;
@@ -111,14 +116,21 @@
         g.depth++;g[voxel.profiles[i]]++;
       });
     }
+    const failedColumns=new Map();
+    for(const cell of volume.failed||[]){
+      const key=cell.indices.slice(0,2).join(',');
+      if(!failedColumns.has(key))failedColumns.set(key,new Set());
+      failedColumns.get(key).add(cell.method);
+    }
     return {inspect(point,method){
       const x=Math.min(volume.resolution[0]-1,Math.max(0,Math.floor(point.fat/limits.fat*volume.resolution[0])));
       const y=Math.min(volume.resolution[1]-1,Math.max(0,Math.floor(point.egg/limits.egg*volume.resolution[1])));
       const all=[...(columns.get(`${x},${y}`)?.values()||[])];
-      if(!all.length)return {type:'insufficient',categories:[]};
+      const failedForMethod=failedColumns.get(`${x},${y}`)?.has(method);
+      if(!all.length)return {type:failedForMethod?'invalid':'insufficient',categories:[]};
       const relevant=all.filter(g=>g.method===method).sort((a,b)=>b.depth-a.depth||a.category.localeCompare(b.category));
       const categories=(relevant.length?relevant:all).slice(0,2).map(g=>({...g,profile:g.home>=g.standard?'home':'standard'}));
-      return {type:!relevant.length?'other-method':relevant.length>1?'conflict':'supported',categories};
+      return {type:!relevant.length?(failedForMethod?'invalid':'other-method'):relevant.length>1?'conflict':'supported',categories:relevant.length?categories:failedForMethod?[]:categories};
     }};
   }
   const api={predict,blend,buildVolume,insideDomain,supported,meshVolume,projectVolume};

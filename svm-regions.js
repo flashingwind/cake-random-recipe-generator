@@ -1,7 +1,7 @@
 // Interpolate the trained classifier's full probability field. No nearest-neighbor
 // voting or distance cutoff participates in region classification.
 (function(root){
-  const palette={'パウンドケーキ':'#c96f2e','ジェノワーズ':'#4a7fb5','シフォンケーキ':'#5da24a','カステラ':'#8a5fb0','エンゼルフード':'#c2a13d','ホットケーキ':'#e8912d','クレープ':'#6a9a7d','ソーダブレッド':'#9c6644','スコーン':'#e07a5f','マフィン':'#bc4749','ポップオーバー':'#2a9d8f','ワッフル':'#e76f51','フォカッチャ':'#606c38'};
+  const palette={'パウンドケーキ':'#b85b18','ジェノワーズ':'#2468d1','シフォンケーキ':'#15945c','カステラ':'#863fc5','エンゼルフード':'#b39a0a','ホットケーキ':'#d33575','クレープ':'#008d9e','ソーダブレッド':'#78452b','スコーン':'#dc7843','マフィン':'#ba2646','ポップオーバー':'#007f78','ワッフル':'#e64b32','フォカッチャ':'#687719'};
   const methods={'パウンドケーキ':'cream','ジェノワーズ':'foam','シフォンケーキ':'separate','カステラ':'foam','エンゼルフード':'separate','ホットケーキ':'mix','クレープ':'mix','ソーダブレッド':'mix','スコーン':'mix','マフィン':'mix','ポップオーバー':'mix','ワッフル':'mix','フォカッチャ':'mix'};
   function predict(field,point,selected=field.classes){
     const coordinates=field.features.map((key,i)=>{

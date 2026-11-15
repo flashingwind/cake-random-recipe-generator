@@ -377,9 +377,23 @@ function judge(s, category){
 // ===== 最寄り基準点（全パラメータの正規化距離） =====
 function distFull(s, a){
   const d = (x,y,m) => ((x-y)/m)**2;
-  return Math.sqrt(d(s.fat,a.fat,110) + d(s.egg,a.egg,420) + d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,200));
+  const ingredientDistance = Math.sqrt(
+    d(s.fat,a.fat,110) + d(s.egg,a.egg,420) +
+    d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,200));
+  // 立て方は候補選別、油脂の種類とBPは離散的な距離として扱う。
+  const fatMismatch = s.fat>0 && a.fat>0 && s.fatType!==a.fatType ? 0.6 : 0;
+  const bpMismatch = (s.bp>0)!==(a.bp>0) ? 0.3 : 0;
+  return Math.sqrt(ingredientDistance**2 + fatMismatch**2 + bpMismatch**2);
 }
-function nearestAnchor(s){ let best=null; for (const a of DISPLAY_ANCHORS){ const dd = distFull(s,a); if (!best || dd<best.d) best={a, d:dd}; } return best; }
+function nearestAnchor(s){
+  const candidates=DISPLAY_ANCHORS.filter(a=>a.method===s.method);
+  const ranked=candidates.map(a=>({
+    a,d:distFull(s,a),
+    viable:judge(s,baseCakeName(a)).worst!=='bad'
+  })).sort((a,b)=>a.d-b.d);
+  // 成立する候補を優先する。すべて不成立なら最も近い候補を手順の参考にする。
+  return ranked.find(candidate=>candidate.viable) || ranked[0];
+}
 function baseCakeName(anchor){ return ANCHORS.find(a=>a.id===anchor.id.replace(/-home$/,'')).name; }
 
 // ===== UI構築 =====

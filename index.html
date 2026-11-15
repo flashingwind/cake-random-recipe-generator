@@ -595,16 +595,30 @@ function shareStatus(message){
   for(const id of ['shareStatus','shareStatusBottom'])
     document.getElementById(id).textContent=message;
 }
-async function copyRecipeURL(){
-  const url=recipeShareURL();
+
+function recipeShareText(){
+  const r=recipeFor(state);
+  const ingredients=r.rows.map(row=>`${row.label} ${row.grams}g`).join('、');
+  const near=nearestAnchor(state).a.name;
+  const verdict={ok:'成立しそう',warn:'際どい（焼けるが癖が強い）',bad:'不成立の可能性が高い'}[judge(state).worst];
+  const bake=state.method==='mix' ? '' : `／${state.temp}℃・約${state.time}分`;
+  return [
+    '【ケーキレシピ】',
+    `${METHOD_LABEL[state.method]}／${r.mold}${bake}`,
+    ingredients,
+    `一番近い既存ケーキは「${near}」`,
+    `判定：${verdict}（配合上の目安）`
+  ].filter(Boolean).join('\n');
+}
+async function copyShareText(text, successMessage){
   try{
     if(!navigator.clipboard || !window.isSecureContext) throw Error('Clipboard API unavailable');
-    await navigator.clipboard.writeText(url);
-    shareStatus('レシピのURLをコピーしました。');
+    await navigator.clipboard.writeText(text);
+    shareStatus(successMessage);
     return true;
   }catch(error){
     const field=document.createElement('textarea');
-    field.value=url;
+    field.value=text;
     field.setAttribute('readonly','');
     field.style.position='fixed';
     field.style.opacity='0';
@@ -614,33 +628,35 @@ async function copyRecipeURL(){
     try{copied=document.execCommand('copy');}catch(e){}
     field.remove();
     if(copied){
-      shareStatus('レシピのURLをコピーしました。');
+      shareStatus(successMessage);
       return true;
     }
-    window.prompt('次のレシピURLをコピーしてください',url);
-    shareStatus('URLを選択してコピーしてください。');
+    window.prompt('次の内容をコピーしてください',text);
+    shareStatus('表示された文章を選択してコピーしてください。');
     return false;
   }
+}
+function copyRecipeURL(){
+  return copyShareText(recipeShareURL(),'レシピのURLをコピーしました。');
 }
 function openSharePage(url){
   window.open(url,'_blank','noopener,noreferrer');
 }
 for(const id of ['shareX','shareXBottom']) document.getElementById(id).addEventListener('click',()=>{
-  const query=new URLSearchParams({text:'このケーキの配合を共有します',url:recipeShareURL()});
+  const query=new URLSearchParams({text:recipeShareText(),url:recipeShareURL()});
   openSharePage('https://x.com/intent/tweet?'+query);
 });
 for(const id of ['shareFacebook','shareFacebookBottom']) document.getElementById(id).addEventListener('click',()=>{
   const query=new URLSearchParams({u:recipeShareURL()});
   openSharePage('https://www.facebook.com/sharer/sharer.php?'+query);
+  copyShareText(recipeShareText()+'\n'+recipeShareURL(),
+    '投稿文をコピーしました。Facebookの投稿欄に貼り付けてください。');
 });
 for(const id of ['shareCopy','shareCopyBottom']) document.getElementById(id).addEventListener('click',copyRecipeURL);
 for(const id of ['shareInstagram','shareInstagramBottom']) document.getElementById(id).addEventListener('click',()=>{
   openSharePage('https://www.instagram.com/');
-  copyRecipeURL().then(copied=>{
-    shareStatus(copied
-      ? 'URLをコピーしました。Instagramのストーリーズで「リンク」スタンプに貼り付けてください。'
-      : 'Instagramのストーリーズで「リンク」スタンプにURLを貼り付けてください。');
-  });
+  copyShareText(recipeShareText()+'\n'+recipeShareURL(),
+    '投稿文とURLをコピーしました。Instagramのキャプションに貼り付け、ストーリーズではリンクスタンプも利用できます。');
 });
 
 applyQueryParams();

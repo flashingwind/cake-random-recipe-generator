@@ -607,7 +607,13 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const names={'invalid':'不成立（この立て方では成立しないと推定）','insufficient':'データ不足','other-method':'別の立て方','conflict':'カテゴリ領域の重複','supported':'モデル領域内'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
-    const regionLabel=(result.type==='conflict' || result.type==='supported') ? result.categories.map(g=>g.category).join('／') : names[result.type];
+    const categoryNames=result.categories.map(g=>g.category).join('／');
+    const regionLabel=result.type==='other-method'
+      ? (result.categories.length
+          ? `${categoryNames}（別の立て方：${[...new Set(result.categories.map(g=>METHOD_LABEL[g.method]))].join('／')}）`
+          : names[result.type])
+      : (result.type==='conflict' || result.type==='supported')
+        ? categoryNames : names[result.type];
     heading.textContent=`${regionLabel}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（入力フォームにも反映。水分は同じ立て方の近傍実レシピから推定、砂糖・BPなどは維持。全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
     detail.append(heading);
     for(const {row,distance} of result.neighbors.slice(0,3)){

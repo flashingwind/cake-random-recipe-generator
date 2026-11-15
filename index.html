@@ -521,6 +521,44 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     detail.scrollIntoView({block:'nearest'});
   });
 }
+
+function applyQueryParams(){
+  const query = new URLSearchParams(location.search);
+  let changed = false;
+  for(const p of [...PARAMS,
+    {key:'bp',min:0,max:20},
+    {key:'temp',min:100,max:250},
+    {key:'time',min:1,max:240}]){
+    const raw=query.get(p.key);
+    if(raw===null || raw.trim()==='') continue;
+    const value=Number(raw);
+    if(!Number.isFinite(value) || value<p.min || value>p.max) continue;
+    state[p.key]=value;
+    changed=true;
+  }
+  for(const [key,allowed] of [
+    ['method',Object.keys(METHOD_LABEL)],
+    ['fatType',Object.keys(FAT_LABEL)],
+  ]){
+    const value=query.get(key);
+    if(value!==null && allowed.includes(value)){
+      state[key]=value;
+      changed=true;
+    }
+  }
+  const flour=query.get('flour');
+  if(flour!==null && flour.trim()!==''){
+    const value=Number(flour);
+    if(Number.isFinite(value) && value>=1 && value<=1000)
+      recipeFlourOverride=value;
+  }
+  if(changed){
+    blendInfo='URLから指定';
+    document.getElementById('blendDetail').textContent =
+      `一番近い既存ケーキは「${nearestAnchor(state).a.name}」です。`;
+  }
+}
+applyQueryParams();
 render();
 </script>
 </body>

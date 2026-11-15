@@ -151,7 +151,7 @@
   </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
-<script src="svm-regions.js?v=9d8f93a02841"></script>
+<script src="svm-regions.js?v=1bbcd2ec9bee"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
 // ===== 基準点（既存ケーキ）。すべて小麦粉100gあたり =====
@@ -267,6 +267,14 @@ function judge(s, category){
       add('bad', `ホットケーキには水分が少なすぎ、生地がまとまりにくい（粉100gあたり約${Math.round(totalWater)}g）`);
     else if (totalWater > 200)
       add('bad', `ホットケーキには水分が多すぎ、薄い生地になりやすい（粉100gあたり約${Math.round(totalWater)}g）`);
+  }
+  // Crêpe batter must spread thinly in a pan; it is not a rising cake.
+  // Provisional bounds include the water contributed by whole eggs.
+  if (category==='クレープ'){
+    if (totalWater < 175)
+      add('bad', `クレープには水分が少なすぎ、薄く広げにくい（粉100gあたり約${Math.round(totalWater)}g）`);
+    else if (totalWater > 480)
+      add('bad', `クレープには水分が多すぎ、生地がまとまりにくい（粉100gあたり約${Math.round(totalWater)}g）`);
   }
   const wBad = s.method==='mix' ? 560 : 360, wWarn = s.method==='mix' ? 460 : 300;
   if (totalWater > wBad) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);

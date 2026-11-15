@@ -63,7 +63,9 @@
       const contenders=scores.filter(g=>g.score>=scores[0].score*.75);
       for(const g of contenders)
         if(carve&&carve(g.category,point))failed.push({indices,method:g.method});
-      const viable=scores.filter(g=>!carve||!carve(g.category,point));
+      // Never repaint a failed leading category with an unrelated KDE tail.
+      const viable=scores.filter(g=>g.score>=scores[0].score*.15 &&
+        (!carve||!carve(g.category,point)));
       if(!viable.length)continue;
       const viableMass=viable.reduce((sum,g)=>sum+g.score,0);
       const visibleScores=viable.map(g=>({...g,score:viableMass>0?g.score/viableMass:1/viable.length}));

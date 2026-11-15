@@ -151,7 +151,7 @@
   </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
-<script src="svm-regions.js?v=28c1fa3e1766"></script>
+<script src="svm-regions.js?v=6207893dc0fb"></script>
 <script src="overview-3d.js?v=c45933f4a133"></script>
 <script>
 // ===== 基準点（既存ケーキ）。すべて小麦粉100gあたり =====
@@ -440,7 +440,7 @@ function paintRegion(ctx,tile,method){
   const {x,y,w,h}=tile;
   const result=regionAt(x+w/2,y+h/2,method);
   const left=46+x,top=30+y;
-  if(result.type==='insufficient' || result.type==='other-method'){
+  if(result.type==='insufficient' || result.type==='other-method' || result.type==='invalid'){
     ctx.fillStyle=result.type==='insufficient'?'#ddd9d5':'#fff';ctx.fillRect(left,top,w,h);return;
   }
   const colors=result.categories.map(g=>g.color+(g.profile==='standard'?'55':'2e'));
@@ -536,7 +536,7 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const result=regionAt(cx,cy,method);
     clickMark={method, fat:cx/402*X_MAX, egg:(1-cy/294)*Y_MAX};
     drawPlot(canvas, method);
-    const names={'insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'モデル領域内'};
+    const names={'invalid':'不成立（この立て方では成立しないと推定）','insufficient':'データ不足','other-method':'別の立て方','conflict':'同じ立て方のカテゴリ領域が投影で重なる','supported':'モデル領域内'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
     heading.textContent=`${names[result.type]}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;

@@ -148,6 +148,9 @@
     <h2>3D領域の解説</h2>
     <p class="note" id="volumeStatus" aria-live="polite"></p>
     <p class="note" id="trainingSummary"></p>
+    <h3>成立境界の探索（試験的）</h3>
+    <p class="note">既存ケーキの基準点から、別構造の焼成食品の参照点まで材料配合を補間し、現在のjudge()が成立から不成立へ切り替わる区間を調べます。調理法は出発点のケーキに固定します。参照点はKDE学習には使いません。</p>
+    <div class="note" id="boundaryReport"></div>
   </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
@@ -701,6 +704,63 @@ function render(syncSliders = true){
   for (const m of ['cream','foam','separate','mix']) drawPlot(document.getElementById('plot-'+m), m);
 }
 document.getElementById('trainingSummary').textContent = `使用モデル：${SVM_FIELD.model}。実レシピ${SVM_FIELD.summary.publicRecipes}件＋基準点${SVM_FIELD.summary.anchorEstimates}件で学習。`;
+
+// Boundary probes are independent of KDE training. Ingredient quantities below
+// are approximate grams per 100 g flour, transcribed from sourced recipes.
+// Additional ingredients (fruit, cocoa, etc.) are outside this model.
+const BOUNDARY_REFERENCES=[
+  {name:'ショートブレッド',sugar:47,egg:0,fat:79,liquid:0,bp:0,
+    url:'https://www.kingarthurbaking.com/recipes/shortbread-cookies-recipe'},
+  {name:'クラフティ',sugar:110,egg:167,fat:26,liquid:189,bp:0,
+    url:'https://www.kingarthurbaking.com/recipes/easy-fresh-fruit-clafouti-recipe'},
+  {name:'パイ生地',sugar:0,egg:0,fat:63,liquid:42,bp:0,
+    url:'https://www.kingarthurbaking.com/recipes/all-butter-pie-crust-recipe'},
+];
+function probeBoundary(anchor,reference){
+  const keys=['sugar','egg','fat','liquid','bp'];
+  const sample=t=>{
+    const candidate={...anchor};
+    for(const key of keys)candidate[key]=anchor[key]*(1-t)+reference[key]*t;
+    return judge(candidate,anchor.name).worst==='bad';
+  };
+  const intervals=[];
+  let previous=sample(0);
+  for(let i=1;i<=40;i++){
+    const current=sample(i/40);
+    if(current!==previous){
+      let lo=(i-1)/40,hi=i/40;
+      for(let n=0;n<12;n++){
+        const mid=(lo+hi)/2;
+        if(sample(mid)===previous)lo=mid;else hi=mid;
+      }
+      intervals.push({fraction:(lo+hi)/2,to:current?'不成立':'成立'});
+    }
+    previous=current;
+  }
+  return intervals;
+}
+function renderBoundaryReport(){
+  const report=document.getElementById('boundaryReport');
+  const items=[];
+  for(const anchor of ANCHORS.filter(a=>!a.id.endsWith('-home')&&DISPLAY_CATEGORIES.includes(a.name))){
+    for(const reference of BOUNDARY_REFERENCES){
+      const intervals=probeBoundary(anchor,reference);
+      if(!intervals.length)continue;
+      const item=document.createElement('p');
+      const positions=intervals.map(v=>{const t=v.fraction;const fat=anchor.fat*(1-t)+reference.fat*t,egg=anchor.egg*(1-t)+reference.egg*t,liquid=anchor.liquid*(1-t)+reference.liquid*t;return `${(t*100).toFixed(1)}%付近で${v.to}（3D射影：脂肪${fat.toFixed(0)}・卵${egg.toFixed(0)}・水分${liquid.toFixed(0)}g）`;}).join('、');
+      item.append(`${anchor.name} → ${reference.name}：${positions}（配合補間距離） `);
+      const link=document.createElement('a');
+      link.href=reference.url;link.target='_blank';link.rel='noopener';
+      link.textContent='参照レシピ';
+      item.append(link);
+      items.push(item);
+    }
+  }
+  report.replaceChildren(...items);
+  if(!items.length)report.textContent='現在のjudge()では、この参照経路に判定の変化がありません。';
+}
+renderBoundaryReport();
+
 for(const canvas of document.querySelectorAll('canvas.plot')){
   canvas.addEventListener('click',event=>{
     const rect=canvas.getBoundingClientRect();

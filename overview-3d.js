@@ -1,6 +1,6 @@
 // A dependency-free, rotatable projection of all observed recipes.
 (function(root){
-  function create(canvas,{rows,anchors,drawMarker,getState,onSelect,buildVolume}){
+  function create(canvas,{rows,anchors,drawMarker,getState,onSelect,buildVolume,getBoundaryPath=()=>null}){
     const ctx=canvas.getContext('2d');
     const limits={fat:Math.max(110,...rows.map(r=>r.fat)),egg:Math.max(420,...rows.map(r=>r.egg)),liquid:Math.max(400,...rows.map(r=>r.liquid))};
     let volume=buildVolume(limits);
@@ -61,6 +61,24 @@
         ctx.fillStyle=g.color;ctx.fillText(g.name,x,y);
       }
     }
+    function paintBoundaryPath(){
+      const path=getBoundaryPath();
+      if(!path)return;
+      for(let i=1;i<path.samples.length;i++){
+        const prev=path.samples[i-1],next=path.samples[i];
+        const a=project(coordinates(prev)),b=project(coordinates(next));
+        ctx.save();ctx.strokeStyle=prev.invalid?'#bf3330':'#20834a';
+        ctx.lineWidth=3;ctx.setLineDash([7,4]);ctx.beginPath();
+        ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore();
+      }
+      for(const hit of path.transitions){
+        const p=project(coordinates(hit));
+        ctx.save();ctx.fillStyle='#fff';ctx.strokeStyle='#b3261e';ctx.lineWidth=3;
+        ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();ctx.stroke();
+        ctx.font='bold 13px sans-serif';ctx.textAlign='left';ctx.fillStyle='#b3261e';
+        ctx.fillText('境界候補',p.x+10,p.y-9);ctx.restore();
+      }
+    }
     function render(){
       width=canvas.clientWidth || 960;height=canvas.clientHeight || 540;
       const ratio=window.devicePixelRatio || 1;
@@ -89,6 +107,7 @@
         drawMarker(ctx,p.shape,p.x,p.y,p.radius,p.kind==='anchor'?'#fff':p.row.color,p.kind==='anchor'?p.row.color:'#fff',p.kind==='anchor'?2:1);
       }
       paintRegionNames();
+      paintBoundaryPath();
       const current=project(coordinates(getState()));ctx.fillStyle='#b3261e';ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('★',current.x,current.y+8);
       canvas.setAttribute('aria-label',`脂肪・卵・水分の3D全体図。${showRegions?volume.cells+'個の領域セルを表示。':'領域は非表示。'}全${rows.length}件の実レシピと${anchors.length}件の基準点。矢印キーで回転、プラス・マイナスで拡大縮小。`);
     }

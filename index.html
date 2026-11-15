@@ -224,7 +224,7 @@ function randomBlend(){
   state.temp=near.a.temp;
   state.time=near.a.time;
   const {worst}=judge(state,baseCakeName(near.a));
-  blendInfo=worst==='fail' ? '不成立' : baseCakeName(near.a);
+  blendInfo=worst==='bad' ? '不成立' : baseCakeName(near.a);
   render();
 }
 

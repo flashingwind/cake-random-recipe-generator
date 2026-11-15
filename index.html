@@ -306,7 +306,12 @@ legendEl.querySelectorAll('canvas').forEach((cv, i)=>{ const a = DISPLAY_ANCHORS
 const FLOUR_BY_METHOD = { cream:100, foam:60, separate:75, mix:100 };
 let recipeFlourOverride = null;
 function recipeFor(s){
+  const nearest = nearestAnchor(s).a;
+  const nearestName = nearest.name.replace('（家庭用）', '');
+  const followsNearest = nearest.method === s.method;
   const moldByMethod = { cream:'パウンド型', foam:'15cm丸型', separate:'17cmシフォン型（または15cm丸型）', mix:'フライパン' };
+  if (followsNearest && nearestName==='カステラ') moldByMethod.foam='カステラ型';
+  if (followsNearest && nearestName==='エンゼルフード') moldByMethod.separate='エンゼル型';
   const flour = recipeFlourOverride ?? FLOUR_BY_METHOD[s.method], k = flour/100;
   const rows = [{label:'小麦粉', grams:flour, key:'flour'}];
   if (s.method==='foam' && nearestAnchor(s).a.id==='castella') rows[0] = {label:'小麦粉（カステラは強力粉）', grams:flour, key:'flour'};
@@ -317,25 +322,51 @@ function recipeFor(s){
   rows.push({label:'牛乳・水など', grams:Math.round(s.liquid*k), key:'liquid'});
   rows.push({label:'ベーキングパウダー', grams:+(s.bp*k).toFixed(1), key:'bp'});
   const steps = [];
+  const hasEgg = s.egg > 0;
+  const hasFat = s.fatType !== 'none' && s.fat > 0;
+  const hasLiquid = s.liquid > 0;
   if (s.method==='cream'){
-    steps.push('バターを室温に戻し、砂糖と白っぽくふんわりするまで擦り混ぜる。');
-    steps.push('溶き卵を少しずつ加えて乳化させる（分離したら粉をひとつまみ入れる）。');
-    steps.push('粉類をふるい入れ、液体がある場合は粉と交互に加えて混ぜる。');
+    if (hasFat && s.fatType==='butter')
+      steps.push('バターを室温に戻し、砂糖と白っぽくふんわりするまで擦り混ぜる。');
+    else
+      steps.push('砂糖と油脂を混ぜる（バター以外ではクリーミングによる抱気は期待できません）。');
+    if (hasEgg) steps.push('溶き卵を少しずつ加えて乳化させる（分離したら粉をひとつまみ入れる）。');
+    steps.push(hasLiquid ? '粉類をふるい入れ、液体と交互に加えて混ぜる。' : '粉類をふるい入れて混ぜる。');
   } else if (s.method==='foam'){
-    steps.push('全卵と砂糖を湯煎にかけながら、もったりと筋が残るまで泡立てる（共立て）。');
+    steps.push(hasEgg
+      ? '全卵と砂糖を湯煎にかけながら、もったりと筋が残るまで泡立てる（共立て）。'
+      : '卵がないため共立てはできません。配合か立て方を見直してください。');
     steps.push('粉類をふるい入れ、泡を潰さないようさっくり混ぜる。');
-    if (s.fatType==='butter') steps.push('溶かしバターを最後に回し入れて手早く混ぜる。');
-    if (s.fatType==='oil') steps.push('油を最後に加えて手早く混ぜる。');
+    if (hasLiquid) steps.push('液体を生地の一部となじませてから、全体に手早く合わせる。');
+    if (hasFat && s.fatType==='butter') steps.push('溶かしバターを少量の生地と混ぜてから全体に戻し、手早く合わせる。');
+    if (hasFat && s.fatType==='oil') steps.push('油を少量の生地となじませてから全体に戻し、手早く合わせる。');
+    if (followsNearest && nearestName==='カステラ') steps.push('大きな気泡を抜き、きめを整えて型に流す。');
   } else if (s.method==='mix'){
-    steps.push('粉類と砂糖を混ぜ、卵と液体を加えて混ぜる（混ぜすぎない）。');
-    steps.push('生地を30分ほど休ませるとなじむ。');
+    steps.push('粉類と砂糖を混ぜる。');
+    const wet = [hasEgg?'卵':null,hasLiquid?'液体':null,hasFat?(s.fatType==='butter'?'溶かしバター':'油'):null].filter(Boolean);
+    if (wet.length) steps.push(`${wet.join('・')}を加えて、粉気がなくなるまで混ぜる（混ぜすぎない）。`);
+    if (followsNearest && nearestName==='クレープ')
+      steps.push('生地を30分ほど休ませ、薄く広げやすい状態にする。');
+    else if (followsNearest && nearestName==='ホットケーキ')
+      steps.push('混ぜたら長く置かずに焼き始める（ベーキングパウダーのガスを逃さない）。');
+    else
+      steps.push('生地の状態を見て、必要なら短時間休ませる。');
   } else {
-    steps.push('卵黄に砂糖の半量を加えて白っぽくなるまで混ぜ、油脂と液体を加える。');
-    steps.push('卵白に残りの砂糖を加えてメレンゲを立てる。');
+    steps.push(hasEgg
+      ? '卵黄に砂糖の半量を加えて混ぜる。'
+      : '卵がないため別立てはできません。配合か立て方を見直してください。');
+    if (hasFat || hasLiquid)
+      steps.push(`${[hasFat?(s.fatType==='butter'?'溶かしバター':'油'):null,hasLiquid?'液体':null].filter(Boolean).join('と')}を卵黄生地に加える。`);
+    if (hasEgg) steps.push('卵白に残りの砂糖を加えてメレンゲを立てる。');
     steps.push('卵黄生地に粉類を入れ、メレンゲを3回に分けてさっくり合わせる。');
+    if (followsNearest && nearestName==='エンゼルフード')
+      steps.push('エンゼルフードは本来卵白主体です。全卵換算値から卵白量を調整してください。');
   }
   if (s.method==='mix'){
-    steps.push(s.liquid >= 150 ? 'フライパンに生地を薄く広げ、縁が乾いたら返してさっと焼く（クレープ）。' : '弱火のフライパンに厚めに流し、表面が乾いてきたら返して焼く（ホットケーキ）。');
+    const thin = followsNearest ? nearestName==='クレープ' : s.liquid >= 150;
+    steps.push(thin
+      ? 'フライパンに生地を薄く広げ、縁が乾いたら返してさっと焼く（クレープ式）。'
+      : '弱火のフライパンに厚めに流し、表面が乾いてきたら返して焼く（ホットケーキ式）。');
   } else {
     steps.push(`型に流し、${s.temp}℃で約${s.time}分焼く。竹串を刺して生地がつかなければ焼き上がり。`);
   }
@@ -515,6 +546,7 @@ function render(syncSliders = true){
   document.getElementById('rules').innerHTML = rules.map(r =>
     `<li><span class="mark">${r.level==='ok'?'○':r.level==='warn'?'△':'×'}</span>${r.text}</li>`).join('');
   const r = recipeFor(state);
+  document.getElementById('blendDetail').textContent = `一番近い既存ケーキは「${nearestAnchor(state).a.name}」です。手順はこの種類を参考に、選択中の立て方・材料に合わせています。`;
   document.getElementById('recipeHead').textContent = `${METHOD_LABEL[state.method]}／${r.mold} 1台分（小麦粉あたりの配合を換算）`;
   document.getElementById('steps').innerHTML = r.steps.map(s=>`<li>${s}</li>`).join('');
   overview.render();

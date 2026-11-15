@@ -571,7 +571,7 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const names={'invalid':'不成立（この立て方では成立しないと推定）','insufficient':'データ不足','other-method':'別の立て方','conflict':'カテゴリ領域の重複','supported':'モデル領域内'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
-    const regionLabel=result.type==='conflict' ? result.categories.map(g=>g.category).join('／') : names[result.type];
+    const regionLabel=(result.type==='conflict' || result.type==='supported') ? result.categories.map(g=>g.category).join('／') : names[result.type];
     heading.textContent=`${regionLabel}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
     detail.append(heading);
     for(const {row,distance} of result.neighbors.slice(0,3)){

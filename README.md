@@ -57,6 +57,20 @@ URL指定で使用できるキーは `sugar`（砂糖、0〜200）、`egg`（卵
 - カステラ（家庭用）：[日清製粉ウェルナ「カステラ」](https://www.nisshin-seifun-welna.com/index/recipe/detail/s-043.html)
 - エンゼルフードケーキ（家庭用）：[クラシル「エンゼルフードケーキ」](https://www.kurashiru.com/recipes/d24a7464-24b2-4184-9f75-42ae1af86609)
 
+## 成立境界の探索（試験的）
+
+通常のケーキとは異なる構造を持つ焼成食品を、成立境界の探索用参照点として使用します。**KDEの学習データには追加しません。**
+
+| 参照点 | 砂糖 | 卵 | 純脂肪 | 追加水分 | 出典 |
+|---|---:|---:|---:|---:|---|
+| ショートブレッド | 47g | 0g | 79g | 0g | [King Arthur Baking: Shortbread Cookies](https://www.kingarthurbaking.com/recipes/shortbread-cookies-recipe) |
+| クラフティ | 110g | 約167g | 約26g | 約189g | [King Arthur Baking: Easy Fresh Fruit Clafouti](https://www.kingarthurbaking.com/recipes/easy-fresh-fruit-clafouti-recipe) |
+| パイ生地 | 0g | 0g | 約63g | 約42g | [King Arthur Baking: All-Butter Pie Crust](https://www.kingarthurbaking.com/recipes/all-butter-pie-crust-recipe) |
+
+数値は小麦粉100gあたりの概算値です。バターは純脂肪率83%、卵1個50gとして換算しています。パイ生地の追加水分は出典の指定範囲の中間付近を代表値としています。果物など現在の入力軸にない材料は含めていません。
+
+3D図では、出発点の既存ケーキと参照点を選ぶと、その間の材料配合を補間した経路を描きます。緑は現在の `judge()` で成立、赤は不成立、白抜きの丸は判定が変化する場所です。調理法は出発点のケーキに固定するため、**参照食品のレシピをそのまま判定しているわけではありません**。境界は現在のヒューリスティクスによる推定であり、実験で確かめた境界ではありません。
+
 ## 今後の課題
 
 - 基準点（既存レシピ）を増やして領域塗り分けの解像度を上げる

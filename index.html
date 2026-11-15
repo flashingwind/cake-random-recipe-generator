@@ -395,6 +395,10 @@ function nearestAnchor(s){
   return ranked.find(candidate=>candidate.viable) || ranked[0];
 }
 function baseCakeName(anchor){ return ANCHORS.find(a=>a.id===anchor.id.replace(/-home$/,'')).name; }
+function judgedCakeLabel(s){
+  const near=nearestAnchor(s);
+  return judge(s,baseCakeName(near.a)).worst==='bad' ? '不成立' : baseCakeName(near.a);
+}
 
 // ===== UI構築 =====
 const slidersEl = document.getElementById('sliders');
@@ -403,16 +407,16 @@ for (const p of PARAMS){
   row.innerHTML = `<label>${p.label} <b id="val-${p.key}"></b></label>
     <input type="range" id="sl-${p.key}" min="${p.min}" max="${p.max}" step="${p.step}">`;
   slidersEl.appendChild(row);
-  row.querySelector('input').addEventListener('input', e => { state[p.key] = +e.target.value; blendInfo = '手動指定'; document.getElementById('blendDetail').textContent = `一番近い既存ケーキは「${nearestAnchor(state).a.name}」です。`; render(false); });
+  row.querySelector('input').addEventListener('input', e => { state[p.key] = +e.target.value; blendInfo = judgedCakeLabel(state); document.getElementById('blendDetail').textContent = `一番近い既存ケーキは「${nearestAnchor(state).a.name}」です。`; render(false); });
 }
 function segWire(id, key){
   const el = document.getElementById(id);
-  el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { state[key] = b.dataset.v; render(false); }));
+  el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { state[key] = b.dataset.v; blendInfo = judgedCakeLabel(state); render(false); }));
 }
 segWire('segMethod','method'); segWire('segFat','fatType');
 // BPは立て方と排他ではない（泡とも併用できる）ので、単独のトグルにする。押さなければ無選択＝入れない。
 // オンで入る量はデータの最頻値である小さじ1（4g）を既定にする。
-document.getElementById('btnBp').addEventListener('click', () => { state.bp = state.bp > 0 ? 0 : adequateBP(state); render(false); });
+document.getElementById('btnBp').addEventListener('click', () => { state.bp = state.bp > 0 ? 0 : adequateBP(state); blendInfo = judgedCakeLabel(state); render(false); });
 document.getElementById('btnRandom').addEventListener('click', randomBlend);
 const legendEl = document.getElementById('legend');
 legendEl.innerHTML = DISPLAY_ANCHORS.map(a=>`<span style="color:${a.color}"><canvas width="15" height="15"></canvas>${baseCakeName(a)}［${profileLabel(a)}］</span>`).join('');

@@ -159,6 +159,7 @@
   </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
+<script src="data/viability-grid.js?v=0414232a5d65"></script>
 <script src="svm-regions.js?v=1bbcd2ec9bee"></script>
 <script src="overview-3d.js?v=83039b6caa24"></script>
 <script>
@@ -515,25 +516,36 @@ const CATEGORY_ANCHORS=new Map(DISPLAY_CATEGORIES.map(category=>[
 ]));
 function viableFullRecipe(category,point){
   const anchors=CATEGORY_ANCHORS.get(category)||[];
-  const limits={fat:110,egg:420,liquid:400};
-  const distance=a=>['fat','egg','liquid'].reduce((sum,key)=>
-    sum+((point[key]-a[key])/limits[key])**2,0);
-  const ordered=[...anchors].sort((a,b)=>distance(a)-distance(b));
-  for(const anchor of ordered){
-    // Anchor and near-anchor sugar values sample the unplotted sugar dimension.
-    for(const sugarFactor of [1,0.75,1.25]){
-      for(const bpOn of [false,true]){
-        const candidate={...anchor,...point,
-          sugar:Math.max(0,Math.min(200,anchor.sugar*sugarFactor)),
-          bp:bpOn?adequateBP({...anchor,...point}):0};
-        if(judge(candidate,category).worst!=='bad')return candidate;
+  for(const anchor of anchors){
+    const fatTypes=point.fat===0?['none']:anchor.fatType==='none'?['butter','oil']:[anchor.fatType];
+    for(const fatType of fatTypes){
+      for(let sugar=0;sugar<=200;sugar+=10){
+        for(const bpOn of [false,true]){
+          const candidate={...anchor,...point,sugar,fatType,bp:bpOn?adequateBP({...anchor,...point,sugar,fatType}):0};
+          if(judge(candidate,category).worst!=='bad')return candidate;
+        }
       }
     }
   }
   return null;
 }
+function gridAllows(category,point){
+  const grid=globalThis.CAKE_VIABILITY_GRID;
+  if(!grid)return null;
+  const categoryIndex=grid.categories.indexOf(category);
+  if(categoryIndex<0)return null;
+  const axes=['fat','egg','liquid'];
+  const positions=axes.map(key=>{
+    const axis=grid.axes[key];
+    return Math.max(0,Math.min(axis.count-1,Math.round((point[key]-axis.min)/axis.step)));
+  });
+  const offset=(positions[0]*grid.axes.egg.count+positions[1])*grid.axes.liquid.count+positions[2];
+  const mask=parseInt(grid.data.slice(offset*2,offset*2+2),16);
+  return !!(mask&(1<<categoryIndex));
+}
 function carveFailedRecipe(category,point){
-  return viableFullRecipe(category,point)===null;
+  const viable=gridAllows(category,point);
+  return viable===null?viableFullRecipe(category,point)===null:!viable;
 }
 const rowScales = ['fat','egg'].map(key=>{ const mean=ROWS.reduce((s,r)=>s+r[key],0)/ROWS.length; return Math.sqrt(ROWS.reduce((s,r)=>s+(r[key]-mean)**2,0)/ROWS.length)||1; });
 function rowDistance(a,b){ return Math.sqrt(((a.fat-b.fat)/rowScales[0])**2+((a.egg-b.egg)/rowScales[1])**2); }
@@ -554,7 +566,7 @@ let VOLUME = overview.getVolume();
 let PROJECTION = SVMRegions.projectVolume(VOLUME,VOLUME.limits);
 function updateVolumeStatus(){
   let text=document.getElementById('showRegions').checked
-    ? `${SVM_FIELD.estimator.toUpperCase()}の3D領域を表示中（脂肪・卵・水分へ射影。砂糖・BP・焼成条件などは基準点付近の候補を探索した近似）。${VOLUME.extrapolate?'データ範囲外への推定も表示しています。':'実データの密度が届く範囲内を表示しています。'}`
+    ? `${SVM_FIELD.estimator.toUpperCase()}の3D領域を表示中（脂肪・卵・水分へ射影。砂糖0〜200g・BP ON/OFFを10g格子で事前全探索した近似。焼成条件と立て方はカテゴリ基準点を使用）。${VOLUME.extrapolate?'データ範囲外への推定も表示しています。':'実データの密度が届く範囲内を表示しています。'}`
     : '3D領域は非表示です。「領域の塗り分けを表示」をオンにすると表示します。';
   if(VOLUME.selected.length===3 && !VOLUME.contact){text+=' 他カテゴリの優勢な場所を除くと、3種のスコアが拮抗する候補は見つかりません。';}
   if(VOLUME.contact){

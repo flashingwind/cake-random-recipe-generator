@@ -122,6 +122,11 @@
     <canvas id="overview3d" width="960" height="540" tabindex="0" role="img"></canvas>
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
     <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。</p>
+    <p class="note"><label><input id="showBoundaryPaths" type="checkbox"> 境界探索の経路を3Dに重ねる</label>
+      <label>出発点 <select id="boundaryFrom"></select></label>
+      <label>参照点 <select id="boundaryTo"></select></label>
+      <span>緑：成立／赤：不成立／○：判定の変化</span>
+    </p>
     <p class="note"><a href="https://github.com/flashingwind/cake-random-recipe-generator#readme" target="_blank" rel="noopener">学習方法・モデル・データ収集・可視化手法はREADME</a></p>
     <h3>2D投影図（3D領域を水分方向に重ねる）</h3>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
@@ -155,7 +160,7 @@
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>
 <script src="svm-regions.js?v=1bbcd2ec9bee"></script>
-<script src="overview-3d.js?v=c45933f4a133"></script>
+<script src="overview-3d.js?v=83039b6caa24"></script>
 <script>
 // ===== 基準点（既存ケーキ）。すべて小麦粉100gあたり =====
 // 名前に「（家庭用）」が付く基準点は家庭用、それ以外は標準的な配合。
@@ -538,6 +543,7 @@ let clickMark = null;
 const overview = RecipeOverview.create(document.getElementById('overview3d'),{
   rows:DISPLAY_ROWS,anchors:DISPLAY_ANCHORS,drawMarker,getState:()=>state,
   buildVolume:limits=>SVMRegions.buildVolume(SVM_FIELD,ANCHORS,limits,document.getElementById('focusThree').checked?['パウンドケーキ','シフォンケーキ','ジェノワーズ']:DISPLAY_CATEGORIES,[18,24,24],document.getElementById('showExtrapolation').checked,carveFailedRecipe),
+  getBoundaryPath:()=>getBoundaryPath(),
   onSelect:row=>{
     const detail=document.getElementById('overviewDetails');detail.replaceChildren();
     detail.append(`${row.category}［${row.id}］ 脂肪 ${row.fat}g・卵 ${row.egg}g・水分 ${row.liquid}g／粉100g：`);
@@ -739,6 +745,34 @@ function probeBoundary(anchor,reference){
   }
   return intervals;
 }
+function getBoundaryPath(){
+  if(!document.getElementById('showBoundaryPaths').checked)return null;
+  const anchor=ANCHORS.find(a=>a.id===document.getElementById('boundaryFrom').value);
+  const ref=BOUNDARY_REFERENCES.find(r=>r.name===document.getElementById('boundaryTo').value);
+  if(!anchor||!ref)return null;
+  const keys=['sugar','egg','fat','liquid','bp'];
+  const point=t=>{
+    const candidate={...anchor};
+    for(const key of keys)candidate[key]=anchor[key]*(1-t)+ref[key]*t;
+    return {...candidate,invalid:judge(candidate,anchor.name).worst==='bad'};
+  };
+  return {
+    samples:Array.from({length:41},(_,i)=>point(i/40)),
+    transitions:probeBoundary(anchor,ref).map(hit=>point(hit.fraction))
+  };
+}
+function setupBoundaryControls(){
+  const from=document.getElementById('boundaryFrom'),to=document.getElementById('boundaryTo');
+  for(const anchor of ANCHORS.filter(a=>!a.id.endsWith('-home')&&DISPLAY_CATEGORIES.includes(a.name))){
+    const option=document.createElement('option');option.value=anchor.id;option.textContent=anchor.name;from.append(option);
+  }
+  for(const ref of BOUNDARY_REFERENCES){
+    const option=document.createElement('option');option.value=ref.name;option.textContent=ref.name;to.append(option);
+  }
+  for(const id of ['showBoundaryPaths','boundaryFrom','boundaryTo'])
+    document.getElementById(id).addEventListener('change',()=>overview.render());
+}
+setupBoundaryControls();
 function renderBoundaryReport(){
   const report=document.getElementById('boundaryReport');
   const items=[];

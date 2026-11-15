@@ -578,13 +578,19 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const tw=402/VOLUME.resolution[0], th=294/VOLUME.resolution[1];
     const cx=(Math.floor(x/tw)+0.5)*tw, cy=(Math.floor(y/th)+0.5)*th;
     const result=regionAt(cx,cy,method);
+    // The 2D projection determines fat, egg and method, but not water.
+    // Keep sugar, water, BP, fat type and baking settings unchanged.
+    state.fat=Math.round(cx/402*X_MAX);
+    state.egg=Math.round((1-cy/294)*Y_MAX);
+    state.method=method;
+    blendInfo='2D投影図から指定';
     clickMark={method, fat:cx/402*X_MAX, egg:(1-cy/294)*Y_MAX};
-    drawPlot(canvas, method);
+    render();
     const names={'invalid':'不成立（この立て方では成立しないと推定）','insufficient':'データ不足','other-method':'別の立て方','conflict':'カテゴリ領域の重複','supported':'モデル領域内'};
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
     const regionLabel=(result.type==='conflict' || result.type==='supported') ? result.categories.map(g=>g.category).join('／') : names[result.type];
-    heading.textContent=`${regionLabel}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
+    heading.textContent=`${regionLabel}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（入力フォームにも反映。水分・砂糖・BPなどは維持。全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
     detail.append(heading);
     for(const {row,distance} of result.neighbors.slice(0,3)){
       const p=document.createElement('p');

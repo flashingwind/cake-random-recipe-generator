@@ -123,7 +123,6 @@
     <div class="seg-row"><button id="resetOverview">向きを戻す</button><button id="zoomOverviewIn" aria-label="3D全体図を拡大">＋</button><button id="zoomOverviewOut" aria-label="3D全体図を縮小">−</button></div>
     <p class="note"><label><input id="showRegions" type="checkbox" checked> 領域の塗り分けを表示</label> — 家庭用は薄く、標準的は濃く。</p>
     <div class="note" id="overviewDetails" aria-live="polite">実レシピの点をクリックすると、配合と出典を表示します。</div>
-    <p class="note" id="trainingSummary"></p>
     <p class="note"><a href="https://github.com/flashingwind/cake-random-recipe-generator#readme" target="_blank" rel="noopener">学習方法・モデル・データ収集・可視化手法はREADME</a></p>
     <h3>2D投影図（3D領域を水分方向に重ねる）</h3>
     <div class="plots">
@@ -148,6 +147,7 @@
   <section class="card" aria-label="3D領域の解説">
     <h2>3D領域の解説</h2>
     <p class="note" id="volumeStatus" aria-live="polite"></p>
+    <p class="note" id="trainingSummary"></p>
   </section>
 </main>
 <script src="data/svm-field.js?v=5d4401d2e279"></script>

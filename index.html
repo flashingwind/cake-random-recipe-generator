@@ -953,8 +953,14 @@ for(const id of ['shareInstagram','shareInstagramBottom']) document.getElementBy
     '投稿文とURLをコピーしました。Instagramのキャプションに貼り付け、ストーリーズではリンクスタンプも利用できます。');
 });
 
-applyQueryParams();
-render();
+const recipeQueryKeys=[...PARAMS.map(p=>p.key),'method','fatType','bp','temp','time','flour'];
+const query=new URLSearchParams(location.search);
+if(recipeQueryKeys.some(key=>query.has(key))){
+  applyQueryParams();
+  render();
+} else {
+  randomBlend();
+}
 </script>
 </body>
 </html>

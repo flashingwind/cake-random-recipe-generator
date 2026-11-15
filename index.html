@@ -256,7 +256,11 @@ function judge(s, category){
   const rules = [];
   const add = (level, text) => rules.push({ level, text });
   const totalWater = s.egg*0.75 + s.liquid + (s.fatType==='butter' ? s.fat*0.19 : 0);
-  const riseRules = riseModel(s);
+  const riseRules = category==='フォカッチャ'
+    ? [{level:'warn',text:'酵母発酵による膨張は入力項目がないため未判定'}]
+    : category==='ポップオーバー'
+      ? [{level:'warn',text:'蒸気による膨張は水分・卵量からの暫定評価'}]
+      : riseModel(s);
   for (const r of riseRules) add(r.level, r.text);
   // A hotcake must both rise and remain a pourable, thick pan batter.
   // These are provisional recipe heuristics, not experimentally measured limits.
@@ -275,6 +279,62 @@ function judge(s, category){
       add('bad', `クレープには水分が少なすぎ、薄く広げにくい（粉100gあたり約${Math.round(totalWater)}g）`);
     else if (totalWater > 480)
       add('bad', `クレープには水分が多すぎ、生地がまとまりにくい（粉100gあたり約${Math.round(totalWater)}g）`);
+  }
+  // Category-specific feasibility gates (broad, provisional ranges).
+  // Missing variables such as yeast and egg-white fraction are warnings,
+  // never assumed to be zero or used to reject a recipe.
+  switch(category){
+    case 'パウンドケーキ':
+      if(s.fatType!=='butter'||s.fat<25) add('bad','パウンドケーキのクリーミングに必要な固形油脂が不足');
+      if(s.egg<25) add('bad','パウンドケーキとして卵が少なすぎる');
+      if(totalWater>260) add('bad','パウンド型で保形しにくいほど水分が多い');
+      break;
+    case 'ジェノワーズ':
+      if(s.egg<90) add('bad','共立てスポンジを支える卵が不足');
+      if(s.fat>75) add('bad','ジェノワーズとして油脂が多すぎ、泡を保持しにくい');
+      if(s.sugar<30) add('warn','共立ての泡を支える砂糖が少ない');
+      break;
+    case 'シフォンケーキ':
+      if(s.egg<145) add('bad','メレンゲと卵黄生地を作る卵が不足');
+      if(s.fat>105) add('bad','シフォンとして油脂が多く、メレンゲを保ちにくい');
+      if(totalWater<125) add('bad','シフォンとして水分が少なすぎる');
+      break;
+    case 'カステラ':
+      if(s.egg<130) add('bad','カステラの卵泡を作る卵が不足');
+      if(s.fat>50) add('bad','カステラとして油脂が多すぎる');
+      if(s.sugar<50) add('warn','カステラとして糖量が少なく、泡の保持が不安定');
+      break;
+    case 'エンゼルフード':
+      if(s.egg<150) add('bad','卵白主体の生地を作る卵量が不足');
+      if(s.fat>12) add('bad','エンゼルフードは原則として油脂を加えない');
+      add('warn','卵白と卵黄の比率は入力にないため確認できない');
+      break;
+    case 'ソーダブレッド':
+      if(totalWater<50||totalWater>185) add('bad','ソーダブレッドとして生地水分が範囲外');
+      if(s.bp<1) add('bad','化学膨張剤が不足（重曹と酸性材料の組み合わせは未評価）');
+      break;
+    case 'スコーン':
+      if(totalWater<30||totalWater>175) add('bad','スコーンとして成形しにくい水分量');
+      if(s.fat<8) add('warn','スコーンとして油脂が少なく硬くなりやすい');
+      if(s.bp<1) add('warn','膨張剤が少なく重い仕上がりになりやすい');
+      break;
+    case 'マフィン':
+      if(totalWater<60||totalWater>240) add('bad','マフィンとして生地の水分が範囲外');
+      if(s.bp<0.8&&s.egg<120) add('bad','マフィンを膨らませる膨張力が不足');
+      break;
+    case 'ポップオーバー':
+      if(s.egg<65) add('bad','蒸気膨張後の形を固める卵が不足');
+      if(totalWater<175||totalWater>430) add('bad','ポップオーバーの蒸気膨張に適さない水分量');
+      if(s.temp<200) add('warn','ポップオーバーとして焼成温度が低め');
+      break;
+    case 'ワッフル':
+      if(totalWater<90||totalWater>300) add('bad','ワッフル型で焼きにくい生地水分');
+      if(s.bp<0.8&&s.egg<100) add('warn','ワッフルの膨張力が弱い可能性');
+      break;
+    case 'フォカッチャ':
+      if(totalWater<55||totalWater>150) add('bad','フォカッチャの生地水分が範囲外');
+      add('warn','酵母・発酵時間・グルテン形成は入力にないため判定できない');
+      break;
   }
   const wBad = s.method==='mix' ? 560 : 360, wWarn = s.method==='mix' ? 460 : 300;
   if (totalWater > wBad) add('bad', `水分過多（粉100あたり約${Math.round(totalWater)}g）：焼き縮み・ベタつきの可能性が高い`);
@@ -298,6 +358,7 @@ function distFull(s, a){
   return Math.sqrt(d(s.fat,a.fat,110) + d(s.egg,a.egg,420) + d(s.sugar,a.sugar,180) + d(s.liquid,a.liquid,200));
 }
 function nearestAnchor(s){ let best=null; for (const a of DISPLAY_ANCHORS){ const dd = distFull(s,a); if (!best || dd<best.d) best={a, d:dd}; } return best; }
+function baseCakeName(anchor){ return ANCHORS.find(a=>a.id===anchor.id.replace(/-home$/,'')).name; }
 
 // ===== UI構築 =====
 const slidersEl = document.getElementById('sliders');
@@ -573,7 +634,7 @@ function render(syncSliders = true){
   const bpBtn = document.getElementById('btnBp');
   bpBtn.classList.toggle('on', state.bp > 0);
   bpBtn.textContent = state.bp > 0 ? `入れる（${state.bp}g）` : '入れる';
-  const nearestCategory=nearestAnchor(state).a.name.replace('（家庭用）','');
+  const nearestCategory=baseCakeName(nearestAnchor(state).a);
   const { rules, worst } = judge(state, nearestCategory);
   const v = document.getElementById('verdict');
   v.textContent = worst==='ok' ? '成立しそう' : worst==='warn' ? '際どい（焼けるが癖が強い）' : '不成立の可能性が高い';
@@ -686,7 +747,7 @@ function recipeShareText(){
   const r=recipeFor(state);
   const ingredients=r.rows.map(row=>`${row.label} ${row.grams}g`).join('、');
   const near=nearestAnchor(state).a.name;
-  const verdict={ok:'成立しそう',warn:'際どい（焼けるが癖が強い）',bad:'不成立の可能性が高い'}[judge(state,near.replace('（家庭用）','')).worst];
+  const verdict={ok:'成立しそう',warn:'際どい（焼けるが癖が強い）',bad:'不成立の可能性が高い'}[judge(state,baseCakeName(nearestAnchor(state).a)).worst];
   const bake=state.method==='mix' ? '' : `／${state.temp}℃・約${state.time}分`;
   return [
     '【ケーキジェネレーター】',

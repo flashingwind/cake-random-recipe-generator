@@ -74,7 +74,7 @@
     <h2>レシピ</h2>
     <p><button id="btnRandom">🎲 ランダム生成</button></p>
     <p id="blendName"></p>
-    <p class="note" id="blendDetail"></p>
+    <p class="note" id="blendDetail" style="white-space:pre-line"></p>
     <div class="sliders" id="sliders"></div>
     <div class="seg-row">
       <span>立て方：
@@ -728,7 +728,7 @@ function render(syncSliders = true){
   document.getElementById('rules').innerHTML = rules.map(r =>
     `<li><span class="mark">${r.level==='ok'?'○':r.level==='warn'?'△':'×'}</span>${r.text}</li>`).join('');
   const r = recipeFor(state);
-  document.getElementById('blendDetail').textContent = `手順は一番近い既存ケーキ「${nearestAnchor(state).a.name}」に合わせています。`;
+  document.getElementById('blendDetail').textContent = `一番近い既存ケーキ: ${baseCakeName(nearestAnchor(state).a)}\n手順は立て方に合わせています。`;
   document.getElementById('recipeHead').textContent = `${METHOD_LABEL[state.method]}／${r.mold} 1台分（小麦粉あたりの配合を換算）`;
   document.getElementById('steps').innerHTML = r.steps.map(s=>`<li>${s}</li>`).join('');
   overview.render();

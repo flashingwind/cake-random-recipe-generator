@@ -72,7 +72,6 @@
 <main>
   <section class="card">
     <h2>レシピ</h2>
-    <h3>生成とパラメータ</h3>
     <p><button id="btnRandom">🎲 ランダム生成</button></p>
     <p id="blendName"></p>
     <p class="note" id="blendDetail"></p>
@@ -694,7 +693,7 @@ function drawPlot(canvas, method){
 function render(syncSliders = true){
   if(state.bp>0)state.bp=adequateBP(state);
   document.getElementById('regionDetails').textContent = 'グラフをクリックして領域の根拠を確認できます。';
-  document.getElementById('blendName').textContent = blendInfo;
+  document.getElementById('blendName').textContent = `判定: ${blendInfo}`;
   for (const p of PARAMS){
     if (syncSliders) document.getElementById('sl-'+p.key).value = state[p.key];
     document.getElementById('val-'+p.key).textContent = `${state[p.key]} ${p.unit}`;

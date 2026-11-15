@@ -208,24 +208,23 @@ let state = { ...pickAnchor('pound'), method:'cream', fatType:'butter' };
 let blendInfo = 'パウンドケーキ（基準点そのもの）';
 function pickAnchor(id){ const a = ANCHORS.find(x=>x.id===id); const o={}; for (const p of PARAMS) o[p.key]=a[p.key]; o.bp=a.bp; o.temp=a.temp; o.time=a.time; return o; }
 
-// ===== ランダム生成：基準点2つを補間 =====
+// ===== ランダム生成：スライダーの全範囲から独立に抽選 =====
 function randomBlend(){
-  const a = DISPLAY_ANCHORS[Math.floor(Math.random()*DISPLAY_ANCHORS.length)];
-  let b = DISPLAY_ANCHORS[Math.floor(Math.random()*DISPLAY_ANCHORS.length)];
-  if (b.id === a.id) b = DISPLAY_ANCHORS[(DISPLAY_ANCHORS.indexOf(a)+1) % DISPLAY_ANCHORS.length];
-  const t = 0.2 + Math.random()*0.6; // b の重み。端に寄せすぎない
-  const o = {};
-  for (const p of PARAMS) o[p.key] = +(a[p.key]*(1-t) + b[p.key]*t).toFixed(1);
-  o.bp = +(a.bp*(1-t) + b.bp*t).toFixed(1);
-  o.temp = Math.round((a.temp*(1-t) + b.temp*t)/5)*5;
-  o.time = Math.round(a.time*(1-t) + b.time*t);
-  recipeFlourOverride = null;
-  const dom = t < 0.5 ? a : b;
-  state = { ...o, method: dom.method, fatType: o.fat < 3 ? 'none' : dom.fatType };
-  const near = nearestAnchor(state);
-  blendInfo = `${a.name} × ${b.name}（${Math.round((1-t)*100)} : ${Math.round(t*100)}）`;
-  document.getElementById('blendDetail').textContent =
-    `一番近い既存ケーキは「${near.a.name}」（距離 ${near.d.toFixed(2)}）。立て方と油脂の種類は重みの大きい方の基準点を引き継いでいます。`;
+  const randomInt=(min,max)=>min+Math.floor(Math.random()*(max-min+1));
+  const o={};
+  for(const p of PARAMS){
+    const steps=Math.round((p.max-p.min)/p.step);
+    o[p.key]=p.min+randomInt(0,steps)*p.step;
+  }
+  recipeFlourOverride=null;
+  const method=Object.keys(METHOD_LABEL);
+  const fatType=o.fat===0 ? 'none' : ['butter','oil'][randomInt(0,1)];
+  state={...o,method:method[randomInt(0,method.length-1)],fatType,bp:randomInt(0,1)?4:0};
+  const near=nearestAnchor(state);
+  state.temp=near.a.temp;
+  state.time=near.a.time;
+  const {worst}=judge(state,baseCakeName(near.a));
+  blendInfo=worst==='fail' ? '不成立' : baseCakeName(near.a);
   render();
 }
 

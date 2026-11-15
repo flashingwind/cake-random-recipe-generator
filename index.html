@@ -603,7 +603,7 @@ function recipeShareText(){
   const verdict={ok:'成立しそう',warn:'際どい（焼けるが癖が強い）',bad:'不成立の可能性が高い'}[judge(state).worst];
   const bake=state.method==='mix' ? '' : `／${state.temp}℃・約${state.time}分`;
   return [
-    '【ケーキレシピ】',
+    '【ケーキジェネレーター】',
     `${METHOD_LABEL[state.method]}／${r.mold}${bake}`,
     ingredients,
     `一番近い既存ケーキは「${near}」`,

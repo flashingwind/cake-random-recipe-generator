@@ -466,6 +466,21 @@ function nearest2D(fat, egg, category){
   return ANCHORS.filter(a=>baseAnchors.find(b=>b.id===a.id.replace(/-home$/, '')).name===category)
     .sort((a,b)=>((fat-a.fat)/X_MAX)**2+((egg-a.egg)/Y_MAX)**2-((fat-b.fat)/X_MAX)**2-((egg-b.egg)/Y_MAX)**2)[0];
 }
+// Estimate the missing water axis from nearby observed recipes in the 2D plane.
+function estimateLiquidFromNeighbors(fat,egg,method,categories){
+  const sameMethod=DISPLAY_ROWS.filter(row=>row.method===method);
+  const preferred=sameMethod.filter(row=>categories.includes(row.category));
+  const candidates=preferred.length>=3?preferred:sameMethod;
+  if(!candidates.length)return null;
+  const closest=candidates.map(row=>({
+    row,distance:rowDistance({fat,egg},row)
+  })).sort((a,b)=>a.distance-b.distance).slice(0,5);
+  if(closest[0].distance<1e-6)return Math.round(closest[0].row.liquid);
+  const weights=closest.map(item=>1/(item.distance**2+0.05));
+  const estimate=closest.reduce((total,item,i)=>total+item.row.liquid*weights[i],0)/
+    weights.reduce((total,w)=>total+w,0);
+  return Math.round(Math.max(0,Math.min(400,estimate)));
+}
 function regionAt(x,y,method){
   const point={fat:x/402*X_MAX,egg:(1-y/294)*Y_MAX};
   const result=PROJECTION.inspect(point,method);
@@ -578,11 +593,14 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const tw=402/VOLUME.resolution[0], th=294/VOLUME.resolution[1];
     const cx=(Math.floor(x/tw)+0.5)*tw, cy=(Math.floor(y/th)+0.5)*th;
     const result=regionAt(cx,cy,method);
-    // The 2D projection determines fat, egg and method, but not water.
-    // Keep sugar, water, BP, fat type and baking settings unchanged.
+    // The projected water coordinate is unknown; estimate it from actual
+    // recipes of the same method, preferring the clicked cake category.
     state.fat=Math.round(cx/402*X_MAX);
     state.egg=Math.round((1-cy/294)*Y_MAX);
     state.method=method;
+    const estimatedLiquid=estimateLiquidFromNeighbors(
+      state.fat,state.egg,method,result.categories.map(g=>g.category));
+    if(estimatedLiquid!==null)state.liquid=estimatedLiquid;
     blendInfo='2D投影図から指定';
     clickMark={method, fat:cx/402*X_MAX, egg:(1-cy/294)*Y_MAX};
     render();
@@ -590,7 +608,7 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     const detail=document.getElementById('regionDetails');detail.replaceChildren();
     const heading=document.createElement('p');
     const regionLabel=(result.type==='conflict' || result.type==='supported') ? result.categories.map(g=>g.category).join('／') : names[result.type];
-    heading.textContent=`${regionLabel}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（入力フォームにも反映。水分・砂糖・BPなどは維持。全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
+    heading.textContent=`${regionLabel}：脂肪 ${(cx/402*X_MAX).toFixed(1)}g・卵 ${((1-cy/294)*Y_MAX).toFixed(1)}g／粉100g（入力フォームにも反映。水分は同じ立て方の近傍実レシピから推定、砂糖・BPなどは維持。全水分の3D領域を投影。以下の距離は脂肪・卵の2項目）`;
     detail.append(heading);
     for(const {row,distance} of result.neighbors.slice(0,3)){
       const p=document.createElement('p');

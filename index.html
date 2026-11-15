@@ -815,7 +815,9 @@ for(const canvas of document.querySelectorAll('canvas.plot')){
     } else if(estimatedLiquid!==null){
       state.liquid=estimatedLiquid;
     }
-    blendInfo='2D投影図から指定';
+    blendInfo=result.type==='invalid' ? '不成立'
+      : result.type==='insufficient' || result.type==='other-method' ? '不明'
+      : result.categories.map(g=>g.category).join('／') || '不明';
     clickMark={method, fat:cx/402*X_MAX, egg:(1-cy/294)*Y_MAX};
     render();
     const names={'invalid':'不成立（この立て方では成立しないと推定）','insufficient':'データ不足','other-method':'別の立て方','conflict':'カテゴリ領域の重複','supported':'モデル領域内'};
